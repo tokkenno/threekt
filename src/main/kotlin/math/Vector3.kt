@@ -4,7 +4,7 @@ class Vector3 (
     var x: Double = 0.0,
     var y: Double = 0.0,
     var z: Double = 0.0
-) {
+) : Vector {
     constructor(x: Int, y: Int, z: Int): this(x.toDouble(), y.toDouble(), z.toDouble())
     constructor(x: Int, y: Double, z: Int): this(x.toDouble(), y, z.toDouble())
     constructor(x: Int, y: Double, z: Double): this(x.toDouble(), y, z)

@@ -6,7 +6,7 @@ import kotlin.random.Random
 class Vector2(
     var x: Double = 0.0,
     var y: Double = 0.0
-) {
+) : Vector {
     constructor(x: Int, y: Int): this(x.toDouble(), y.toDouble())
     constructor(x: Double, y: Int): this(x, y.toDouble())
     constructor(x: Int, y: Double): this(x.toDouble(), y)
@@ -27,19 +27,22 @@ class Vector2(
             this.y = value
         }
 
-    fun set(x: Double, y: Double) {
+    fun set(x: Double, y: Double): Vector2 {
         this.x = x
         this.y = y
+        return this
     }
 
-    fun set(value: Double) {
+    fun set(value: Double): Vector2 {
         this.x = value
         this.y = value
+        return this
     }
 
-    fun set(vector: Vector2) {
+    fun set(vector: Vector2): Vector2 {
         this.x = vector.x
         this.y = vector.y
+        return this
     }
 
     fun clone(): Vector2 {
@@ -63,6 +66,10 @@ class Vector2(
 
     fun toVector3(): Vector3 {
         return Vector3(this.x, this.y, 0.0)
+    }
+
+    fun toVector4(): Vector4 {
+        return Vector4(this.x, this.y, 0.0, 0.0)
     }
 
     fun copyTo(data: DoubleArray, offset: Int = 0) {
