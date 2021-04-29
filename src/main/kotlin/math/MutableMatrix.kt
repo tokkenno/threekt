@@ -2,5 +2,5 @@ package math
 
 @ExperimentalJsExport
 @JsExport
-class Matrix3 {
+external interface MutableMatrix: Matrix {
 }

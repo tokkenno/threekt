@@ -1,5 +1,7 @@
 package math
 
-interface Box {
+@ExperimentalJsExport
+@JsExport
+external interface Box {
     fun isEmpty(): Boolean
 }

@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.js") version "1.3.72"
+    kotlin("js") version "1.4.32"
 }
 
 group = "com.aitorgf"
@@ -13,4 +13,13 @@ dependencies {
     implementation(kotlin("stdlib-js"))
 }
 
-kotlin.target.browser { }
+kotlin {
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                cssSupport.enabled = false
+            }
+        }
+        binaries.executable()
+    }
+}

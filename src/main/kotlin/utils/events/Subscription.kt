@@ -1,10 +1,12 @@
 package utils.events
 
-class Subscription<T> (
-            private val emitter: EventEmitter<T>,
-            private val action: (T) -> Unit
+@ExperimentalJsExport
+@JsExport
+class Subscription (
+            private val emitter: EventEmitter,
+            private val action: (Any?) -> Unit
     ) {
-    internal fun doAction(value: T) {
+    internal fun doAction(value: Any?) {
         this.action(value)
     }
 
