@@ -1,8 +1,10 @@
 package math
 
+@ExperimentalJsExport
+@JsExport
 class Box2(
-    var min: Vector2 = Vector2(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
-    var max: Vector2 = Vector2(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
+    val min: MutableVector2 = MutableVector2(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+    val max: MutableVector2 = MutableVector2(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
 ) : Box {
     val center: Vector2
         get() {
@@ -20,6 +22,7 @@ class Box2(
         return this
     }
 
+    @JsName("setBox2")
     fun set(other: Box2): Box2 {
         this.min.set(other.min)
         this.max.set(other.max)
@@ -38,7 +41,7 @@ class Box2(
     }
 
     fun setFromCenterAndSize(center: Vector2, size: Vector2): Box2 {
-        val halfSize = Vector2().set(size).multiply(0.5)
+        val halfSize = MutableVector2().set(size).multiply(0.5)
         this.min.set(center).sub(halfSize)
         this.max.set(center).add(halfSize)
         return this
@@ -83,11 +86,11 @@ class Box2(
     }
 
     fun clampPoint(point: Vector2): Vector2 {
-        return Vector2().set(point).clamp(this.min, this.max)
+        return MutableVector2().set(point).clamp(this.min, this.max)
     }
 
     fun distanceToPoint(point: Vector2): Double {
-        val clampedPoint = Vector2().set(point).clamp(this.min, this.max);
+        val clampedPoint = MutableVector2().set(point).clamp(this.min, this.max);
         return clampedPoint.sub(point).length()
     }
 

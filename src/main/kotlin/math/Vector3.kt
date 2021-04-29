@@ -1,21 +1,30 @@
 package math
 
-class Vector3 (
-    var x: Double = 0.0,
-    var y: Double = 0.0,
-    var z: Double = 0.0
-) : Vector {
-    constructor(x: Int, y: Int, z: Int): this(x.toDouble(), y.toDouble(), z.toDouble())
-    constructor(x: Int, y: Double, z: Int): this(x.toDouble(), y, z.toDouble())
-    constructor(x: Int, y: Double, z: Double): this(x.toDouble(), y, z)
-    constructor(x: Double, y: Int, z: Int): this(x, y.toDouble(), z.toDouble())
-    constructor(x: Double, y: Double, z: Int): this(x, y, z.toDouble())
-    constructor(x: Double, y: Int, z: Double): this(x, y.toDouble(), z)
-    constructor(x: Int, y: Int, z: Double): this(x.toDouble(), y.toDouble(), z)
-
+@ExperimentalJsExport
+@JsExport
+open class Vector3(
+    x: Double = 0.0,
+    y: Double = 0.0,
+    open val z: Double = 0.0
+) : Vector2(x, y), Vector {
     companion object {
         val xAxis: Vector3 by lazy { Vector3(1.0, 0.0, 0.0) }
         val yAxis: Vector3 by lazy { Vector3(0.0, 1.0, 0.0) }
         val zAxis: Vector3 by lazy { Vector3(0.0, 0.0, 1.0) }
+        val zero: Vector3 by lazy { Vector3(0.0, 0.0, 0.0) }
+        val one: Vector3 by lazy { Vector3(1.0, 1.0, 1.0) }
+    }
+
+    override fun get(index: Int): Double {
+        return when (index) {
+            0 -> this.x
+            1 -> this.y
+            2 -> this.z
+            else -> throw IndexOutOfBoundsException("Invalid index <$index>. This vector has only 3 dimensions.")
+        }
+    }
+
+    override fun toArray(): Array<Double> {
+        return arrayOf(this.x, this.y, this.z)
     }
 }

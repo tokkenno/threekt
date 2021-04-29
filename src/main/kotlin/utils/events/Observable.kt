@@ -1,5 +1,8 @@
 package utils.events
 
-interface Observable<T> {
-    fun subscribe(listener: (T) -> Unit): Subscription<T>
+
+@ExperimentalJsExport
+@JsExport
+external interface Observable {
+    fun subscribe(listener: (Any?) -> Unit): Subscription
 }
