@@ -64,7 +64,7 @@ class Euler(initX: Double = 0.0, initY: Double = 0.0, initZ: Double = 0.0, var o
 
         when (validOrder) {
             AxisOrder.XYZ -> {
-                this.y = kotlin.math.asin(Utils.clamp(m13, -1.0, 1.0));
+                this.y = kotlin.math.asin(MathUtils.clamp(m13, -1.0, 1.0));
                 if (kotlin.math.abs(m13) < 0.9999999) {
                     this.x = kotlin.math.atan2(-m23, m33);
                     this.z = kotlin.math.atan2(-m12, m11);
@@ -74,7 +74,7 @@ class Euler(initX: Double = 0.0, initY: Double = 0.0, initZ: Double = 0.0, var o
                 }
             }
             AxisOrder.YXZ -> {
-                this.x = kotlin.math.asin(-Utils.clamp(m23, -1.0, 1.0));
+                this.x = kotlin.math.asin(-MathUtils.clamp(m23, -1.0, 1.0));
 
                 if (kotlin.math.abs(m23) < 0.9999999) {
                     this.y = kotlin.math.atan2(m13, m33);
@@ -85,7 +85,7 @@ class Euler(initX: Double = 0.0, initY: Double = 0.0, initZ: Double = 0.0, var o
                 }
             }
             AxisOrder.ZXY -> {
-                this.x = kotlin.math.asin(Utils.clamp(m32, -1.0, 1.0));
+                this.x = kotlin.math.asin(MathUtils.clamp(m32, -1.0, 1.0));
 
                 if (kotlin.math.abs(m32) < 0.9999999) {
                     this.y = kotlin.math.atan2(-m31, m33);
@@ -96,7 +96,7 @@ class Euler(initX: Double = 0.0, initY: Double = 0.0, initZ: Double = 0.0, var o
                 }
             }
             AxisOrder.ZYX -> {
-                this.y = kotlin.math.asin(-Utils.clamp(m31, -1.0, 1.0));
+                this.y = kotlin.math.asin(-MathUtils.clamp(m31, -1.0, 1.0));
 
                 if (kotlin.math.abs(m31) < 0.9999999) {
                     this.x = kotlin.math.atan2(m32, m33);
@@ -107,7 +107,7 @@ class Euler(initX: Double = 0.0, initY: Double = 0.0, initZ: Double = 0.0, var o
                 }
             }
             AxisOrder.YZX -> {
-                this.z = kotlin.math.asin(Utils.clamp(m21, -1.0, 1.0));
+                this.z = kotlin.math.asin(MathUtils.clamp(m21, -1.0, 1.0));
 
                 if (kotlin.math.abs(m21) < 0.9999999) {
                     this.x = kotlin.math.atan2(-m23, m22);
@@ -118,7 +118,7 @@ class Euler(initX: Double = 0.0, initY: Double = 0.0, initZ: Double = 0.0, var o
                 }
             }
             AxisOrder.XZY -> {
-                this.z = kotlin.math.asin(-Utils.clamp(m12, -1.0, 1.0));
+                this.z = kotlin.math.asin(-MathUtils.clamp(m12, -1.0, 1.0));
 
                 if (kotlin.math.abs(m12) < 0.9999999) {
                     this.x = kotlin.math.atan2(m32, m22);
