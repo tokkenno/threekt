@@ -8,7 +8,7 @@ import kotlin.random.Random
 open class MutableVector2(
     override var x: Double = 0.0,
     override var y: Double = 0.0
-) : Vector2(x, y), Vector {
+) : Vector2(x, y), MutableVector {
     override var width: Double
         get() {
             return this.x
@@ -25,7 +25,7 @@ open class MutableVector2(
             this.y = value
         }
 
-    fun set(values: Array<Double>): MutableVector2 {
+    override fun set(vararg values: Double): MutableVector2 {
         if (values.size > 0) {
             this.x = values[0]
         }
@@ -35,7 +35,7 @@ open class MutableVector2(
         return this
     }
 
-    fun setIndex(index: Int, value: Double): MutableVector2 {
+    override fun setIndex(index: Int, value: Double): MutableVector2 {
         when (index) {
             0 -> this.x = value
             1 -> this.y = value

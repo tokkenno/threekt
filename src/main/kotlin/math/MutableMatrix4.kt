@@ -36,7 +36,8 @@ class MutableMatrix4 : Matrix4(), MutableMatrix {
         return this;
     }
 
-    fun copy(m: Matrix4): MutableMatrix4 {
+    @JsName("setMatrix4")
+    fun set(m: Matrix4): MutableMatrix4 {
         this.elements[0] = m.elements[0]; this.elements[1] = m.elements[1]; this.elements[2] =
             m.elements[2]; this.elements[3] = m.elements[3];
         this.elements[4] = m.elements[4]; this.elements[5] = m.elements[5]; this.elements[6] =
@@ -105,9 +106,9 @@ class MutableMatrix4 : Matrix4(), MutableMatrix {
 
     fun decompose(position: MutableVector3, quaternion: Quaternion, scale: MutableVector3): MutableMatrix4 {
         val v1 = MutableVector3()
-        var sx = v1.set(arrayOf(this.elements[0], this.elements[1], this.elements[2])).length()
-        val sy = v1.set(arrayOf(this.elements[4], this.elements[5], this.elements[6])).length()
-        val sz = v1.set(arrayOf(this.elements[8], this.elements[9], this.elements[10])).length()
+        var sx = v1.set(this.elements[0], this.elements[1], this.elements[2]).length()
+        val sy = v1.set(this.elements[4], this.elements[5], this.elements[6]).length()
+        val sz = v1.set(this.elements[8], this.elements[9], this.elements[10]).length()
 
         // if determine is negative, we need to invert one scale
         val det = this.determinant()
@@ -119,7 +120,7 @@ class MutableMatrix4 : Matrix4(), MutableMatrix {
 
         // scale the rotation part
         val m1 = MutableMatrix4()
-        m1.copy(this)
+        m1.set(this)
 
         val invSX = 1 / sx
         val invSY = 1 / sy
@@ -213,47 +214,43 @@ class MutableMatrix4 : Matrix4(), MutableMatrix {
         return this;
     }
 
-    fun multiply(a: Matrix4, b: Matrix4? = null): MutableMatrix4 {
-        val ae = if (b != null) {
-            a.elements
-        } else this.elements
-        val be = if (b != null) {
-            b.elements
-        } else a.elements
+    /**
+     * Multiply matrix [a] and [b] and set the result in this matrix
+     */
+    fun multiplyAndSet(a: Matrix4, b: Matrix4): MutableMatrix4 {
+        val a11 = a.elements[0];
+        val a12 = a.elements[4];
+        val a13 = a.elements[8];
+        val a14 = a.elements[12];
+        val a21 = a.elements[1];
+        val a22 = a.elements[5];
+        val a23 = a.elements[9];
+        val a24 = a.elements[13];
+        val a31 = a.elements[2];
+        val a32 = a.elements[6];
+        val a33 = a.elements[10];
+        val a34 = a.elements[14];
+        val a41 = a.elements[3];
+        val a42 = a.elements[7];
+        val a43 = a.elements[11];
+        val a44 = a.elements[15];
 
-        val a11 = ae[0];
-        val a12 = ae[4];
-        val a13 = ae[8];
-        val a14 = ae[12];
-        val a21 = ae[1];
-        val a22 = ae[5];
-        val a23 = ae[9];
-        val a24 = ae[13];
-        val a31 = ae[2];
-        val a32 = ae[6];
-        val a33 = ae[10];
-        val a34 = ae[14];
-        val a41 = ae[3];
-        val a42 = ae[7];
-        val a43 = ae[11];
-        val a44 = ae[15];
-
-        val b11 = be[0];
-        val b12 = be[4];
-        val b13 = be[8];
-        val b14 = be[12];
-        val b21 = be[1];
-        val b22 = be[5];
-        val b23 = be[9];
-        val b24 = be[13];
-        val b31 = be[2];
-        val b32 = be[6];
-        val b33 = be[10];
-        val b34 = be[14];
-        val b41 = be[3];
-        val b42 = be[7];
-        val b43 = be[11];
-        val b44 = be[15];
+        val b11 = b.elements[0];
+        val b12 = b.elements[4];
+        val b13 = b.elements[8];
+        val b14 = b.elements[12];
+        val b21 = b.elements[1];
+        val b22 = b.elements[5];
+        val b23 = b.elements[9];
+        val b24 = b.elements[13];
+        val b31 = b.elements[2];
+        val b32 = b.elements[6];
+        val b33 = b.elements[10];
+        val b34 = b.elements[14];
+        val b41 = b.elements[3];
+        val b42 = b.elements[7];
+        val b43 = b.elements[11];
+        val b44 = b.elements[15];
 
         this.elements[0] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
         this.elements[4] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
@@ -278,8 +275,18 @@ class MutableMatrix4 : Matrix4(), MutableMatrix {
         return this;
     }
 
+    /**
+     * Multiply this matrix and [a], and set the result in this matrix
+     */
+    fun multiply(a: Matrix4): MutableMatrix4 {
+        return this.multiplyAndSet(this, a)
+    }
+
+    /**
+     * Multiply [a] matrix and this, and set the result in this matrix
+     */
     fun premultiply(other: Matrix4): MutableMatrix4 {
-        return this.multiply(other, this)
+        return this.multiplyAndSet(other, this)
     }
 
     fun makeRotationFromQuaternion(quaternion: Quaternion): MutableMatrix4 {

@@ -43,11 +43,22 @@ class Quaternion {
             }
         }
 
+    @JsName("setQuaternion")
     fun set(x: Double, y: Double, z: Double, w: Double): Quaternion {
         this.x = x
         this.y = y
         this.z = z
         this.w = w
+
+        this.onChangeEmitter.emit(this)
+        return this
+    }
+
+    fun set(source: Quaternion): Quaternion {
+        this.x = source.x
+        this.y = source.y
+        this.z = source.z
+        this.w = source.w
 
         this.onChangeEmitter.emit(this)
         return this

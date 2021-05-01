@@ -8,6 +8,8 @@ open class Vector2(
     open val x: Double = 0.0,
     open val y: Double = 0.0
 ) : Vector {
+    override val dimension: Int = 1
+
     open val width: Double
         get() {
             return this.x
@@ -34,7 +36,7 @@ open class Vector2(
         return Vector2(this.x, this.y)
     }
 
-    open fun toMutable(): MutableVector2 {
+    override fun toMutable(): MutableVector2 {
         return MutableVector2(this.x, this.y)
     }
 
