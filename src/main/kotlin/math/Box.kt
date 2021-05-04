@@ -2,6 +2,8 @@ package math
 
 @ExperimentalJsExport
 @JsExport
-external interface Box {
-    fun isEmpty(): Boolean
+interface Box {
+    val center: Vector
+    val size: Vector
+    val empty: Boolean
 }

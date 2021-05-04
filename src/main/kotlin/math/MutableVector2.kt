@@ -51,6 +51,17 @@ open class MutableVector2(
         return this
     }
 
+    @JsName("applyMatrix3")
+    fun apply(m: Matrix3): MutableVector2 {
+        val x = this.x
+        val y = this.y
+
+        this.x = m.elements[0] * x + m.elements[3] * y + m.elements[6]
+        this.y = m.elements[1] * x + m.elements[4] * y + m.elements[7]
+
+        return this
+    }
+
     override fun clone(): MutableVector2 {
         return MutableVector2(this.x, this.y)
     }

@@ -2,7 +2,7 @@ package math
 
 @ExperimentalJsExport
 @JsExport
-open class Matrix4: Matrix {
+open class Matrix4 : Matrix {
     open val elements: Array<Double> = arrayOf(
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
@@ -60,5 +60,16 @@ open class Matrix4: Matrix {
                         - n12 * n21 * n33
                         + n12 * n23 * n31)
                 );
+    }
+
+    fun getMaxScaleOnAxis(): Double {
+        val scaleXSq =
+            this.elements[0] * this.elements[0] + this.elements[1] * this.elements[1] + this.elements[2] * this.elements[2];
+        val scaleYSq =
+            this.elements[4] * this.elements[4] + this.elements[5] * this.elements[5] + this.elements[6] * this.elements[6];
+        val scaleZSq =
+            this.elements[8] * this.elements[8] + this.elements[9] * this.elements[9] + this.elements[10] * this.elements[10];
+
+        return kotlin.math.sqrt(kotlin.math.max(scaleXSq, kotlin.math.max(scaleYSq, scaleZSq)));
     }
 }
