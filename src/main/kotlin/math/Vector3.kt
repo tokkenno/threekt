@@ -42,6 +42,21 @@ open class Vector3(
         return this.x * this.x + this.y * this.y + this.z * this.z
     }
 
+    fun dot(v: Vector3): Double {
+        return this.x * v.x + this.y * v.y + this.z * v.z
+    }
+
+    fun distanceTo(v: Vector3): Double {
+        return kotlin.math.sqrt(this.distanceToSquared(v))
+    }
+
+    fun distanceToSquared(v: Vector3): Double {
+        val dx = this.x - v.x
+        val dy = this.y - v.y
+        val dz = this.z - v.z
+        return dx * dx + dy * dy + dz * dz
+    }
+
     override fun toArray(): Array<Double> {
         return arrayOf(this.x, this.y, this.z)
     }

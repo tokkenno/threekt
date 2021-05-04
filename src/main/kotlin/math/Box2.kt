@@ -2,35 +2,27 @@ package math
 
 @ExperimentalJsExport
 @JsExport
-class Box2(
-    val min: MutableVector2 = MutableVector2(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
-    val max: MutableVector2 = MutableVector2(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
+open class Box2(
+    open val min: Vector2 = Vector2(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+    open val max: Vector2 = Vector2(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
 ) : Box {
-    val center: Vector2
+    override val center: Vector2
         get() {
-            return if (this.isEmpty()) Vector2() else this.min.clone().add(this.max).multiply(0.5)
+            return if (this.empty) Vector2() else this.min.toMutable().add(this.max).multiply(0.5)
         }
 
-    val size: Vector2
+    override val size: Vector2
         get() {
-            return if (this.isEmpty()) Vector2() else this.max.clone().sub(this.min)
+            return if (this.empty) Vector2() else this.max.toMutable().sub(this.min)
         }
 
-    fun set(min: Vector2, max: Vector2): Box2 {
-        this.min.set(min)
-        this.max.set(max)
-        return this
-    }
+    override val empty: Boolean
+        get() {
+            return (this.max.x < this.min.x) || (this.max.y < this.min.y)
+        }
 
-    @JsName("setBox2")
-    fun set(other: Box2): Box2 {
-        this.min.set(other.min)
-        this.max.set(other.max)
-        return this
-    }
-
-    fun clone(): Box2 {
-        return Box2().set(this)
+    open fun clone(): Box2 {
+        return Box2(this.min.clone(), this.max.clone())
     }
 
     override fun equals(other: Any?): Boolean {
@@ -38,35 +30,6 @@ class Box2(
         if (other === this) return true
         if (other !is Box2) return false
         return this.min == other.min && this.max == other.max
-    }
-
-    fun setFromCenterAndSize(center: Vector2, size: Vector2): Box2 {
-        val halfSize = MutableVector2().set(size).multiply(0.5)
-        this.min.set(center).sub(halfSize)
-        this.max.set(center).add(halfSize)
-        return this
-    }
-
-    override fun isEmpty(): Boolean {
-        return (this.max.x < this.min.x) || (this.max.y < this.min.y)
-    }
-
-    fun expandByPoint(point: Vector2): Box2 {
-        this.min.min(point)
-        this.max.max(point)
-        return this
-    }
-
-    fun expandByVector(vector: Vector2): Box2 {
-        this.min.sub(vector)
-        this.max.add(vector)
-        return this
-    }
-
-    fun expandByScalar(scalar: Double): Box2 {
-        this.min.add(-scalar)
-        this.max.add(scalar)
-        return this
     }
 
     fun containsPoint(point: Vector2): Boolean {
@@ -92,23 +55,5 @@ class Box2(
     fun distanceToPoint(point: Vector2): Double {
         val clampedPoint = MutableVector2().set(point).clamp(this.min, this.max);
         return clampedPoint.sub(point).length()
-    }
-
-    fun intersect(box: Box2): Box2 {
-        this.min.max(box.min)
-        this.max.min(box.max)
-        return this
-    }
-
-    fun union(box: Box2): Box2 {
-        this.min.min(box.min)
-        this.max.max(box.max)
-        return this
-    }
-
-    fun translate(offset: Vector2): Box2 {
-        this.min.add(offset);
-        this.max.add(offset);
-        return this
     }
 }

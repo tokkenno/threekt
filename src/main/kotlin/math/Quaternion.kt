@@ -190,4 +190,17 @@ class Quaternion {
         this.onChangeEmitter.emit()
         return this
     }
+
+    fun invert(): Quaternion {
+        // quaternion is assumed to have unit length
+        return this.conjugate()
+    }
+
+    fun conjugate(): Quaternion {
+        this.x *= -1
+        this.y *= -1
+        this.z *= -1
+        this.onChangeEmitter.emit(this)
+        return this
+    }
 }
