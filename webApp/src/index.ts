@@ -32,6 +32,8 @@ const examples = new Map([
     ['webgl_materials_video_webcam', () => import('./examples/webgl_materials_video_webcam')],
     ['webgl_lines_colors', () => import('./examples/webgl_lines_colors')],
     ['webgl_materials_blending_custom', () => import('./examples/webgl_materials_blending_custom')],
+    ['webgl_geometry_colors', () => import('./examples/webgl_geometry_colors')],
+    ['webgl_multiple_elements_text', () => import('./examples/webgl_multiple_elements_text')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

@@ -77,6 +77,7 @@ class WebGLRenderer(context: GLContext) {
     private val outputColor = Color()
 
     private var pixelRatio = 1.0
+    private var viewport: IntArray? = null
     private var scissorTest = false
     private var scissor: IntArray? = null
     private val scissorPixels = IntArray(4)
@@ -99,6 +100,21 @@ class WebGLRenderer(context: GLContext) {
             gl.resizeDrawingBuffer(pixelWidth, pixelHeight)
         }
         updateScissor()
+    }
+
+    /** Sets the viewport for a single camera in CSS pixels from the lower-left corner. */
+    fun setViewport(x: Int, y: Int, width: Int, height: Int) {
+        require(width >= 0 && height >= 0)
+        val bounds = viewport ?: IntArray(4).also { viewport = it }
+        bounds[0] = x
+        bounds[1] = y
+        bounds[2] = width
+        bounds[3] = height
+    }
+
+    /** Restores the full drawing buffer viewport for a single camera. */
+    fun resetViewport() {
+        viewport = null
     }
 
     /** Sets the scissor rectangle in CSS pixels, measured from the lower-left corner. */
@@ -162,7 +178,15 @@ class WebGLRenderer(context: GLContext) {
             renderArray(scene, camera)
         } else {
             camera.updateWorldMatrix(updateParents = true, updateChildren = false)
-            renderView(scene, camera, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+            val bounds = viewport
+            if (bounds == null) {
+                renderView(scene, camera, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
+            } else {
+                renderView(
+                    scene, camera, (bounds[0] * pixelRatio).roundToInt(), (bounds[1] * pixelRatio).roundToInt(),
+                    (bounds[2] * pixelRatio).roundToInt(), (bounds[3] * pixelRatio).roundToInt(),
+                )
+            }
         }
     }
 

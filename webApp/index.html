@@ -28,6 +28,12 @@
         .example-panel p { margin: 0 0 0.65rem; }
         .example-setting { display: grid; grid-template-columns: 1fr auto; gap: 0 0.5rem; align-items: center; margin-top: 0.4rem; font-size: 0.85rem; }
         .example-setting input[type=range] { grid-column: 1 / -1; width: 100%; }
+        .wave-article { position: relative; color: #243447; max-width: 60rem; margin: auto; padding: 4.5rem 1rem 2rem; }
+        .wave-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+        .wave-pair figure { margin: 0; }
+        .wave-view { aspect-ratio: 1; border: 1px solid #d8e0e8; border-radius: 0.25rem; }
+        .wave-pair figcaption { margin: 0.4rem 0 1.5rem; text-align: center; }
+        @media (max-width: 600px) { .wave-pair { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -67,6 +73,8 @@
         <li><a href="?example=webgl_materials_video_webcam">Texturas de cámara web</a></li>
         <li><a href="?example=webgl_lines_colors">Curvas de Hilbert coloreadas</a></li>
         <li><a href="?example=webgl_materials_blending_custom">Ecuaciones de mezcla personalizadas</a></li>
+        <li><a href="?example=webgl_geometry_colors">Poliedros con colores por vértice</a></li>
+        <li><a href="?example=webgl_multiple_elements_text">Ondas 3D integradas en texto</a></li>
     </ul>
 </main>
 <main id="example-view" hidden>
