@@ -16,6 +16,8 @@ const examples = new Map([
     ['webgl_buffergeometry_attributes_integer', () => import('./examples/webgl_buffergeometry_attributes_integer')],
     ['webgl_shader', () => import('./examples/webgl_shader')],
     ['webgl_points_waves', () => import('./examples/webgl_points_waves')],
+    ['webgl_points_billboards', () => import('./examples/webgl_points_billboards')],
+    ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

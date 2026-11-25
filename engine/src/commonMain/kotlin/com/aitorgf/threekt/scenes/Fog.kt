@@ -9,13 +9,7 @@ import kotlin.js.JsExport
  * their shaders do.
  */
 @JsExport
-class Fog(color: Color, var near: Double = 1.0, var far: Double = 1000.0) {
-    /** Fog color in the working color space. A copy of the color passed to the constructor. */
-    val color = Color(color.r, color.g, color.b)
-
-    /** Name of the fog, for debugging. */
-    var name = ""
-
+class Fog(color: Color, var near: Double = 1.0, var far: Double = 1000.0) : SceneFog(color) {
     /** Returns a new fog with the same color and distances. */
-    fun clone(): Fog = Fog(color, near, far).also { it.name = name }
+    override fun clone(): Fog = Fog(color, near, far).also { it.name = name }
 }

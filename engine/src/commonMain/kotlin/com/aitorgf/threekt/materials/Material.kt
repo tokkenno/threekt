@@ -32,6 +32,9 @@ abstract class Material {
     /** Opacity in `[0, 1]`, used by built-in materials when [transparent] is set. */
     var opacity = 1.0
 
+    /** Built-in materials discard fragments whose alpha is below this threshold. Zero disables the test. */
+    var alphaTest = 0.0
+
     /** Whether fragments are discarded when they lie behind the depth buffer. */
     var depthTest = true
 

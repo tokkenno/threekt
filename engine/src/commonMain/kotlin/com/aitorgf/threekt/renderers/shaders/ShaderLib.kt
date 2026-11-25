@@ -111,8 +111,12 @@ internal object ShaderLib {
         #ifdef USE_FOG
         uniform vec3 fogColor;
         in float vFogDepth;
+        #ifdef FOG_EXP2
+        uniform float fogDensity;
+        #else
         uniform float fogNear;
         uniform float fogFar;
+        #endif
         #endif
     """.trimIndent()
 
@@ -122,6 +126,9 @@ internal object ShaderLib {
      * Expects `outgoingLight` and `diffuseColor`.
      */
     private val outputFragment = """
+        #ifdef USE_ALPHATEST
+        if ( diffuseColor.a < alphaTest ) discard;
+        #endif
         #ifdef OPAQUE
         diffuseColor.a = 1.0;
         #endif
@@ -129,7 +136,11 @@ internal object ShaderLib {
         pc_fragColor = sRGBTransferOETF( vec4( outgoingLight, diffuseColor.a ) );
 
         #ifdef USE_FOG
+        #ifdef FOG_EXP2
+        float fogFactor = 1.0 - exp( -fogDensity * fogDensity * vFogDepth * vFogDepth );
+        #else
         float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );
+        #endif
         pc_fragColor.rgb = mix( pc_fragColor.rgb, fogColor, fogFactor );
         #endif
 
@@ -221,6 +232,9 @@ internal object ShaderLib {
         |
         |$colorParsFragment
         |$fogParsFragment
+        |#ifdef USE_ALPHATEST
+        |uniform float alphaTest;
+        |#endif
         |
         |void main() {
         |    vec4 diffuseColor = vec4( diffuse, opacity );
@@ -277,6 +291,9 @@ internal object ShaderLib {
         |
         |$colorParsFragment
         |$fogParsFragment
+        |#ifdef USE_ALPHATEST
+        |uniform float alphaTest;
+        |#endif
         |
         |void main() {
         |    vec4 diffuseColor = vec4( diffuse, opacity );
@@ -364,6 +381,9 @@ internal object ShaderLib {
         |
         |$colorParsFragment
         |$fogParsFragment
+        |#ifdef USE_ALPHATEST
+        |uniform float alphaTest;
+        |#endif
         |$bsdfs
         |$lightsParsBegin
         |

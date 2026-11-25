@@ -3,6 +3,8 @@ import type { PerspectiveCamera, Vector3 } from 'threekt';
 /** Eases the camera toward the primary pointer using offsets from the center of the canvas. */
 export function followPointer(canvas: HTMLCanvasElement) {
     const events = new AbortController();
+    const touchAction = canvas.style.touchAction;
+    canvas.style.touchAction = "none";
     let mouseX = 0;
     let mouseY = 0;
 
@@ -22,6 +24,7 @@ export function followPointer(canvas: HTMLCanvasElement) {
         },
         dispose() {
             events.abort();
+            canvas.style.touchAction = touchAction;
         },
     };
 }

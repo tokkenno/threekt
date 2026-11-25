@@ -37,7 +37,10 @@ import com.aitorgf.threekt.renderers.webgl.WebGLProgram
 import com.aitorgf.threekt.renderers.webgl.WebGLRenderList
 import com.aitorgf.threekt.renderers.webgl.WebGLTextures
 import com.aitorgf.threekt.renderers.webgl.WebGLUniforms
+import com.aitorgf.threekt.scenes.Fog
+import com.aitorgf.threekt.scenes.FogExp2
 import com.aitorgf.threekt.scenes.Scene
+import com.aitorgf.threekt.scenes.SceneFog
 import com.aitorgf.threekt.textures.Texture
 import kotlin.js.JsExport
 import kotlin.math.roundToInt
@@ -226,7 +229,7 @@ class WebGLRenderer(context: GLContext) {
         }
         val morphTargetsCount = if (morphTargetInfluences != null) geometry.morphAttributes["position"]?.size ?: 0 else 0
         val fog = scene.fog
-        val program = getProgram(material, geometry, morphTargetsCount, fog != null)
+        val program = getProgram(material, geometry, morphTargetsCount, fog)
         gl.useProgram(program.handle)
         setMaterialState(material, `object`.matrixWorld.determinantAffine() < 0.0)
 
@@ -242,14 +245,20 @@ class WebGLRenderer(context: GLContext) {
                 uniforms.set(info, material.uniforms.get(name)!!.value)
             }
         }
+        if (material !is ShaderMaterial) program.uniforms["alphaTest"]?.let { gl.uniform1f(it.location, material.alphaTest) }
         if (fog != null) {
             program.uniforms["fogColor"]?.let {
                 // Fog is blended after the sRGB encoding, so its color is converted to sRGB here.
                 outputColor.copyLinearToSRGB(fog.color)
                 gl.uniform3f(it.location, outputColor.r, outputColor.g, outputColor.b)
             }
-            program.uniforms["fogNear"]?.let { gl.uniform1f(it.location, fog.near) }
-            program.uniforms["fogFar"]?.let { gl.uniform1f(it.location, fog.far) }
+            when (fog) {
+                is Fog -> {
+                    program.uniforms["fogNear"]?.let { gl.uniform1f(it.location, fog.near) }
+                    program.uniforms["fogFar"]?.let { gl.uniform1f(it.location, fog.far) }
+                }
+                is FogExp2 -> program.uniforms["fogDensity"]?.let { gl.uniform1f(it.location, fog.density) }
+            }
         }
         if (morphTargetsCount > 0) morphtargets.update(morphTargetInfluences!!, geometry, program)
         bindAttributes(program, geometry)
@@ -276,24 +285,24 @@ class WebGLRenderer(context: GLContext) {
      * `#version 300 es` and the defines for their features, as Three.js `WebGLPrograms` does; raw shaders
      * get only the version line, when the material sets one. Programs are cached by their final source.
      */
-    private fun getProgram(material: Material, geometry: BufferGeometry, morphTargetsCount: Int, sceneHasFog: Boolean): WebGLProgram {
+    private fun getProgram(material: Material, geometry: BufferGeometry, morphTargetsCount: Int, fog: SceneFog?): WebGLProgram {
         val (vertexGlsl, fragmentGlsl) = when (material) {
             is MeshBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                fog.takeIf { material.fog },
             )
             is LineBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                fog.takeIf { material.fog },
             )
             is PointsMaterial -> builtInSource(
                 ShaderLib.pointsVertex, ShaderLib.pointsFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                fog.takeIf { material.fog },
                 if (material.sizeAttenuation) listOf("#define USE_SIZEATTENUATION") else emptyList(),
             )
             is MeshPhongMaterial -> builtInSource(
                 ShaderLib.phongVertex, ShaderLib.phongFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                fog.takeIf { material.fog },
                 buildList {
                     add("#define NUM_DIR_LIGHTS ${lights.directional.size}")
                     if (material.flatShading) add("#define FLAT_SHADED")
@@ -314,12 +323,14 @@ class WebGLRenderer(context: GLContext) {
     /** Prepends `#version 300 es` and the defines of the material's features, as Three.js `WebGLProgram` does. */
     private fun builtInSource(
         vertexShader: String, fragmentShader: String, material: Material, map: Texture?, geometry: BufferGeometry,
-        morphTargetsCount: Int, fog: Boolean, extraDefines: List<String> = emptyList(),
+        morphTargetsCount: Int, fog: SceneFog?, extraDefines: List<String> = emptyList(),
     ): Pair<String, String> {
         val defines = buildList {
             addAll(extraDefines)
             if (material.transparent == false && material.blending == Blending.Normal) add("#define OPAQUE")
-            if (fog) add("#define USE_FOG")
+            if (fog != null) add("#define USE_FOG")
+            if (fog is FogExp2) add("#define FOG_EXP2")
+            if (material.alphaTest > 0.0) add("#define USE_ALPHATEST")
             if (material.premultipliedAlpha) add("#define PREMULTIPLIED_ALPHA")
             if (map != null) add("#define USE_MAP")
             if (material.vertexColors && geometry.hasAttribute("color")) add("#define USE_COLOR")

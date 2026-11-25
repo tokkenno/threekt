@@ -11,5 +11,5 @@ class Scene : Object3D() {
     var background: Color? = null
 
     /** Fog applied to the materials that support it, or null for no fog. */
-    var fog: Fog? = null
+    var fog: SceneFog? = null
 }
