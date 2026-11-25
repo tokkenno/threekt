@@ -52,6 +52,9 @@ const examples = new Map([
     ['webgl_interactive_buffergeometry', () => import('./examples/webgl_interactive_buffergeometry')],
     ['webgl_interactive_points', () => import('./examples/webgl_interactive_points')],
     ['webgl_interactive_raycasting_points', () => import('./examples/webgl_interactive_raycasting_points')],
+    ['webgl_interactive_voxelpainter', () => import('./examples/webgl_interactive_voxelpainter')],
+    ['webgl_raycaster_texture', () => import('./examples/webgl_raycaster_texture')],
+    ['webgl_math_orientation_transform', () => import('./examples/webgl_math_orientation_transform')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

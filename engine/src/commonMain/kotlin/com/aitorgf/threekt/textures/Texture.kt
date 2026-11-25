@@ -4,6 +4,8 @@ import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Vector2
 import com.aitorgf.threekt.math.color.ColorSpace
 import kotlin.js.JsExport
+import kotlin.math.abs
+import kotlin.math.floor
 
 /**
  * Texture data whose source is supplied by a platform implementation, together with the sampling and
@@ -88,5 +90,23 @@ abstract class Texture {
     /** Rebuilds [matrix] from the offset, repeat, rotation, and center settings. */
     fun updateMatrix() {
         matrix.setUvTransform(offset.x, offset.y, repeat.x, repeat.y, rotation, center.x, center.y)
+    }
+
+    /** Applies the UV matrix and wrapping, then converts to the top-left origin of the source image. */
+    fun transformUv(uv: Vector2): Vector2 {
+        if (matrixAutoUpdate) updateMatrix()
+        uv.applyMatrix3(matrix)
+        uv.x = wrapCoordinate(uv.x, wrapS)
+        uv.y = 1.0 - wrapCoordinate(uv.y, wrapT)
+        return uv
+    }
+
+    private fun wrapCoordinate(value: Double, wrapping: Wrapping): Double {
+        if (value in 0.0..1.0) return value
+        return when (wrapping) {
+            Wrapping.ClampToEdge -> value.coerceIn(0.0, 1.0)
+            Wrapping.Repeat -> value - floor(value)
+            Wrapping.MirroredRepeat -> if (abs(floor(value) % 2.0) == 1.0) 1.0 - (value - floor(value)) else value - floor(value)
+        }
     }
 }
