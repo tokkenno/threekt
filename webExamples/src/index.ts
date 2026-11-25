@@ -51,6 +51,7 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_multiple_elements_text', () => import('./examples/webgl_multiple_elements_text')],
     ['webgl_loader_pcd', () => import('./examples/webgl_loader_pcd')],
     ['webgl_camera', () => import('./examples/webgl_camera')],
+    ['threekt_calibrated_camera', () => import('./examples/threekt_calibrated_camera')],
     ['webgl_multiple_views', () => import('./examples/webgl_multiple_views')],
     ['webgl_morphtargets', () => import('./examples/webgl_morphtargets')],
     ['webgl_video_kinect', () => import('./examples/webgl_video_kinect')],

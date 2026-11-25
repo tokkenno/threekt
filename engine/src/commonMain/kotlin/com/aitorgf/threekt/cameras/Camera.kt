@@ -25,7 +25,7 @@ abstract class Camera : Object3D() {
     val projectionMatrixInverse = Matrix4()
 
     /** Magnification factor applied to the projection. */
-    var zoom = 1.0
+    open var zoom = 1.0
 
     /** Active tile of a larger view, or null when the full view is used. */
     var viewOffset: ViewOffset? = null

@@ -3,6 +3,7 @@ package com.aitorgf.threekt.controls
 import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.cameras.PerspectiveCamera
+import com.aitorgf.threekt.cameras.CalibratedPerspectiveCamera
 import com.aitorgf.threekt.math.MathUtils
 import com.aitorgf.threekt.math.Plane
 import com.aitorgf.threekt.math.Quaternion
@@ -339,7 +340,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
         val newRadius: Double
         var zoomChanged: Boolean
         when (camera) {
-            is PerspectiveCamera -> {
+            is PerspectiveCamera, is CalibratedPerspectiveCamera -> {
                 val previousRadius = offset.length()
                 newRadius = clampDistance(previousRadius * scale)
                 val radiusDelta = previousRadius - newRadius
@@ -386,7 +387,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
 
     private fun canDolly(): Boolean {
         val camera = `object`
-        if (camera is PerspectiveCamera || camera is OrthographicCamera) return true
+        if (camera is PerspectiveCamera || camera is CalibratedPerspectiveCamera || camera is OrthographicCamera) return true
         enableZoom = false
         return false
     }
@@ -424,6 +425,12 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
                     tan(camera.fov / 2.0 * MathUtils.DEG2RAD)
                 panLeft(2.0 * deltaX * targetDistance / height)
                 panUp(2.0 * deltaY * targetDistance / height)
+            }
+            is CalibratedPerspectiveCamera -> {
+                val distance = offset.copy(camera.position).sub(target).length()
+                val width = surface?.width ?: 1.0
+                panLeft(2.0 * deltaX * distance / (camera.projectionMatrix.elements[0] * width))
+                panUp(2.0 * deltaY * distance / (camera.projectionMatrix.elements[5] * height))
             }
             is OrthographicCamera -> {
                 val width = surface?.width ?: 1.0
