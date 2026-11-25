@@ -21,6 +21,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(libs.lwjgl)
             implementation(libs.lwjgl.opengles)
+            implementation(libs.lwjgl.egl)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

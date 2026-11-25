@@ -31,6 +31,34 @@ class GLES30Context(width: Int, height: Int) : GLContext {
         drawingBufferHeight = height
     }
 
+    /** Reads the currently bound read framebuffer into an independent top-down image. */
+    fun readImage(includeAlpha: Boolean = true): BufferedImage {
+        val width = drawingBufferWidth
+        val height = drawingBufferHeight
+        require(width > 0 && height > 0 && width.toLong() * height <= Int.MAX_VALUE / 4)
+        val pixels = MemoryUtil.memAlloc(width * height * 4)
+        try {
+            GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixels)
+            val image = BufferedImage(width, height, if (includeAlpha) BufferedImage.TYPE_INT_ARGB else BufferedImage.TYPE_INT_RGB)
+            val row = IntArray(width)
+            for (y in 0 until height) {
+                val start = (height - 1 - y) * width * 4
+                for (x in 0 until width) {
+                    val offset = start + x * 4
+                    val red = pixels[offset].toInt() and 255
+                    val green = pixels[offset + 1].toInt() and 255
+                    val blue = pixels[offset + 2].toInt() and 255
+                    val alpha = pixels[offset + 3].toInt() and 255
+                    row[x] = (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+                }
+                image.setRGB(0, y, width, 1, row, 0, width)
+            }
+            return image
+        } finally {
+            MemoryUtil.memFree(pixels)
+        }
+    }
+
     override fun hasExtension(name: String): Boolean = "GL_$name" in extensions
 
     override fun getError(): Int = GLES20.glGetError()

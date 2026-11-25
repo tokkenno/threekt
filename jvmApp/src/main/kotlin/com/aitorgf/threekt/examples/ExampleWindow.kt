@@ -1,13 +1,11 @@
 package com.aitorgf.threekt.examples
 
 import com.aitorgf.threekt.renderers.webgl.GLES30Context
-import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengles.GLES
-import org.lwjgl.opengles.GLES20
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
@@ -50,7 +48,8 @@ class ExampleWindow(
 
     private fun loop(window: Long, input: GlfwInputSurface) {
         val (framebufferWidth, framebufferHeight) = framebufferSize(window)
-        val example = entry.create(GLES30Context(framebufferWidth, framebufferHeight), input)
+        val context = GLES30Context(framebufferWidth, framebufferHeight)
+        val example = entry.create(context, input)
         try {
             val start = System.nanoTime()
             var size = IntArray(0)
@@ -65,7 +64,7 @@ class ExampleWindow(
                 val seconds = (System.nanoTime() - start) / 1e9
                 if (size.isNotEmpty()) example.render(seconds)
                 if (screenshot != null && seconds >= screenshotDelay) {
-                    save(screenshot, size[2], size[3])
+                    ImageIO.write(context.readImage(includeAlpha = false), "png", screenshot)
                     GLFW.glfwSetWindowShouldClose(window, true)
                 }
                 GLFW.glfwSwapBuffers(window)
@@ -87,24 +86,5 @@ class ExampleWindow(
         val height = stack.mallocInt(1)
         GLFW.glfwGetFramebufferSize(window, width, height)
         intArrayOf(width[0], height[0])
-    }
-
-    /** Reads the back buffer, which holds the frame just rendered, and writes it as a PNG. */
-    private fun save(file: File, width: Int, height: Int) {
-        val pixels = MemoryUtil.memAlloc(width * height * 4)
-        try {
-            GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixels)
-            val image = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-            for (y in 0 until height) for (x in 0 until width) {
-                val offset = ((height - 1 - y) * width + x) * 4
-                val red = pixels.get(offset).toInt() and 0xff
-                val green = pixels.get(offset + 1).toInt() and 0xff
-                val blue = pixels.get(offset + 2).toInt() and 0xff
-                image.setRGB(x, y, (red shl 16) or (green shl 8) or blue)
-            }
-            ImageIO.write(image, "png", file)
-        } finally {
-            MemoryUtil.memFree(pixels)
-        }
     }
 }
