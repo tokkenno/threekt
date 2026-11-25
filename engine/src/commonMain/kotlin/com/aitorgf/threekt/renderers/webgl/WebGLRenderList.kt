@@ -1,0 +1,81 @@
+package com.aitorgf.threekt.renderers.webgl
+
+import com.aitorgf.threekt.core.BufferGeometry
+import com.aitorgf.threekt.core.Object3D
+import com.aitorgf.threekt.lights.Light
+import com.aitorgf.threekt.materials.Material
+import com.aitorgf.threekt.math.Matrix4
+import com.aitorgf.threekt.math.Vector3
+import com.aitorgf.threekt.objects.Line
+import com.aitorgf.threekt.objects.Mesh
+import com.aitorgf.threekt.objects.Points
+
+/**
+ * Meshes, lines, and points of a scene in drawing order for one view, as in Three.js `WebGLRenderList`. Opaque objects are
+ * sorted by [Object3D.renderOrder], then by material to reduce state changes, then nearest first.
+ * Transparent objects are sorted by [Object3D.renderOrder], then farthest first so that they blend over
+ * what is behind them. Remaining ties keep creation order through [Object3D.id].
+ *
+ * It holds no platform state, so it lives in common code even though Three.js keeps it in the WebGL
+ * renderer. Transmissive objects, groups, and material variants are not supported yet.
+ */
+internal class WebGLRenderList {
+    /** An object with its geometry, material, and the clip-space depth of its origin. */
+    class RenderItem(val `object`: Object3D, val geometry: BufferGeometry, val material: Material, val z: Double)
+
+    /** Opaque objects in drawing order. */
+    val opaque = mutableListOf<RenderItem>()
+    /** Transparent objects in drawing order. */
+    val transparent = mutableListOf<RenderItem>()
+
+    /**
+     * Visible lights of the scene. Three.js keeps them in a separate `WebGLRenderState`, which is filled
+     * during the same traversal.
+     */
+    val lights = mutableListOf<Light>()
+
+    private val vector = Vector3()
+
+    /** Clears both lists. */
+    fun init() {
+        opaque.clear()
+        transparent.clear()
+        lights.clear()
+    }
+
+    /** Adds [object] with clip-space depth [z] to the list that matches [material]. */
+    fun push(`object`: Object3D, geometry: BufferGeometry, material: Material, z: Double) {
+        val item = RenderItem(`object`, geometry, material, z)
+        if (material.transparent) transparent.add(item) else opaque.add(item)
+    }
+
+    /** Sorts both lists into drawing order. */
+    fun sort() {
+        opaque.sortWith(PAINTER_SORT_STABLE)
+        transparent.sortWith(REVERSE_PAINTER_SORT_STABLE)
+    }
+
+    /**
+     * Fills the lists with the visible meshes, lines, and points under [root], using their depth under
+     * [projScreenMatrix], and sorts them. Hidden objects and their descendants are skipped. World
+     * matrices must be current.
+     */
+    fun build(root: Object3D, projScreenMatrix: Matrix4) {
+        init()
+        root.traverseVisible { node ->
+            val z = { vector.setFromMatrixPosition(node.matrixWorld).applyMatrix4(projScreenMatrix).z }
+            when (node) {
+                is Mesh -> push(node, node.geometry, node.material, z())
+                is Line -> push(node, node.geometry, node.material, z())
+                is Points -> push(node, node.geometry, node.material, z())
+                is Light -> lights.add(node)
+            }
+        }
+        sort()
+    }
+
+    private companion object {
+        val PAINTER_SORT_STABLE = compareBy<RenderItem>({ it.`object`.renderOrder }, { it.material.id }, { it.z }, { it.`object`.id })
+        val REVERSE_PAINTER_SORT_STABLE = compareBy<RenderItem>({ it.`object`.renderOrder }, { -it.z }, { it.`object`.id })
+    }
+}

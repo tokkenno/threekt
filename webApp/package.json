@@ -1,0 +1,17 @@
+{
+  "name": "webApp",
+  "version": "1.0.0",
+  "description": "Browser examples for Threekt",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && vite build",
+    "start": "vite --port 8080"
+  },
+  "dependencies": {
+    "threekt": "0.0.0-unspecified"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vite": "^7.1.6"
+  }
+}

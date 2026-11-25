@@ -1,0 +1,14 @@
+[versions]
+kotlin = "2.4.21"
+lwjgl = "3.4.3"
+
+[libraries]
+lwjgl = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjgl-egl = { module = "org.lwjgl:lwjgl-egl", version.ref = "lwjgl" }
+lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw", version.ref = "lwjgl" }
+lwjgl-opengles = { module = "org.lwjgl:lwjgl-opengles", version.ref = "lwjgl" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+[plugins]
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

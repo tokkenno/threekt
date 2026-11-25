@@ -2,6 +2,7 @@
 *.class
 /build
 **/build
+webApp/dist
 
 # Log file
 *.log
@@ -27,6 +28,13 @@ hs_err_pid*
 # IDE's
 /.vs
 /.idea
+*.iml
 
 # Build tools
 /.gradle
+/.kotlin
+/**/node_modules
+
+# AI
+AGENTS.md
+PROGRESS.md

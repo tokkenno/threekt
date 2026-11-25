@@ -1,12 +1,32 @@
-# threekt
-ThreeKt (Provisional name) is 3D Engine based on ThreeJs and implemented as Kotlin Multiplatform library. 
+# Threekt
 
-The goal is not to achieve a 1:1 port, but to modularise and write more maintainable code, to serve as a code base that can be run on the web (WebGL), desktop (OpenGL, Vulkan) and headless environments (Software) for simulations.
+ThreeKt (Provisional name) is 3D Engine based on ThreeJs and implemented as Kotlin Multiplatform library.
 
-This is a WORK IN PROGRESS. It's use is discouraged.
+The goal is not to achieve a 1:1 port, but to modularize and write more maintainable code, to serve as a code base that can be run on the web (WebGL), desktop (OpenGL, Vulkan) and headless environments (Software) for simulations.
 
-## Current goals
+## Motivations
+I've been working with Three.js for years, and although it's a great framework for the web, I've always run into a roadblock when trying to use it on certain platforms. Specifically, I currently need to render simulations in headless environments and record them, and it seems easier to me to port the engine itself than all the software I've built on top of it.
 
-- [ ] Port the core and math packages, and classes to get basic operation.
-- [ ] Implement WebGL renderer for Js target.
-- [ ] Implement a software renderer for JVM target.
+For now, this project will be for personal use, and we’ll see how far I can get with the help of AI. If you find it useful for anything else, let me know, and we can see about building a more robust project. This is a WORK IN PROGRESS. Its use is discouraged.
+
+## Run the Web examples
+
+From the repository root, build the Kotlin/JS package before installing the npm workspace dependencies.
+
+```sh
+npm run build:engine
+npm ci
+npm start
+```
+
+Open the local URL printed by Vite. To build the examples for production, run `npm run build`.
+
+## Run the JVM examples
+
+The JVM app renders through OpenGL ES 3.0 with LWJGL and GLFW.
+
+```sh
+./gradlew :jvmApp:run
+```
+
+The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmApp:run --args="--example webgl_buffergeometry_rawshader"`. Add `--screenshot frame.png` to save a frame after two seconds and close the window.
