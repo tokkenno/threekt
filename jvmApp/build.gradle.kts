@@ -33,3 +33,10 @@ application {
     // GLFW must run on the first thread on macOS.
     if (System.getProperty("os.name").lowercase().contains("mac")) applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
 }
+
+// Use the same upstream assets as the browser example and package them in the application.
+tasks.processResources {
+    from(rootProject.layout.projectDirectory.dir("webApp/src/examples/assets/male02")) {
+        into("models/male02")
+    }
+}

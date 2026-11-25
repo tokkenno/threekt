@@ -37,7 +37,7 @@ class ExampleWindow(
                 GLFW.glfwMakeContextCurrent(window)
                 GLES.createCapabilities()
                 GLFW.glfwSwapInterval(1)
-                loop(window)
+                GlfwInputSurface(window).use { input -> loop(window, input) }
             } finally {
                 GLES.setCapabilities(null)
                 GLFW.glfwDestroyWindow(window)
@@ -48,9 +48,9 @@ class ExampleWindow(
         }
     }
 
-    private fun loop(window: Long) {
+    private fun loop(window: Long, input: GlfwInputSurface) {
         val (framebufferWidth, framebufferHeight) = framebufferSize(window)
-        val example = entry.create(GLES30Context(framebufferWidth, framebufferHeight))
+        val example = entry.create(GLES30Context(framebufferWidth, framebufferHeight), input)
         try {
             val start = System.nanoTime()
             var size = IntArray(0)
@@ -59,6 +59,7 @@ class ExampleWindow(
                 val current = windowSize(window) + framebufferSize(window)
                 if (!current.contentEquals(size) && current.none { it == 0 }) {
                     size = current
+                    input.resize(current[0], current[1])
                     example.resize(current[0], current[1], current[2].toDouble() / current[0])
                 }
                 val seconds = (System.nanoTime() - start) / 1e9
