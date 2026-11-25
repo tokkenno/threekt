@@ -12,11 +12,21 @@ import com.aitorgf.threekt.objects.Line
 import com.aitorgf.threekt.objects.LineLoop
 import com.aitorgf.threekt.objects.LineSegments
 import com.aitorgf.threekt.objects.Mesh
+import com.aitorgf.threekt.objects.InstancedMesh
 import com.aitorgf.threekt.objects.Points
+import com.aitorgf.threekt.objects.Sprite
+import com.aitorgf.threekt.cameras.PerspectiveCamera
+import com.aitorgf.threekt.math.Sphere
+import kotlin.math.cos
+import kotlin.math.sin
 import com.aitorgf.threekt.renderers.CoordinateSystem
 import kotlin.js.JsExport
 
-/** Finds intersections of a ray with mesh triangles, lines and points. */
+/**
+ * Finds intersections of a ray with mesh triangles, lines, points and sprites. Instanced meshes report
+ * each hit instance through [Intersection.instanceId]. Three.js dispatches to each object's `raycast()`;
+ * Threekt keeps the tests here.
+ */
 @JsExport
 class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINITY) {
     private val ray = Ray()
@@ -32,10 +42,23 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
     private val rayPoint = Vector3()
     private val world = Vector3()
     private val weights = Vector3()
+    private val instanceWorld = Matrix4()
+    private val instanceLocal = Matrix4()
+    private val sphere = Sphere()
+    private val spriteScale = Vector3()
+    private val spriteModelView = Matrix4()
+    private val spritePosition = Vector3()
+
+    /**
+     * Camera of the last [setFromCamera] call. Sprites need it to know how they face the view; set it
+     * directly when building the ray by hand.
+     */
+    var camera: Camera? = null
 
     /** Sets the ray from normalized device coordinates in [-1, 1]. */
     fun setFromCamera(coords: Vector2, camera: Camera) {
         camera.updateWorldMatrix(true, false)
+        this.camera = camera
         if (camera is OrthographicCamera) {
             val low = if (camera.coordinateSystem == CoordinateSystem.WebGPU || camera.reversedDepth) 0.0 else -1.0
             val high = 1.0
@@ -66,6 +89,18 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
     }
 
     private fun collect(node: Object3D, results: MutableList<Intersection>) {
+        if (node is Sprite) return intersectSprite(node, results)
+        if (node is InstancedMesh) {
+            if (node.matrixWorld.determinantAffine() == 0.0) return
+            if (node.boundingSphere == null) node.computeBoundingSphere()
+            sphere.copy(node.boundingSphere!!).applyMatrix4(node.matrixWorld)
+            if (!ray.intersectsSphere(sphere)) return
+            for (instanceId in 0 until node.count) {
+                instanceWorld.multiplyMatrices(node.matrixWorld, node.getMatrixAt(instanceId, instanceLocal))
+                intersectMesh(node, instanceWorld, instanceId, results)
+            }
+            return
+        }
         val geometry = when (node) {
             is Mesh -> node.geometry
             is Line -> node.geometry
@@ -79,38 +114,7 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
         val end = minOf((indices?.size ?: position.count).toLong(), range.start.toLong() + range.count).toInt()
         fun index(i: Int) = indices?.get(i) ?: i
         when (node) {
-            is Mesh -> {
-                if (node.matrixWorld.determinantAffine() == 0.0) return
-                localRay.copy(ray).applyMatrix4(inverse.copy(node.matrixWorld).invertAffine())
-                val bounds = geometry.boundingBox ?: run {
-                    geometry.computeBoundingBox()
-                    geometry.boundingBox
-                }
-                if (bounds != null && !localRay.intersectsBox(bounds)) return
-                val uv = geometry.getAttribute("uv")
-                for (i in start until end - 2 step 3) {
-                    val ia = index(i)
-                    val ib = index(i + 1)
-                    val ic = index(i + 2)
-                    a.fromBufferAttribute(position, ia)
-                    b.fromBufferAttribute(position, ib)
-                    c.fromBufferAttribute(position, ic)
-                    val side = node.material.side
-                    val intersection = if (side == Side.Back) localRay.intersectTriangle(c, b, a, true, hit)
-                    else localRay.intersectTriangle(a, b, c, side == Side.Front, hit)
-                    if (intersection == null) continue
-                    world.copy(hit).applyMatrix4(node.matrixWorld)
-                    val distance = world.distanceTo(ray.origin)
-                    if (distance !in near..far) continue
-                    val normal = b.copy().sub(a).cross(c.copy().sub(a)).normalize()
-                    val w = if (uv != null) Triangle.getBarycoord(hit, a, b, c, weights) else null
-                    val coordinates = if (uv != null && w != null) Vector2(
-                        uv.getX(ia) * w.x + uv.getX(ib) * w.y + uv.getX(ic) * w.z,
-                        uv.getY(ia) * w.x + uv.getY(ib) * w.y + uv.getY(ic) * w.z,
-                    ) else null
-                    results.add(Intersection(distance, world.copy(), node, i / 3, ia, ib, ic, normal, coordinates))
-                }
-            }
+            is Mesh -> intersectMesh(node, node.matrixWorld, null, results)
             is Points -> {
                 val limit = pointsThreshold * pointsThreshold
                 for (i in start until end) {
@@ -135,5 +139,90 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
                 }
             }
         }
+    }
+
+    /** Tests the triangles of [node] placed with [matrixWorld], tagging hits with [instanceId]. */
+    private fun intersectMesh(node: Mesh, matrixWorld: Matrix4, instanceId: Int?, results: MutableList<Intersection>) {
+        val geometry = node.geometry
+        val position = geometry.getAttribute("position") ?: return
+        val indices = geometry.index
+        val range = geometry.drawRange
+        val start = maxOf(0, range.start)
+        val end = minOf((indices?.size ?: position.count).toLong(), range.start.toLong() + range.count).toInt()
+        if (matrixWorld.determinantAffine() == 0.0) return
+        localRay.copy(ray).applyMatrix4(inverse.copy(matrixWorld).invertAffine())
+        val bounds = geometry.boundingBox ?: run {
+            geometry.computeBoundingBox()
+            geometry.boundingBox
+        }
+        if (bounds != null && !localRay.intersectsBox(bounds)) return
+        val uv = geometry.getAttribute("uv")
+        for (i in start until end - 2 step 3) {
+            val ia = indices?.get(i) ?: i
+            val ib = indices?.get(i + 1) ?: (i + 1)
+            val ic = indices?.get(i + 2) ?: (i + 2)
+            a.fromBufferAttribute(position, ia)
+            b.fromBufferAttribute(position, ib)
+            c.fromBufferAttribute(position, ic)
+            val side = node.material.side
+            val intersection = if (side == Side.Back) localRay.intersectTriangle(c, b, a, true, hit)
+            else localRay.intersectTriangle(a, b, c, side == Side.Front, hit)
+            if (intersection == null) continue
+            world.copy(hit).applyMatrix4(matrixWorld)
+            val distance = world.distanceTo(ray.origin)
+            if (distance !in near..far) continue
+            val normal = b.copy().sub(a).cross(c.copy().sub(a)).normalize()
+            val w = if (uv != null) Triangle.getBarycoord(hit, a, b, c, weights) else null
+            val coordinates = if (uv != null && w != null) Vector2(
+                uv.getX(ia) * w.x + uv.getX(ib) * w.y + uv.getX(ic) * w.z,
+                uv.getY(ia) * w.x + uv.getY(ib) * w.y + uv.getY(ic) * w.z,
+            ) else null
+            results.add(Intersection(distance, world.copy(), node, i / 3, ia, ib, ic, normal, coordinates, instanceId))
+        }
+    }
+
+    /**
+     * Tests the two camera-facing triangles of [sprite], as Three.js `Sprite.raycast`. Requires [camera].
+     * Reports the UV at the hit point.
+     */
+    private fun intersectSprite(sprite: Sprite, results: MutableList<Intersection>) {
+        val camera = requireNotNull(camera) { "Raycaster.camera must be set to intersect sprites." }
+        spriteScale.setFromMatrixScale(sprite.matrixWorld)
+        spriteModelView.multiplyMatrices(camera.matrixWorldInverse, sprite.matrixWorld)
+        spritePosition.setFromMatrixPosition(spriteModelView)
+        if (camera is PerspectiveCamera && !sprite.material.sizeAttenuation) spriteScale.multiplyScalar(-spritePosition.z)
+        val rotation = sprite.material.rotation
+        val sin = sin(rotation)
+        val cos = cos(rotation)
+        fun transformVertex(target: Vector3, x: Double, y: Double): Vector3 {
+            val alignedX = (x - sprite.center.x + 0.5) * spriteScale.x
+            val alignedY = (y - sprite.center.y + 0.5) * spriteScale.y
+            return target.set(
+                spritePosition.x + cos * alignedX - sin * alignedY,
+                spritePosition.y + sin * alignedX + cos * alignedY,
+                spritePosition.z,
+            ).applyMatrix4(camera.matrixWorld)
+        }
+        // First triangle: (-0.5, -0.5), (0.5, -0.5), (0.5, 0.5) with UVs (0, 0), (1, 0), (1, 1).
+        transformVertex(a, -0.5, -0.5)
+        transformVertex(b, 0.5, -0.5)
+        transformVertex(c, 0.5, 0.5)
+        var uvB = 1.0 to 0.0
+        var uvC = 1.0 to 1.0
+        if (ray.intersectTriangle(a, b, c, false, hit) == null) {
+            // Second triangle: (-0.5, -0.5), (0.5, 0.5), (-0.5, 0.5) with UVs (0, 0), (1, 1), (0, 1).
+            b.copy(c)
+            transformVertex(c, -0.5, 0.5)
+            uvB = 1.0 to 1.0
+            uvC = 0.0 to 1.0
+            if (ray.intersectTriangle(a, b, c, false, hit) == null) return
+        }
+        val distance = ray.origin.distanceTo(hit)
+        if (distance < near || distance > far) return
+        val w = Triangle.getBarycoord(hit, a, b, c, weights)
+        val uv = if (w != null) {
+            Vector2(uvB.first * w.y + uvC.first * w.z, uvB.second * w.y + uvC.second * w.z)
+        } else null
+        results.add(Intersection(distance, hit.copy(), sprite, -1, uv = uv))
     }
 }

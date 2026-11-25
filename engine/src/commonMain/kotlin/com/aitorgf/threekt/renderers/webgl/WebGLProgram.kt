@@ -16,15 +16,28 @@ internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fra
     /** Locations of the active vertex attributes by name. */
     val attributes: Map<String, Int>
 
+    /**
+     * Number of consecutive locations that each active attribute occupies: 4 for a `mat4`, 3 for a `mat3`,
+     * 2 for a `mat2` and 1 otherwise, as Three.js `locationSize`.
+     */
+    val attributeLocationSizes: Map<String, Int>
+
     /** Active uniforms by name. */
     val uniforms: Map<String, UniformInfo>
 
     init {
         val attributeCount = gl.getProgramParameter(handle, GL.ACTIVE_ATTRIBUTES)
-        attributes = (0 until attributeCount).associate { index ->
-            val name = gl.getActiveAttrib(handle, index).name
-            name to gl.getAttribLocation(handle, name)
-        }.filterValues { it >= 0 }
+        val activeAttributes = (0 until attributeCount).map { gl.getActiveAttrib(handle, it) }
+        attributes = activeAttributes.associate { info -> info.name to gl.getAttribLocation(handle, info.name) }
+            .filterValues { it >= 0 }
+        attributeLocationSizes = activeAttributes.associate { info ->
+            info.name to when (info.type) {
+                GL.FLOAT_MAT4 -> 4
+                GL.FLOAT_MAT3 -> 3
+                GL.FLOAT_MAT2 -> 2
+                else -> 1
+            }
+        }
         val uniformCount = gl.getProgramParameter(handle, GL.ACTIVE_UNIFORMS)
         uniforms = (0 until uniformCount).associate { index ->
             val info = gl.getActiveUniform(handle, index)
@@ -41,7 +54,11 @@ internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fra
 
     companion object {
         /** Prepends the GLSL 3 compatibility macros and built-in declarations for ShaderMaterial. */
-        fun shaderMaterialSource(material: ShaderMaterial): Pair<String, String> {
+        fun shaderMaterialSource(
+            material: ShaderMaterial,
+            instancing: Boolean = false,
+            instancingColor: Boolean = false,
+        ): Pair<String, String> {
             val vertexPrefix = """
                 #version 300 es
                 #define attribute in
@@ -60,7 +77,11 @@ internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fra
                 attribute vec3 normal;
                 attribute vec2 uv;
             """.trimIndent()
-            val color = if (material.vertexColors) "#define USE_COLOR\nattribute vec3 color;\n" else ""
+            val color = buildString {
+                if (instancing) append("#define USE_INSTANCING\nattribute mat4 instanceMatrix;\n")
+                if (instancingColor) append("#define USE_INSTANCING_COLOR\nattribute vec3 instanceColor;\n")
+                if (material.vertexColors) append("#define USE_COLOR\nattribute vec3 color;\n")
+            }
             val fragmentPrefix = """
                 #version 300 es
                 #define varying in

@@ -1,5 +1,8 @@
 package com.aitorgf.threekt.core
 
+import com.aitorgf.threekt.math.Matrix3
+import com.aitorgf.threekt.math.Matrix4
+import com.aitorgf.threekt.math.Vector3
 import kotlin.js.JsExport
 
 /**
@@ -67,8 +70,83 @@ abstract class BufferAttribute(
     /** Returns the fourth component of item [index]. */
     fun getW(index: Int): Double = getComponent(index, 3)
 
+    /**
+     * Sets component [component] of item [index]. Normalized integer attributes store the value scaled to
+     * their range and rounded, as Three.js does. Call [markUpdated] afterwards so the change is uploaded.
+     */
+    fun setComponent(index: Int, component: Int, value: Double): BufferAttribute {
+        write(index * itemSize + component, value)
+        return this
+    }
+
+    /** Sets the first component of item [index] and returns this attribute. */
+    fun setX(index: Int, x: Double): BufferAttribute = setComponent(index, 0, x)
+
+    /** Sets the second component of item [index] and returns this attribute. */
+    fun setY(index: Int, y: Double): BufferAttribute = setComponent(index, 1, y)
+
+    /** Sets the third component of item [index] and returns this attribute. */
+    fun setZ(index: Int, z: Double): BufferAttribute = setComponent(index, 2, z)
+
+    /** Sets the fourth component of item [index] and returns this attribute. */
+    fun setW(index: Int, w: Double): BufferAttribute = setComponent(index, 3, w)
+
+    /** Sets the first two components of item [index] and returns this attribute. */
+    fun setXY(index: Int, x: Double, y: Double): BufferAttribute = setX(index, x).setY(index, y)
+
+    /** Sets the first three components of item [index] and returns this attribute. */
+    fun setXYZ(index: Int, x: Double, y: Double, z: Double): BufferAttribute = setXY(index, x, y).setZ(index, z)
+
+    /** Sets four components of item [index] and returns this attribute. */
+    fun setXYZW(index: Int, x: Double, y: Double, z: Double, w: Double): BufferAttribute =
+        setXYZ(index, x, y, z).setW(index, w)
+
+    /** Transforms each item as a point by [matrix]. Requires three components. Returns this attribute. */
+    fun applyMatrix4(matrix: Matrix4): BufferAttribute {
+        val vector = Vector3()
+        for (i in 0 until count) {
+            vector.fromBufferAttribute(this, i).applyMatrix4(matrix)
+            setXYZ(i, vector.x, vector.y, vector.z)
+        }
+        return this
+    }
+
+    /** Transforms each item as a normal by [matrix] and normalizes it. Returns this attribute. */
+    fun applyNormalMatrix(matrix: Matrix3): BufferAttribute {
+        val vector = Vector3()
+        for (i in 0 until count) {
+            vector.fromBufferAttribute(this, i).applyNormalMatrix(matrix)
+            setXYZ(i, vector.x, vector.y, vector.z)
+        }
+        return this
+    }
+
+    /** Transforms each item as a direction by [matrix] and normalizes it. Returns this attribute. */
+    fun transformDirection(matrix: Matrix4): BufferAttribute {
+        val vector = Vector3()
+        for (i in 0 until count) {
+            vector.fromBufferAttribute(this, i).transformDirection(matrix)
+            setXYZ(i, vector.x, vector.y, vector.z)
+        }
+        return this
+    }
+
+    /** Returns an independent copy of this attribute with the same type, settings and values. */
+    abstract fun clone(): BufferAttribute
+
+    /** Copies [usage], [gpuType] and [name] from [source] and returns this attribute. */
+    internal fun copySettings(source: BufferAttribute): BufferAttribute {
+        attributeUsage = source.usage
+        gpuType = source.gpuType
+        name = source.name
+        return this
+    }
+
     /** Reads the array element at [offset], applying normalization when it applies. */
     protected abstract fun read(offset: Int): Double
+
+    /** Writes the array element at [offset], applying normalization when it applies. */
+    protected abstract fun write(offset: Int, value: Double)
 
     /** Validates that [size] holds a whole number of items. Call it from subclass initializers. */
     protected fun requireWholeItems() {

@@ -1,6 +1,8 @@
 package com.aitorgf.threekt.core
 
 import com.aitorgf.threekt.math.Box3
+import com.aitorgf.threekt.math.Matrix3
+import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Sphere
 import com.aitorgf.threekt.math.Vector3
 import kotlin.js.JsExport
@@ -63,6 +65,12 @@ open class BufferGeometry {
         attributes.remove(name)
         return this
     }
+
+    /**
+     * Names of the registered attributes in insertion order, a snapshot. Three.js exposes the attributes
+     * as an `attributes` object; use [getAttribute] to read each one.
+     */
+    val attributeNames: Array<String> get() = attributes.keys.toTypedArray()
 
     /** Returns whether an attribute is registered under [name]. */
     fun hasAttribute(name: String): Boolean = name in attributes
@@ -137,6 +145,129 @@ open class BufferGeometry {
             }
         }
         sphere.radius = sqrt(maxRadiusSq)
+    }
+
+    /**
+     * Computes smooth vertex normals by summing the face normals of the triangles that share each vertex,
+     * weighted by their area, as Three.js does. Non-indexed geometry gets flat normals. Replaces the
+     * `normal` attribute when its size does not match the positions, and marks it for upload.
+     */
+    fun computeVertexNormals() {
+        val position = attributes["position"] ?: return
+        var normal = attributes["normal"]
+        if (normal == null || normal.count != position.count) {
+            normal = Float32BufferAttribute(FloatArray(position.count * 3), 3)
+            setAttribute("normal", normal)
+        } else {
+            for (i in 0 until normal.count) normal.setXYZ(i, 0.0, 0.0, 0.0)
+        }
+        val pA = Vector3()
+        val pB = Vector3()
+        val pC = Vector3()
+        val nA = Vector3()
+        val nB = Vector3()
+        val nC = Vector3()
+        val cb = Vector3()
+        val ab = Vector3()
+        val indices = index
+        if (indices != null) {
+            for (i in 0 until indices.size - 2 step 3) {
+                val vA = indices[i]
+                val vB = indices[i + 1]
+                val vC = indices[i + 2]
+                pA.fromBufferAttribute(position, vA)
+                pB.fromBufferAttribute(position, vB)
+                pC.fromBufferAttribute(position, vC)
+                cb.subVectors(pC, pB).cross(ab.subVectors(pA, pB))
+                nA.fromBufferAttribute(normal, vA).add(cb)
+                nB.fromBufferAttribute(normal, vB).add(cb)
+                nC.fromBufferAttribute(normal, vC).add(cb)
+                normal.setXYZ(vA, nA.x, nA.y, nA.z)
+                normal.setXYZ(vB, nB.x, nB.y, nB.z)
+                normal.setXYZ(vC, nC.x, nC.y, nC.z)
+            }
+        } else {
+            for (i in 0 until position.count - 2 step 3) {
+                pA.fromBufferAttribute(position, i)
+                pB.fromBufferAttribute(position, i + 1)
+                pC.fromBufferAttribute(position, i + 2)
+                cb.subVectors(pC, pB).cross(ab.subVectors(pA, pB))
+                for (vertex in i..i + 2) normal.setXYZ(vertex, cb.x, cb.y, cb.z)
+            }
+        }
+        normalizeNormals()
+        normal.markUpdated()
+    }
+
+    /** Scales every normal to unit length. */
+    fun normalizeNormals() {
+        val normals = attributes["normal"] ?: return
+        val vector = Vector3()
+        for (i in 0 until normals.count) {
+            vector.fromBufferAttribute(normals, i).normalize()
+            normals.setXYZ(i, vector.x, vector.y, vector.z)
+        }
+    }
+
+    /**
+     * Transforms the positions by [matrix], the normals by its normal matrix and the tangents as
+     * directions, marks them for upload, and recomputes existing bounding volumes. Returns this geometry.
+     */
+    fun applyMatrix4(matrix: Matrix4): BufferGeometry {
+        attributes["position"]?.let {
+            it.applyMatrix4(matrix)
+            it.markUpdated()
+        }
+        attributes["normal"]?.let {
+            it.applyNormalMatrix(Matrix3().getNormalMatrix(matrix))
+            it.markUpdated()
+        }
+        attributes["tangent"]?.let {
+            it.transformDirection(matrix)
+            it.markUpdated()
+        }
+        if (boundingBox != null) computeBoundingBox()
+        if (boundingSphere != null) computeBoundingSphere()
+        return this
+    }
+
+    /** Rotates the geometry about the X axis by [angle] radians. Returns this geometry. */
+    fun rotateX(angle: Double): BufferGeometry = applyMatrix4(Matrix4().makeRotationX(angle))
+
+    /** Rotates the geometry about the Y axis by [angle] radians. Returns this geometry. */
+    fun rotateY(angle: Double): BufferGeometry = applyMatrix4(Matrix4().makeRotationY(angle))
+
+    /** Rotates the geometry about the Z axis by [angle] radians. Returns this geometry. */
+    fun rotateZ(angle: Double): BufferGeometry = applyMatrix4(Matrix4().makeRotationZ(angle))
+
+    /** Moves the geometry by ([x], [y], [z]). Returns this geometry. */
+    fun translate(x: Double, y: Double, z: Double): BufferGeometry = applyMatrix4(Matrix4().makeTranslation(x, y, z))
+
+    /** Scales the geometry by ([x], [y], [z]). Returns this geometry. */
+    fun scale(x: Double, y: Double, z: Double): BufferGeometry = applyMatrix4(Matrix4().makeScale(x, y, z))
+
+    /** Moves the geometry so that the center of its bounding box is at the origin. Returns this geometry. */
+    fun center(): BufferGeometry {
+        computeBoundingBox()
+        val offset = boundingBox!!.getCenter(Vector3()).negate()
+        return translate(offset.x, offset.y, offset.z)
+    }
+
+    /**
+     * Returns an independent copy with cloned attributes, morph attributes, indices and draw range.
+     * Interleaved attributes become separate float attributes. Subclass parameters are not kept: the copy
+     * is a plain [BufferGeometry], whereas Three.js preserves the subclass.
+     */
+    open fun clone(): BufferGeometry {
+        val copy = BufferGeometry()
+        index?.let { copy.setIndex(it.copyOf()) }
+        for ((name, attribute) in attributes) copy.setAttribute(name, attribute.clone())
+        for ((name, targets) in morphAttributes) copy.morphAttributes[name] = targets.map { it.clone() }
+        copy.morphTargetsRelative = morphTargetsRelative
+        copy.setDrawRange(drawRange.start, drawRange.count)
+        boundingBox?.let { copy.boundingBox = it.copy() }
+        boundingSphere?.let { copy.boundingSphere = it.copy() }
+        return copy
     }
 
     private fun expandByMorphTargets(box: Box3) {

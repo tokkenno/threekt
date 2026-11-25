@@ -84,6 +84,13 @@ class WebGL2Context(private val canvas: dynamic, alpha: Boolean = true) : GLCont
     override fun lineWidth(width: Double) { gl.lineWidth(width) }
     override fun drawArrays(mode: Int, first: Int, count: Int) { gl.drawArrays(mode, first, count) }
     override fun drawElements(mode: Int, count: Int, type: Int, offset: Int) { gl.drawElements(mode, count, type, offset) }
+    override fun vertexAttribDivisor(index: Int, divisor: Int) { gl.vertexAttribDivisor(index, divisor) }
+    override fun drawArraysInstanced(mode: Int, first: Int, count: Int, instanceCount: Int) {
+        gl.drawArraysInstanced(mode, first, count, instanceCount)
+    }
+    override fun drawElementsInstanced(mode: Int, count: Int, type: Int, offset: Int, instanceCount: Int) {
+        gl.drawElementsInstanced(mode, count, type, offset, instanceCount)
+    }
 
     override fun createShader(type: Int): Any = gl.createShader(type) ?: error("Could not create a WebGL shader.")
     override fun shaderSource(shader: Any, source: String) { gl.shaderSource(shader, source) }

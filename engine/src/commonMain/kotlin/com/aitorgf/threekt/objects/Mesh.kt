@@ -8,7 +8,7 @@ import kotlin.js.JsExport
 
 /** A scene node that draws the triangles of a [BufferGeometry] with a [Material]. */
 @JsExport
-class Mesh(
+open class Mesh(
     var geometry: BufferGeometry = BufferGeometry(),
     var material: Material = MeshBasicMaterial(),
 ) : Object3D() {

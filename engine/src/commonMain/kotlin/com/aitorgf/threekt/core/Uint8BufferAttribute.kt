@@ -27,4 +27,11 @@ class Uint8BufferAttribute(
         val value = getUnsigned(offset).toDouble()
         return if (normalized) value / 255.0 else value
     }
+
+    override fun clone(): Uint8BufferAttribute =
+        Uint8BufferAttribute(array.copyOf(), itemSize, normalized).also { it.copySettings(this) }
+
+    override fun write(offset: Int, value: Double) {
+        array[offset] = kotlin.math.round(if (normalized) value * 255.0 else value).toInt().toByte()
+    }
 }

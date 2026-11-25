@@ -34,4 +34,16 @@ class InterleavedBufferAttribute(
 
     override fun read(offset: Int): Double =
         data.read((offset / itemSize) * data.stride + this.offset + offset % itemSize, normalized)
+
+    /**
+     * Returns the values as a separate, non-interleaved [Float32BufferAttribute], as Three.js does when
+     * cloning without the shared buffer.
+     */
+    override fun clone(): BufferAttribute {
+        val values = FloatArray(count * itemSize) { read(it).toFloat() }
+        return Float32BufferAttribute(values, itemSize, false).also { it.copySettings(this) }
+    }
+
+    override fun write(offset: Int, value: Double) =
+        data.write((offset / itemSize) * data.stride + this.offset + offset % itemSize, value, normalized)
 }

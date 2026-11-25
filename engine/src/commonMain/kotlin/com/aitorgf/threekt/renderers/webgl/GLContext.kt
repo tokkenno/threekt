@@ -70,6 +70,10 @@ interface GLContext {
     fun vertexAttribIPointer(index: Int, size: Int, type: Int, stride: Int, offset: Int)
     fun drawArrays(mode: Int, first: Int, count: Int)
     fun drawElements(mode: Int, count: Int, type: Int, offset: Int)
+    /** Sets how many instances share each value of the attribute at [index]; zero advances it per vertex. */
+    fun vertexAttribDivisor(index: Int, divisor: Int)
+    fun drawArraysInstanced(mode: Int, first: Int, count: Int, instanceCount: Int)
+    fun drawElementsInstanced(mode: Int, count: Int, type: Int, offset: Int, instanceCount: Int)
 
     fun createShader(type: Int): Any
     fun shaderSource(shader: Any, source: String)

@@ -22,16 +22,51 @@ internal object ShaderLib {
     """.trimIndent()
 
     private val colorParsVertex = """
+        #if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR )
+        out vec4 vColor;
+        #endif
         #ifdef USE_COLOR
         // Three-component colors read 1.0 as their alpha.
         in vec4 color;
-        out vec4 vColor;
+        #endif
+        #ifdef USE_INSTANCING_COLOR
+        in vec3 instanceColor;
         #endif
     """.trimIndent()
 
     private val colorVertex = """
+        #if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR )
+        vColor = vec4( 1.0 );
+        #endif
         #ifdef USE_COLOR
-        vColor = color;
+        vColor *= color;
+        #endif
+        #ifdef USE_INSTANCING_COLOR
+        vColor.xyz *= instanceColor.xyz;
+        #endif
+    """.trimIndent()
+
+    /** Per-instance transform of `InstancedMesh`, applied before the model-view matrix. */
+    private val instancingParsVertex = """
+        #ifdef USE_INSTANCING
+        in mat4 instanceMatrix;
+        #endif
+    """.trimIndent()
+
+    /**
+     * Transforms `objectNormal` by the instance matrix, dividing by the squared axis scales so that
+     * non-uniform scaling keeps normals perpendicular, then by `normalMatrix`, as `defaultnormal_vertex`.
+     */
+    private val defaultnormalVertex = """
+        vec3 objectNormal = vec3( normal );
+        #ifdef USE_INSTANCING
+        mat3 im = mat3( instanceMatrix );
+        objectNormal /= vec3( dot( im[ 0 ], im[ 0 ] ), dot( im[ 1 ], im[ 1 ] ), dot( im[ 2 ], im[ 2 ] ) );
+        objectNormal = im * objectNormal;
+        #endif
+        vec3 transformedNormal = normalMatrix * objectNormal;
+        #ifdef FLIP_SIDED
+        transformedNormal = - transformedNormal;
         #endif
     """.trimIndent()
 
@@ -66,7 +101,11 @@ internal object ShaderLib {
     """.trimIndent()
 
     private val projectVertex = """
-        vec4 mvPosition = modelViewMatrix * vec4( transformed, 1.0 );
+        vec4 mvPosition = vec4( transformed, 1.0 );
+        #ifdef USE_INSTANCING
+        mvPosition = instanceMatrix * mvPosition;
+        #endif
+        mvPosition = modelViewMatrix * mvPosition;
         gl_Position = projectionMatrix * mvPosition;
     """.trimIndent()
 
@@ -96,13 +135,13 @@ internal object ShaderLib {
     """.trimIndent()
 
     private val colorParsFragment = """
-        #ifdef USE_COLOR
+        #if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR )
         in vec4 vColor;
         #endif
     """.trimIndent()
 
     private val colorFragment = """
-        #ifdef USE_COLOR
+        #if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR )
         diffuseColor *= vColor;
         #endif
     """.trimIndent()
@@ -152,6 +191,8 @@ internal object ShaderLib {
     private val bsdfs = """
         #define RECIPROCAL_PI 0.3183098861837907
         #define saturate( a ) clamp( a, 0.0, 1.0 )
+        float pow2( const in float x ) { return x * x; }
+        float pow4( const in float x ) { float x2 = x * x; return x2 * x2; }
 
         vec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {
             float fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );
@@ -194,6 +235,24 @@ internal object ShaderLib {
         uniform DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
         #endif
 
+        #if NUM_POINT_LIGHTS > 0
+        struct PointLight {
+            vec3 position;
+            vec3 color;
+            float distance;
+            float decay;
+        };
+        uniform PointLight pointLights[ NUM_POINT_LIGHTS ];
+        #endif
+
+        float getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {
+            float distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );
+            if ( cutoffDistance > 0.0 ) {
+                distanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );
+            }
+            return distanceFalloff;
+        }
+
         #if NUM_HEMI_LIGHTS > 0
         struct HemisphereLight {
             vec3 direction;
@@ -221,6 +280,7 @@ internal object ShaderLib {
         |#endif
         |
         |$colorParsVertex
+        |$instancingParsVertex
         |$morphtargetParsVertex
         |$fogParsVertex
         |
@@ -364,6 +424,7 @@ internal object ShaderLib {
         |#endif
         |
         |$colorParsVertex
+        |$instancingParsVertex
         |$morphtargetParsVertex
         |$fogParsVertex
         |
@@ -374,10 +435,7 @@ internal object ShaderLib {
         |
         |    $colorVertex
         |
-        |    vec3 transformedNormal = normalMatrix * vec3( normal );
-        |    #ifdef FLIP_SIDED
-        |    transformedNormal = - transformedNormal;
-        |    #endif
+        |    $defaultnormalVertex
         |    #ifndef FLAT_SHADED
         |    vNormal = normalize( transformedNormal );
         |    #endif
@@ -390,15 +448,83 @@ internal object ShaderLib {
     """.trimMargin()
 
     /**
-     * Fragment shader of `MeshPhongMaterial`: Blinn-Phong direct lighting from directional lights plus
-     * Lambertian ambient lighting, as the Three.js `lights_phong` chunks compute it.
+     * Direct and indirect lighting of the Phong and Lambert models, as the Three.js `lights_fragment_*`
+     * chunks with `RE_Direct_BlinnPhong` or `RE_Direct_Lambert`. Specular terms are added when
+     * `USE_SPECULAR` is defined. Expects `diffuseColor`, `normal`, `vViewPosition`, and, with specular,
+     * `specular`, `shininess` and `specularStrength`.
+     */
+    private val lightsFragment = """
+        vec3 geometryPosition = - vViewPosition;
+        vec3 geometryNormal = normal;
+        vec3 geometryViewDir = ( isOrthographic ) ? vec3( 0, 0, 1 ) : normalize( vViewPosition );
+
+        vec3 directDiffuse = vec3( 0.0 );
+        vec3 directSpecular = vec3( 0.0 );
+        vec3 indirectDiffuse = vec3( 0.0 );
+
+        #if NUM_POINT_LIGHTS > 0
+        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
+            vec3 lVector = pointLights[ i ].position - geometryPosition;
+            vec3 lightDirection = normalize( lVector );
+            vec3 lightColor = pointLights[ i ].color * getDistanceAttenuation( length( lVector ), pointLights[ i ].distance, pointLights[ i ].decay );
+            float dotNL = saturate( dot( geometryNormal, lightDirection ) );
+            vec3 irradiance = dotNL * lightColor;
+            directDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
+            #ifdef USE_SPECULAR
+            directSpecular += irradiance * BRDF_BlinnPhong( lightDirection, geometryViewDir, geometryNormal, specular, shininess ) * specularStrength;
+            #endif
+        }
+        #endif
+
+        #if NUM_DIR_LIGHTS > 0
+        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
+            vec3 lightDirection = directionalLights[ i ].direction;
+            float dotNL = saturate( dot( geometryNormal, lightDirection ) );
+            vec3 irradiance = dotNL * directionalLights[ i ].color;
+            directDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
+            #ifdef USE_SPECULAR
+            directSpecular += irradiance * BRDF_BlinnPhong( lightDirection, geometryViewDir, geometryNormal, specular, shininess ) * specularStrength;
+            #endif
+        }
+        #endif
+
+        vec3 irradiance = ambientLightColor;
+        #if NUM_HEMI_LIGHTS > 0
+        for ( int i = 0; i < NUM_HEMI_LIGHTS; i++ ) {
+            irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometryNormal );
+        }
+        #endif
+        indirectDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
+    """.trimIndent()
+
+    /** Normal in view space, from flat-shading derivatives or the interpolated vertex normal. */
+    private val normalFragmentBegin = """
+        float faceDirection = gl_FrontFacing ? 1.0 : - 1.0;
+        #ifdef FLAT_SHADED
+        vec3 fdx = dFdx( vViewPosition );
+        vec3 fdy = dFdy( vViewPosition );
+        vec3 normal = normalize( cross( fdx, fdy ) );
+        #else
+        vec3 normal = normalize( vNormal );
+        #ifdef DOUBLE_SIDED
+        normal *= faceDirection;
+        #endif
+        #endif
+    """.trimIndent()
+
+    /**
+     * Fragment shader of `MeshPhongMaterial` and, without `USE_SPECULAR`, of `MeshLambertMaterial`:
+     * Lambertian diffuse lighting from point, directional, ambient and hemisphere lights, plus Blinn-Phong
+     * highlights for Phong. The renderer defines `USE_SPECULAR` for Phong.
      */
     val phongFragment = """
         |$commonFragment
         |
         |uniform vec3 emissive;
+        |#ifdef USE_SPECULAR
         |uniform vec3 specular;
         |uniform float shininess;
+        |#endif
         |
         |in vec3 vViewPosition;
         |#ifndef FLAT_SHADED
@@ -430,45 +556,79 @@ internal object ShaderLib {
         |
         |    float specularStrength = 1.0;
         |
-        |    float faceDirection = gl_FrontFacing ? 1.0 : - 1.0;
-        |    #ifdef FLAT_SHADED
-        |    vec3 fdx = dFdx( vViewPosition );
-        |    vec3 fdy = dFdy( vViewPosition );
-        |    vec3 normal = normalize( cross( fdx, fdy ) );
-        |    #else
-        |    vec3 normal = normalize( vNormal );
-        |    #ifdef DOUBLE_SIDED
-        |    normal *= faceDirection;
-        |    #endif
-        |    #endif
-        |
-        |    vec3 geometryNormal = normal;
-        |    vec3 geometryViewDir = ( isOrthographic ) ? vec3( 0, 0, 1 ) : normalize( vViewPosition );
-        |
-        |    vec3 directDiffuse = vec3( 0.0 );
-        |    vec3 directSpecular = vec3( 0.0 );
-        |    vec3 indirectDiffuse = vec3( 0.0 );
-        |
-        |    #if NUM_DIR_LIGHTS > 0
-        |    for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
-        |        vec3 lightDirection = directionalLights[ i ].direction;
-        |        float dotNL = saturate( dot( geometryNormal, lightDirection ) );
-        |        vec3 irradiance = dotNL * directionalLights[ i ].color;
-        |        directDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
-        |        directSpecular += irradiance * BRDF_BlinnPhong( lightDirection, geometryViewDir, geometryNormal, specular, shininess ) * specularStrength;
-        |    }
-        |    #endif
-        |
-        |    vec3 irradiance = ambientLightColor;
-        |    #if NUM_HEMI_LIGHTS > 0
-        |    for ( int i = 0; i < NUM_HEMI_LIGHTS; i++ ) {
-        |        irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometryNormal );
-        |    }
-        |    #endif
-        |    indirectDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
+        |    $normalFragmentBegin
+        |    $lightsFragment
         |
         |    vec3 outgoingLight = directDiffuse + indirectDiffuse + directSpecular + totalEmissiveRadiance;
         |    $outputFragment
         |}
     """.trimMargin()
+
+    /** Fragment shader of `MeshNormalMaterial`: view-space normals packed into RGB, without color encoding. */
+    val normalFragment = """
+        |precision highp float;
+        |
+        |uniform float opacity;
+        |in vec3 vViewPosition;
+        |#ifndef FLAT_SHADED
+        |in vec3 vNormal;
+        |#endif
+        |out vec4 pc_fragColor;
+        |
+        |void main() {
+        |    vec4 diffuseColor = vec4( 0.0, 0.0, 0.0, opacity );
+        |    $normalFragmentBegin
+        |    pc_fragColor = vec4( normalize( normal ) * 0.5 + 0.5, diffuseColor.a );
+        |    #ifdef OPAQUE
+        |    pc_fragColor.a = 1.0;
+        |    #endif
+        |}
+    """.trimMargin()
+
+    /**
+     * Vertex shader of `SpriteMaterial`. The quad faces the camera at the object's origin, scaled by the
+     * object's X and Y scale, offset by `center` and turned by `rotation`. Without
+     * `USE_SIZEATTENUATION` its size stays constant on screen under a perspective camera.
+     */
+    val spriteVertex = """
+        |$commonVertex
+        |
+        |uniform mat4 modelMatrix;
+        |uniform float rotation;
+        |uniform vec2 center;
+        |
+        |#ifdef USE_MAP
+        |in vec2 uv;
+        |uniform mat3 mapTransform;
+        |out vec2 vMapUv;
+        |#endif
+        |
+        |$fogParsVertex
+        |
+        |void main() {
+        |    #ifdef USE_MAP
+        |    vMapUv = ( mapTransform * vec3( uv, 1 ) ).xy;
+        |    #endif
+        |
+        |    vec4 mvPosition = modelViewMatrix[ 3 ];
+        |    vec2 scale = vec2( length( modelMatrix[ 0 ].xyz ), length( modelMatrix[ 1 ].xyz ) );
+        |
+        |    #ifndef USE_SIZEATTENUATION
+        |    bool isPerspective = isPerspectiveMatrix( projectionMatrix );
+        |    if ( isPerspective ) scale *= - mvPosition.z;
+        |    #endif
+        |
+        |    vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale;
+        |    vec2 rotatedPosition;
+        |    rotatedPosition.x = cos( rotation ) * alignedPosition.x - sin( rotation ) * alignedPosition.y;
+        |    rotatedPosition.y = sin( rotation ) * alignedPosition.x + cos( rotation ) * alignedPosition.y;
+        |    mvPosition.xy += rotatedPosition;
+        |
+        |    gl_Position = projectionMatrix * mvPosition;
+        |    $fogVertex
+        |}
+    """.trimMargin()
+
+    /** Fragment shader of `SpriteMaterial`, which matches the unlit basic fragment shader. */
+    val spriteFragment get() = basicFragment
 }

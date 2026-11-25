@@ -9,9 +9,10 @@ import com.aitorgf.threekt.math.Vector3
 import com.aitorgf.threekt.objects.Line
 import com.aitorgf.threekt.objects.Mesh
 import com.aitorgf.threekt.objects.Points
+import com.aitorgf.threekt.objects.Sprite
 
 /**
- * Meshes, lines, and points of a scene in drawing order for one view, as in Three.js `WebGLRenderList`. Opaque objects are
+ * Meshes, lines, points and sprites of a scene in drawing order for one view, as in Three.js `WebGLRenderList`. Opaque objects are
  * sorted by [Object3D.renderOrder], then by material to reduce state changes, then nearest first.
  * Transparent objects are sorted by [Object3D.renderOrder], then farthest first so that they blend over
  * what is behind them. Remaining ties keep creation order through [Object3D.id].
@@ -68,6 +69,7 @@ internal class WebGLRenderList {
                 is Mesh -> push(node, node.geometry, node.material, z())
                 is Line -> push(node, node.geometry, node.material, z())
                 is Points -> push(node, node.geometry, node.material, z())
+                is Sprite -> push(node, node.geometry, node.material, z())
                 is Light -> lights.add(node)
             }
         }

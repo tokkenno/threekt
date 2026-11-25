@@ -77,6 +77,16 @@ open class Object3D {
         return this
     }
 
+    /**
+     * Applies [matrix] on top of the current local transform and updates [position], [quaternion] and
+     * [scale] from the result.
+     */
+    fun applyMatrix4(matrix: Matrix4) {
+        if (matrixAutoUpdate) updateMatrix()
+        this.matrix.premultiply(matrix)
+        this.matrix.decompose(position, quaternion, scale)
+    }
+
     /** Composes the local [matrix] from [position], [quaternion], and [scale]. */
     fun updateMatrix() {
         matrix.compose(position, quaternion, scale)

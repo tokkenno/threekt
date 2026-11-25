@@ -6,6 +6,10 @@ import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.GpuType
+import com.aitorgf.threekt.core.BufferAttribute
+import com.aitorgf.threekt.core.InstancedBufferAttribute
+import com.aitorgf.threekt.core.InstancedBufferGeometry
+import com.aitorgf.threekt.core.InstancedInterleavedBuffer
 import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Blending
@@ -13,6 +17,9 @@ import com.aitorgf.threekt.materials.LineBasicMaterial
 import com.aitorgf.threekt.materials.LineDashedMaterial
 import com.aitorgf.threekt.materials.Material
 import com.aitorgf.threekt.materials.MeshBasicMaterial
+import com.aitorgf.threekt.materials.MeshLambertMaterial
+import com.aitorgf.threekt.materials.MeshNormalMaterial
+import com.aitorgf.threekt.materials.SpriteMaterial
 import com.aitorgf.threekt.materials.MeshPhongMaterial
 import com.aitorgf.threekt.materials.PointsMaterial
 import com.aitorgf.threekt.materials.RawShaderMaterial
@@ -22,7 +29,9 @@ import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Vector3
+import com.aitorgf.threekt.objects.InstancedMesh
 import com.aitorgf.threekt.objects.Line
+import com.aitorgf.threekt.objects.Sprite
 import com.aitorgf.threekt.objects.LineLoop
 import com.aitorgf.threekt.objects.LineSegments
 import com.aitorgf.threekt.objects.Mesh
@@ -51,9 +60,12 @@ import kotlin.math.roundToInt
  * Draws meshes and lines into the drawing buffer of a WebGL2-compatible [context], such as
  * `WebGL2Context` for a browser canvas or `GLES30Context` on the JVM. Three.js takes a parameters object
  * with a canvas instead. [MeshBasicMaterial] and [LineBasicMaterial] are unlit and support a color
- * texture, vertex colors, and position morph targets, [PointsMaterial] draws sized points, and
- * [MeshPhongMaterial] is lit by ambient and directional lights. Built-in materials apply the scene's fog. [RawShaderMaterial] uses its own shaders. Opaque
- * objects are drawn before transparent ones, which are blended back to front.
+ * texture, vertex colors, and position morph targets, [PointsMaterial] draws sized points,
+ * [SpriteMaterial] draws camera-facing sprites, [MeshNormalMaterial] shows normals, and
+ * [MeshPhongMaterial] and [MeshLambertMaterial] are lit by ambient, hemisphere, directional and point
+ * lights. Built-in materials apply the scene's fog. [RawShaderMaterial] uses its own shaders.
+ * [InstancedMesh]es and [InstancedBufferGeometry] are drawn with instanced draw calls. Opaque objects are
+ * drawn before transparent ones, which are blended back to front.
  */
 @JsExport
 class WebGLRenderer(context: GLContext) {
@@ -72,6 +84,13 @@ class WebGLRenderer(context: GLContext) {
     private val indexBuffer = gl.createBuffer()
     private val enabledAttributes = mutableSetOf<Int>()
     private val renderList = WebGLRenderList()
+
+    /**
+     * Whether [render] clears the color and depth buffers before drawing. Turn it off to draw several
+     * scenes on top of each other, clearing manually with [clear] or [clearDepth]. A scene background
+     * color still clears the color, as in Three.js.
+     */
+    var autoClear = true
 
     private val clearColor = Color(0.0, 0.0, 0.0)
     private var clearAlpha = 1.0
@@ -234,6 +253,28 @@ class WebGLRenderer(context: GLContext) {
         }
     }
 
+    /**
+     * Clears the [color], [depth] or both buffers of the current viewport to the clear color and a depth
+     * of one.
+     */
+    fun clear(color: Boolean = true, depth: Boolean = true) {
+        var mask = 0
+        if (color) {
+            outputColor.copyLinearToSRGB(clearColor)
+            gl.clearColor(outputColor.r, outputColor.g, outputColor.b, clearAlpha)
+            mask = mask or GL.COLOR_BUFFER_BIT
+        }
+        if (depth) {
+            gl.depthMask(true)
+            gl.clearDepth(1.0)
+            mask = mask or GL.DEPTH_BUFFER_BIT
+        }
+        if (mask != 0) gl.clear(mask)
+    }
+
+    /** Clears only the depth buffer, so the next scene draws over the current image. */
+    fun clearDepth() = clear(color = false, depth = true)
+
     /** Clears to the scene background, or to the clear color when the scene has none. */
     private fun clear(scene: Scene, colorOnly: Boolean = false, reversedDepth: Boolean = false) {
         val background = scene.background
@@ -267,7 +308,11 @@ class WebGLRenderer(context: GLContext) {
         cameraPosition.setFromMatrixPosition(camera.matrixWorld)
 
         gl.viewport(x, y, width, height)
-        clear(scene, reversedDepth = camera.reversedDepth)
+        if (autoClear) {
+            clear(scene, reversedDepth = camera.reversedDepth)
+        } else if (scene.background != null) {
+            clear(scene, colorOnly = true)
+        }
         gl.depthFunc(if (camera.reversedDepth) GL.GEQUAL else GL.LEQUAL)
 
         renderList.build(scene, viewProjection)
@@ -301,6 +346,13 @@ class WebGLRenderer(context: GLContext) {
         // A negative count draws nothing; an unbounded one cannot be drawn without attributes or indices.
         if (drawCount < 0 || drawCount >= Int.MAX_VALUE) return
 
+        val instanceCount = when {
+            `object` is InstancedMesh -> `object`.count
+            geometry is InstancedBufferGeometry -> minOf(geometry.instanceCount, maxInstanceCount(geometry))
+            else -> -1
+        }
+        if (instanceCount == 0) return
+
         val morphTargetInfluences = when (`object`) {
             is Mesh -> `object`.morphTargetInfluences
             is Line -> `object`.morphTargetInfluences
@@ -309,7 +361,7 @@ class WebGLRenderer(context: GLContext) {
         }
         val morphTargetsCount = if (morphTargetInfluences != null) geometry.morphAttributes["position"]?.size ?: 0 else 0
         val fog = scene.fog
-        val program = getProgram(material, geometry, morphTargetsCount, fog)
+        val program = getProgram(material, `object`, geometry, morphTargetsCount, fog)
         gl.useProgram(program.handle)
         setMaterialState(material, `object`.matrixWorld.determinantAffine() < 0.0)
 
@@ -320,6 +372,9 @@ class WebGLRenderer(context: GLContext) {
             is LineBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
             is PointsMaterial -> setPointsUniforms(program, material)
             is MeshPhongMaterial -> setPhongUniforms(program, geometry, material)
+            is MeshLambertMaterial -> setLambertUniforms(program, geometry, material)
+            is MeshNormalMaterial -> program.uniforms["opacity"]?.let { gl.uniform1f(it.location, material.opacity) }
+            is SpriteMaterial -> setSpriteUniforms(program, geometry, `object` as Sprite, material)
             is ShaderMaterial -> for (name in material.uniforms.names) {
                 val info = program.uniforms[name] ?: continue
                 uniforms.set(info, material.uniforms.get(name)!!.value)
@@ -346,7 +401,7 @@ class WebGLRenderer(context: GLContext) {
             }
         }
         if (morphTargetsCount > 0) morphtargets.update(morphTargetInfluences!!, geometry, program)
-        bindAttributes(program, geometry)
+        bindAttributes(program, `object`, geometry)
 
         val mode = when (`object`) {
             is LineSegments -> GL.LINES
@@ -358,12 +413,37 @@ class WebGLRenderer(context: GLContext) {
         if (wireframe) gl.lineWidth(pixelRatio)
         if (`object` is Line && material is LineBasicMaterial) gl.lineWidth(material.linewidth * pixelRatio)
         if (index == null) {
-            gl.drawArrays(mode, drawStart.toInt(), drawCount.toInt())
+            if (instanceCount < 0) gl.drawArrays(mode, drawStart.toInt(), drawCount.toInt())
+            else gl.drawArraysInstanced(mode, drawStart.toInt(), drawCount.toInt(), instanceCount)
         } else {
             gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer)
             gl.bufferIntData(GL.ELEMENT_ARRAY_BUFFER, index, GL.STREAM_DRAW)
-            gl.drawElements(mode, drawCount.toInt(), GL.UNSIGNED_INT, drawStart.toInt() * Int.SIZE_BYTES)
+            val offset = drawStart.toInt() * Int.SIZE_BYTES
+            if (instanceCount < 0) gl.drawElements(mode, drawCount.toInt(), GL.UNSIGNED_INT, offset)
+            else gl.drawElementsInstanced(mode, drawCount.toInt(), GL.UNSIGNED_INT, offset, instanceCount)
         }
+    }
+
+    /**
+     * Returns how many instances the instanced attributes of [geometry] can supply, as the
+     * `_maxInstanceCount` that Three.js `WebGLBindingStates` records, or [Int.MAX_VALUE] without any.
+     */
+    private fun maxInstanceCount(geometry: BufferGeometry): Int {
+        var result = Int.MAX_VALUE
+        for (name in geometry.attributeNames) {
+            val attribute = geometry.getAttribute(name) ?: continue
+            val meshPerAttribute = meshPerAttribute(attribute) ?: continue
+            result = minOf(result, (meshPerAttribute.toLong() * attribute.count).coerceAtMost(Int.MAX_VALUE.toLong()).toInt())
+        }
+        return result
+    }
+
+    /** Returns the instance divisor of [attribute], or null when it advances per vertex. */
+    private fun meshPerAttribute(attribute: BufferAttribute): Int? = when {
+        attribute is InstancedBufferAttribute -> attribute.meshPerAttribute
+        attribute is InterleavedBufferAttribute && attribute.data is InstancedInterleavedBuffer ->
+            (attribute.data as InstancedInterleavedBuffer).meshPerAttribute
+        else -> null
     }
 
     /**
@@ -371,11 +451,29 @@ class WebGLRenderer(context: GLContext) {
      * `#version 300 es` and the defines for their features, as Three.js `WebGLPrograms` does; raw shaders
      * get only the version line, when the material sets one. Programs are cached by their final source.
      */
-    private fun getProgram(material: Material, geometry: BufferGeometry, morphTargetsCount: Int, fog: SceneFog?): WebGLProgram {
+    private fun getProgram(
+        material: Material, `object`: Object3D, geometry: BufferGeometry, morphTargetsCount: Int, fog: SceneFog?,
+    ): WebGLProgram {
+        val instancing = `object` is InstancedMesh
+        val instancingColor = `object` is InstancedMesh && `object`.instanceColor != null
+        val instancingDefines = buildList {
+            if (instancing) add("#define USE_INSTANCING")
+            if (instancingColor) add("#define USE_INSTANCING_COLOR")
+        }
+        val lightDefines = listOf(
+            "#define NUM_DIR_LIGHTS ${lights.directional.size}",
+            "#define NUM_POINT_LIGHTS ${lights.point.size}",
+            "#define NUM_HEMI_LIGHTS ${lights.hemisphere.size}",
+        )
+        fun sideDefines(flatShading: Boolean) = buildList {
+            if (flatShading) add("#define FLAT_SHADED")
+            if (material.side == Side.Double) add("#define DOUBLE_SIDED")
+            if (material.side == Side.Back) add("#define FLIP_SIDED")
+        }
         val (vertexGlsl, fragmentGlsl) = when (material) {
             is MeshBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
-                fog.takeIf { material.fog },
+                fog.takeIf { material.fog }, instancingDefines,
             )
             is LineBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
@@ -389,19 +487,26 @@ class WebGLRenderer(context: GLContext) {
             is MeshPhongMaterial -> builtInSource(
                 ShaderLib.phongVertex, ShaderLib.phongFragment, material, material.map, geometry, morphTargetsCount,
                 fog.takeIf { material.fog },
-                buildList {
-                    add("#define NUM_DIR_LIGHTS ${lights.directional.size}")
-                    add("#define NUM_HEMI_LIGHTS ${lights.hemisphere.size}")
-                    if (material.flatShading) add("#define FLAT_SHADED")
-                    if (material.side == Side.Double) add("#define DOUBLE_SIDED")
-                    if (material.side == Side.Back) add("#define FLIP_SIDED")
-                },
+                instancingDefines + lightDefines + sideDefines(material.flatShading) + "#define USE_SPECULAR",
+            )
+            is MeshLambertMaterial -> builtInSource(
+                ShaderLib.phongVertex, ShaderLib.phongFragment, material, material.map, geometry, morphTargetsCount,
+                fog.takeIf { material.fog }, instancingDefines + lightDefines + sideDefines(material.flatShading),
+            )
+            is MeshNormalMaterial -> builtInSource(
+                ShaderLib.phongVertex, ShaderLib.normalFragment, material, null, geometry, morphTargetsCount,
+                null, instancingDefines + sideDefines(material.flatShading),
+            )
+            is SpriteMaterial -> builtInSource(
+                ShaderLib.spriteVertex, ShaderLib.spriteFragment, material, material.map, geometry, 0,
+                fog.takeIf { material.fog },
+                if (material.sizeAttenuation) listOf("#define USE_SIZEATTENUATION") else emptyList(),
             )
             is RawShaderMaterial -> {
                 val versionString = material.glslVersion?.let { "#version ${it.version}\n" } ?: ""
                 (versionString + material.vertexShader) to (versionString + material.fragmentShader)
             }
-            is ShaderMaterial -> WebGLProgram.shaderMaterialSource(material)
+            is ShaderMaterial -> WebGLProgram.shaderMaterialSource(material, instancing, instancingColor)
             else -> throw IllegalArgumentException("WebGLRenderer cannot draw ${material::class.simpleName}.")
         }
         return programs.getOrPut(vertexGlsl to fragmentGlsl) { WebGLProgram(gl, vertexGlsl, fragmentGlsl) }
@@ -512,8 +617,38 @@ class WebGLRenderer(context: GLContext) {
         val emissive = material.emissive
         val intensity = material.emissiveIntensity
         programUniforms["emissive"]?.let { gl.uniform3f(it.location, emissive.r * intensity, emissive.g * intensity, emissive.b * intensity) }
+        setLightUniforms(program)
+    }
+
+    /** Sets the uniforms of the Lambert shaders, as Three.js `refreshUniformsLambert` does, and the lights. */
+    private fun setLambertUniforms(program: WebGLProgram, geometry: BufferGeometry, material: MeshLambertMaterial) {
+        setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
+        val emissive = material.emissive
+        val intensity = material.emissiveIntensity
+        program.uniforms["emissive"]?.let { gl.uniform3f(it.location, emissive.r * intensity, emissive.g * intensity, emissive.b * intensity) }
+        setLightUniforms(program)
+    }
+
+    /** Sets the sprite color, map, rotation and center, as Three.js `refreshUniformsSprites` does. */
+    private fun setSpriteUniforms(program: WebGLProgram, geometry: BufferGeometry, sprite: Sprite, material: SpriteMaterial) {
+        setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
+        program.uniforms["rotation"]?.let { gl.uniform1f(it.location, material.rotation) }
+        program.uniforms["center"]?.let { gl.uniform2f(it.location, sprite.center.x, sprite.center.y) }
+    }
+
+    /** Sets the ambient, directional, point and hemisphere light uniforms of the current view. */
+    private fun setLightUniforms(program: WebGLProgram) {
+        val programUniforms = program.uniforms
         val ambient = lights.ambient
         programUniforms["ambientLightColor"]?.let { gl.uniform3f(it.location, ambient.r, ambient.g, ambient.b) }
+        for ((index, light) in lights.point.withIndex()) {
+            programUniforms["pointLights[$index].position"]?.let {
+                gl.uniform3f(it.location, light.position.x, light.position.y, light.position.z)
+            }
+            programUniforms["pointLights[$index].color"]?.let { gl.uniform3f(it.location, light.color.r, light.color.g, light.color.b) }
+            programUniforms["pointLights[$index].distance"]?.let { gl.uniform1f(it.location, light.distance) }
+            programUniforms["pointLights[$index].decay"]?.let { gl.uniform1f(it.location, light.decay) }
+        }
         for ((index, light) in lights.directional.withIndex()) {
             programUniforms["directionalLights[$index].direction"]?.let {
                 gl.uniform3f(it.location, light.direction.x, light.direction.y, light.direction.z)
@@ -571,30 +706,63 @@ class WebGLRenderer(context: GLContext) {
     }
 
     /**
-     * Points each active attribute of [program] at the geometry attribute with the same name. Attributes
-     * the geometry lacks are disabled and read as `(0, 0, 0, 1)`.
+     * Points each active attribute of [program] at the geometry attribute with the same name, or at the
+     * instance matrices and colors of an [InstancedMesh], as Three.js `WebGLBindingStates` does. Instanced
+     * attributes advance once per `meshPerAttribute` instances. Matrix attributes span consecutive
+     * locations, one per column. Attributes the geometry lacks are disabled and read as `(0, 0, 0, 1)`.
      */
-    private fun bindAttributes(program: WebGLProgram, geometry: BufferGeometry) {
+    private fun bindAttributes(program: WebGLProgram, `object`: Object3D, geometry: BufferGeometry) {
         val used = mutableSetOf<Int>()
         for ((name, location) in program.attributes) {
-            val attribute = geometry.getAttribute(name) ?: continue
-            require(attribute.itemSize in 1..4) { "Attribute '$name' must have one to four components." }
+            val attribute = when {
+                name == "instanceMatrix" && `object` is InstancedMesh -> `object`.instanceMatrix
+                name == "instanceColor" && `object` is InstancedMesh -> `object`.instanceColor
+                else -> geometry.getAttribute(name)
+            } ?: continue
+            val locationSize = program.attributeLocationSizes[name] ?: 1
             val interleaved = attribute as? InterleavedBufferAttribute
             val storage = interleaved?.data?.storage ?: attribute
-            val bytesPerElement = interleaved?.data?.bytesPerElement ?: 0
-            attributes.bind(storage)
-            gl.enableVertexAttribArray(location)
+            val bytesPerElement = interleaved?.data?.bytesPerElement ?: 4
             val type = attributes.componentType(storage)
-            val stride = (interleaved?.data?.stride ?: 0) * bytesPerElement
-            val offset = (interleaved?.offset ?: 0) * bytesPerElement
-            if (type != GL.FLOAT && attribute.gpuType == GpuType.Int) {
-                gl.vertexAttribIPointer(location, attribute.itemSize, type, stride, offset)
+            val elementSize = if (interleaved == null) when (type) {
+                GL.FLOAT -> 4
+                GL.SHORT -> 2
+                else -> 1
+            } else bytesPerElement
+            val divisor = meshPerAttribute(attribute) ?: 0
+            attributes.bind(storage)
+            if (locationSize == 1) {
+                require(attribute.itemSize in 1..4) { "Attribute '$name' must have one to four components." }
+                val stride = (interleaved?.data?.stride ?: 0) * elementSize
+                val offset = (interleaved?.offset ?: 0) * elementSize
+                gl.enableVertexAttribArray(location)
+                if (type != GL.FLOAT && attribute.gpuType == GpuType.Int) {
+                    gl.vertexAttribIPointer(location, attribute.itemSize, type, stride, offset)
+                } else {
+                    gl.vertexAttribPointer(location, attribute.itemSize, type, attribute.normalized, stride, offset)
+                }
+                gl.vertexAttribDivisor(location, divisor)
+                used.add(location)
             } else {
-                gl.vertexAttribPointer(location, attribute.itemSize, type, attribute.normalized, stride, offset)
+                // A matrix attribute is read one column per location, as in Three.js.
+                val columnSize = attribute.itemSize / locationSize
+                val stride = (interleaved?.data?.stride ?: attribute.itemSize) * elementSize
+                val baseOffset = (interleaved?.offset ?: 0) * elementSize
+                for (column in 0 until locationSize) {
+                    gl.enableVertexAttribArray(location + column)
+                    gl.vertexAttribPointer(
+                        location + column, columnSize, type, attribute.normalized, stride,
+                        baseOffset + column * columnSize * elementSize,
+                    )
+                    gl.vertexAttribDivisor(location + column, divisor)
+                    used.add(location + column)
+                }
             }
-            used.add(location)
         }
-        for (location in enabledAttributes - used) gl.disableVertexAttribArray(location)
+        for (location in enabledAttributes - used) {
+            gl.disableVertexAttribArray(location)
+            gl.vertexAttribDivisor(location, 0)
+        }
         enabledAttributes.clear()
         enabledAttributes.addAll(used)
     }

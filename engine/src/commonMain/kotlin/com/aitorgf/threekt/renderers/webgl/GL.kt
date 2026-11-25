@@ -78,6 +78,7 @@ object GL {
     const val FLOAT_VEC4 = 0x8B52
     const val INT_VEC2 = 0x8B53
     const val BOOL = 0x8B56
+    const val FLOAT_MAT2 = 0x8B5A
     const val FLOAT_MAT3 = 0x8B5B
     const val FLOAT_MAT4 = 0x8B5C
     const val SAMPLER_2D = 0x8B5E

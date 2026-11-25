@@ -10,7 +10,7 @@ import kotlin.math.sin
 
 /** A Y-aligned cylinder or truncated cone with optional caps. Angles are in radians. */
 @JsExport
-class CylinderGeometry(
+open class CylinderGeometry(
     radiusTop: Double = 1.0,
     radiusBottom: Double = 1.0,
     height: Double = 1.0,

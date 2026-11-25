@@ -127,6 +127,11 @@ class GLES30Context(width: Int, height: Int) : GLContext {
     override fun drawArrays(mode: Int, first: Int, count: Int) = GLES20.glDrawArrays(mode, first, count)
     override fun drawElements(mode: Int, count: Int, type: Int, offset: Int) =
         GLES20.glDrawElements(mode, count, type, offset.toLong())
+    override fun vertexAttribDivisor(index: Int, divisor: Int) = GLES30.glVertexAttribDivisor(index, divisor)
+    override fun drawArraysInstanced(mode: Int, first: Int, count: Int, instanceCount: Int) =
+        GLES30.glDrawArraysInstanced(mode, first, count, instanceCount)
+    override fun drawElementsInstanced(mode: Int, count: Int, type: Int, offset: Int, instanceCount: Int) =
+        GLES30.glDrawElementsInstanced(mode, count, type, offset.toLong(), instanceCount)
 
     override fun createShader(type: Int): Any = GLES20.glCreateShader(type).also { check(it != 0) { "Could not create a shader." } }
     override fun shaderSource(shader: Any, source: String) = GLES20.glShaderSource(shader as Int, source)

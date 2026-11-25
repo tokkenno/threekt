@@ -9,7 +9,7 @@ import kotlin.js.JsName
  * Each typed constructor has a named JS export.
  */
 @JsExport
-class InterleavedBuffer private constructor(internal val storage: BufferAttribute, val stride: Int) {
+open class InterleavedBuffer private constructor(internal val storage: BufferAttribute, val stride: Int) {
     @JsName("fromFloat32Array")
     constructor(array: FloatArray, stride: Int) : this(Float32BufferAttribute(array, 1), stride)
 
@@ -49,6 +49,15 @@ class InterleavedBuffer private constructor(internal val storage: BufferAttribut
             is Int16BufferAttribute -> 2
             else -> 1
         }
+
+    internal fun write(index: Int, value: Double, normalized: Boolean) {
+        val stored = if (!normalized) value else when (storage) {
+            is Uint8BufferAttribute -> value * 255.0
+            is Int16BufferAttribute -> value * 32767.0
+            else -> value
+        }
+        storage.setX(index, stored)
+    }
 
     internal fun read(index: Int, normalized: Boolean): Double {
         val value = storage.getX(index)
