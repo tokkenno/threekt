@@ -39,4 +39,7 @@ tasks.processResources {
     from(rootProject.layout.projectDirectory.dir("webApp/src/examples/assets/male02")) {
         into("models/male02")
     }
+    from(rootProject.layout.projectDirectory.file("webApp/src/examples/assets/square-outline-textured.png")) {
+        into("textures")
+    }
 }

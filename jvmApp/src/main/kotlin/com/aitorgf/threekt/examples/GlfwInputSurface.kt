@@ -38,9 +38,13 @@ internal class GlfwInputSurface(private val window: Long) : InputSurface, AutoCl
         GLFW.glfwSetCursorPosCallback(window) { _, mouseX, mouseY ->
             x[0] = mouseX
             y[0] = mouseY
-            if (pressedButton != null) {
-                val input = pointer()
-                listeners.toList().forEach { it.onPointerMove(input) }
+            val input = pointer()
+            listeners.toList().forEach { it.onPointerMove(input) }
+        }
+        GLFW.glfwSetCursorEnterCallback(window) { _, entered ->
+            if (!entered && pressedButton == null) {
+                val outside = PointerInput(0, PointerType.Mouse, -1.0, -1.0)
+                listeners.toList().forEach { it.onPointerMove(outside) }
             }
         }
         GLFW.glfwSetMouseButtonCallback(window) { _, button, action, mods ->
