@@ -28,6 +28,8 @@ const examples = new Map([
     ['webgl_loader_xyz', () => import('./examples/webgl_loader_xyz')],
     ['webgl_panorama_cube', () => import('./examples/webgl_panorama_cube')],
     ['webgl_loader_imagebitmap', () => import('./examples/webgl_loader_imagebitmap')],
+    ['webgl_video_panorama_equirectangular', () => import('./examples/webgl_video_panorama_equirectangular')],
+    ['webgl_materials_video_webcam', () => import('./examples/webgl_materials_video_webcam')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
