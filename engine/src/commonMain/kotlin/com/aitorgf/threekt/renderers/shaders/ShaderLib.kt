@@ -224,7 +224,15 @@ internal object ShaderLib {
         |$morphtargetParsVertex
         |$fogParsVertex
         |
+        |#ifdef USE_DASH
+        |in float lineDistance;
+        |uniform float scale;
+        |out float vLineDistance;
+        |#endif
         |void main() {
+        |    #ifdef USE_DASH
+        |    vLineDistance = scale * lineDistance;
+        |    #endif
         |    #ifdef USE_MAP
         |    vMapUv = ( mapTransform * vec3( uv, 1 ) ).xy;
         |    #endif
@@ -251,7 +259,15 @@ internal object ShaderLib {
         |uniform float alphaTest;
         |#endif
         |
+        |#ifdef USE_DASH
+        |uniform float dashSize;
+        |uniform float totalSize;
+        |in float vLineDistance;
+        |#endif
         |void main() {
+        |    #ifdef USE_DASH
+        |    if (totalSize > 0.0 && mod(vLineDistance, totalSize) > dashSize) discard;
+        |    #endif
         |    vec4 diffuseColor = vec4( diffuse, opacity );
         |
         |    #ifdef USE_MAP

@@ -35,6 +35,9 @@ const examples = new Map([
     ['webgl_geometry_colors', () => import('./examples/webgl_geometry_colors')],
     ['webgl_multiple_elements_text', () => import('./examples/webgl_multiple_elements_text')],
     ['webgl_loader_pcd', () => import('./examples/webgl_loader_pcd')],
+    ['webgl_camera', () => import('./examples/webgl_camera')],
+    ['webgl_multiple_views', () => import('./examples/webgl_multiple_views')],
+    ['webgl_lines_dashed', () => import('./examples/webgl_lines_dashed')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

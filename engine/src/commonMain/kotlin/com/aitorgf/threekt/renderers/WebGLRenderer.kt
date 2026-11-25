@@ -10,6 +10,7 @@ import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Blending
 import com.aitorgf.threekt.materials.LineBasicMaterial
+import com.aitorgf.threekt.materials.LineDashedMaterial
 import com.aitorgf.threekt.materials.Material
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.MeshPhongMaterial
@@ -323,6 +324,11 @@ class WebGLRenderer(context: GLContext) {
                 uniforms.set(info, material.uniforms.get(name)!!.value)
             }
         }
+        if (material is LineDashedMaterial) {
+            program.uniforms["scale"]?.let { gl.uniform1f(it.location, material.scale) }
+            program.uniforms["dashSize"]?.let { gl.uniform1f(it.location, material.dashSize) }
+            program.uniforms["totalSize"]?.let { gl.uniform1f(it.location, material.dashSize + material.gapSize) }
+        }
         if (material !is ShaderMaterial) program.uniforms["alphaTest"]?.let { gl.uniform1f(it.location, material.alphaTest) }
         if (fog != null) {
             program.uniforms["fogColor"]?.let {
@@ -413,6 +419,7 @@ class WebGLRenderer(context: GLContext) {
             if (material.alphaTest > 0.0) add("#define USE_ALPHATEST")
             if (material.premultipliedAlpha) add("#define PREMULTIPLIED_ALPHA")
             if (map != null) add("#define USE_MAP")
+            if (material is LineDashedMaterial) add("#define USE_DASH")
             if (material.vertexColors && geometry.hasAttribute("color")) add("#define USE_COLOR")
             if (morphTargetsCount > 0) {
                 add("#define USE_MORPHTARGETS")
