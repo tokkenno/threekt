@@ -213,6 +213,11 @@ internal object ShaderLib {
         |$colorParsVertex
         |$morphtargetParsVertex
         |$fogParsVertex
+        |#ifdef USE_DASH
+        |in float lineDistance;
+        |uniform float scale;
+        |out float vLineDistance;
+        |#endif
         |
         |void main() {
         |    #ifdef USE_MAP
@@ -223,6 +228,9 @@ internal object ShaderLib {
         |    $beginMorphtargetVertex
         |    $projectVertex
         |    $fogVertex
+        |#ifdef USE_DASH
+        |    vLineDistance = scale * lineDistance;
+        |#endif
         |}
     """.trimMargin()
 
@@ -237,8 +245,16 @@ internal object ShaderLib {
         |
         |$colorParsFragment
         |$fogParsFragment
+        |#ifdef USE_DASH
+        |in float vLineDistance;
+        |uniform float dashSize;
+        |uniform float totalSize;
+        |#endif
         |
         |void main() {
+        |#ifdef USE_DASH
+        |    if ( mod( vLineDistance, totalSize ) > dashSize ) discard;
+        |#endif
         |    vec4 diffuseColor = vec4( diffuse, opacity );
         |
         |    #ifdef USE_MAP

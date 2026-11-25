@@ -50,9 +50,19 @@ internal class WebGLUniforms(private val gl: GLContext, private val textures: We
             GL.FLOAT_MAT3 -> gl.uniformMatrix3fv(location, false, floats(expect<Matrix3>(uniform, value).elements, matrix3))
             GL.FLOAT_MAT4 -> gl.uniformMatrix4fv(location, false, floats(expect<Matrix4>(uniform, value).elements, matrix4))
             GL.SAMPLER_2D -> {
-                val unit = nextTextureUnit++
-                textures.bind(expect<Texture>(uniform, value), unit)
-                gl.uniform1i(location, unit)
+                if (value is Array<*>) {
+                    require(value.size == uniform.size && value.all { it is Texture }) {
+                        "Uniform '${uniform.name}' requires ${uniform.size} textures."
+                    }
+                    val units = IntArray(value.size) { index ->
+                        allocateTextureUnit().also { textures.bind(value[index] as Texture, it) }
+                    }
+                    gl.uniform1iv(location, units)
+                } else {
+                    val unit = allocateTextureUnit()
+                    textures.bind(expect<Texture>(uniform, value), unit)
+                    gl.uniform1i(location, unit)
+                }
             }
             else -> throw IllegalArgumentException("Uniform '${uniform.name}' has an unsupported GLSL type.")
         }

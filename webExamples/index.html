@@ -22,6 +22,12 @@
                     data-description="Draw in the panel to update the texture on the rotating cube in real time.">Canvas texture</a></li>
                 <li><a href="?example=webgl_materials_texture_rotation"
                     data-description="Adjust the UV grid’s offset, repeat, rotation, and pivot while orbiting the textured surface.">Texture transforms</a></li>
+                <li><a href="?example=webgl_materials_texture_anisotropy"
+                    data-description="Move the pointer over a tiled floor to compare maximum anisotropic filtering with a single sample at grazing angles.">Anisotropic filtering</a></li>
+                <li><a href="?example=webgl_materials_texture_filters"
+                    data-description="Compare linear and nearest filtering on Caravaggio’s Basket of Fruit and on a receding checkerboard floor. Move the pointer to change the viewpoint.">Texture filter comparison</a></li>
+                <li><a href="?example=webgl_materials_texture_manualmipmap"
+                    data-description="Color-coded mip levels on a tiled floor reveal where trilinear filtering blends levels and where nearest filtering switches between them.">Manual mipmaps</a></li>
             </ul>
         </section>
         <section>
@@ -35,6 +41,8 @@
                     data-description="A rotating grid shares vertices between triangles and uses hemisphere lighting. Toggle wireframe to see the triangle edges.">Indexed geometry</a></li>
                 <li><a href="?example=webgl_buffergeometry_attributes_none"
                     data-description="A GLSL vertex shader generates 10,000 triangles from gl_VertexID, while the draw range determines how many vertices are drawn.">Geometry without attributes</a></li>
+                <li><a href="?example=webgl_buffergeometry_attributes_integer"
+                    data-description="Each of 10,000 rotating triangles uses an unnormalized integer vertex attribute to choose one of three textures in a GLSL shader.">Integer texture indices</a></li>
             </ul>
         </section>
         <section>
@@ -46,6 +54,10 @@
                     data-description="Four colors distinguish the rotating Koch curves, drawn at several levels of subdivision with indexed line segments.">Indexed Koch curves</a></li>
                 <li><a href="?example=webgl_buffergeometry_selective_draw"
                     data-description="Twenty thousand segments form a rotating sphere. Use the buttons to hide a random subset or restore every line.">Selective line drawing</a></li>
+                <li><a href="?example=webgl_lines_colors"
+                    data-description="Three color schemes show how vertex colors interpolate along angular and smoothed Hilbert curves. Move the pointer to change the viewpoint.">Hilbert curve colors</a></li>
+                <li><a href="?example=webgl_lines_dashed"
+                    data-description="A Hilbert spline and a box rotate together. Their line distances drive two different dash and gap patterns that fade into fog.">Dashed curves and edges</a></li>
             </ul>
         </section>
         <section>
@@ -67,6 +79,19 @@
                     data-description="Textured discs face the camera and fade into distance fog. Toggle size attenuation to compare fixed and distance-scaled sizes.">Point billboards</a></li>
                 <li><a href="?example=webgl_points_sprites"
                     data-description="Five layers of snowflake sprites rotate through exponential fog. Toggle the textures to see the underlying points.">Point sprites</a></li>
+                <li><a href="?example=webgl_custom_attributes_points2"
+                    data-description="A warm sphere of pulsing sprites encloses a cooler box. Points are sorted back to front each frame so their translucent edges blend in depth order.">Depth-sorted point sprites</a></li>
+                <li><a href="?example=webgl_custom_attributes_points3"
+                    data-description="An orange frame surrounds a hollow cloud of blue and violet point sprites. The inner points pulse independently while the scene rotates.">Point cloud in a box frame</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Materials</h2>
+            <ul>
+                <li><a href="?example=webgl_materials_blending"
+                    data-description="Five image rows compare no blending, normal, additive, subtractive, and multiply blending over a moving checkerboard.">Blending modes</a></li>
+                <li><a href="?example=webgl_materials_wireframe"
+                    data-description="Orbit two copies of the same head mesh to compare standard wireframe lines with shader-based edges. The slider adjusts the shader’s edge thickness.">Shader wireframe</a></li>
             </ul>
         </section>
         <section>

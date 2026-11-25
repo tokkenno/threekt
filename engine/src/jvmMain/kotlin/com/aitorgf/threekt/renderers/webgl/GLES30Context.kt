@@ -92,6 +92,9 @@ class GLES30Context(width: Int, height: Int) : GLContext {
 
     override fun enableVertexAttribArray(index: Int) = GLES20.glEnableVertexAttribArray(index)
     override fun disableVertexAttribArray(index: Int) = GLES20.glDisableVertexAttribArray(index)
+    override fun vertexAttribIPointer(index: Int, size: Int, type: Int, stride: Int, offset: Int) =
+        GLES30.glVertexAttribIPointer(index, size, type, stride, offset.toLong())
+
     override fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int) =
         GLES20.glVertexAttribPointer(index, size, type, normalized, stride, offset.toLong())
     override fun drawArrays(mode: Int, first: Int, count: Int) = GLES20.glDrawArrays(mode, first, count)
@@ -131,6 +134,7 @@ class GLES30Context(width: Int, height: Int) : GLContext {
     override fun uniform1f(location: Any?, x: Double) { name(location)?.let { GLES20.glUniform1f(it, x.toFloat()) } }
     override fun uniform1fv(location: Any?, value: FloatArray) { name(location)?.let { GLES20.glUniform1fv(it, value) } }
     override fun uniform1i(location: Any?, x: Int) { name(location)?.let { GLES20.glUniform1i(it, x) } }
+    override fun uniform1iv(location: Any?, values: IntArray) { name(location)?.let { GLES20.glUniform1iv(it, values) } }
     override fun uniform1ui(location: Any?, x: Int) { name(location)?.let { GLES30.glUniform1ui(it, x) } }
     override fun uniform2f(location: Any?, x: Double, y: Double) {
         name(location)?.let { GLES20.glUniform2f(it, x.toFloat(), y.toFloat()) }

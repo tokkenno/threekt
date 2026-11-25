@@ -7,7 +7,7 @@ export async function loadImageTexture(url: string): Promise<ImageTexture> {
     return new ImageTexture(image);
 }
 
-export function followPointer(canvas: HTMLCanvasElement, camera: PerspectiveCamera, scene: Scene) {
+export function followPointer(canvas: HTMLCanvasElement, camera: PerspectiveCamera, scene: Scene, verticalOffset = 0, minY = -Infinity, maxY = Infinity) {
     let x = 0;
     let y = 0;
     const move = (event: PointerEvent) => {
@@ -22,7 +22,8 @@ export function followPointer(canvas: HTMLCanvasElement, camera: PerspectiveCame
     return {
         update() {
             camera.position.x += (x - camera.position.x) * 0.05;
-            camera.position.y += (y - camera.position.y) * 0.05;
+            const nextY = camera.position.y + (y + verticalOffset - camera.position.y) * 0.05;
+            camera.position.y = Math.max(minY, Math.min(maxY, nextY));
             camera.lookAt(scene.position);
         },
         dispose() {

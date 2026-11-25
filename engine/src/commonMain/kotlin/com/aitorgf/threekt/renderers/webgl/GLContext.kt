@@ -66,6 +66,7 @@ interface GLContext {
 
     fun enableVertexAttribArray(index: Int)
     fun disableVertexAttribArray(index: Int)
+    fun vertexAttribIPointer(index: Int, size: Int, type: Int, stride: Int, offset: Int)
     fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int)
     fun drawArrays(mode: Int, first: Int, count: Int)
     fun drawElements(mode: Int, count: Int, type: Int, offset: Int)
@@ -93,6 +94,7 @@ interface GLContext {
     fun uniform1f(location: Any?, x: Double)
     fun uniform1fv(location: Any?, value: FloatArray)
     fun uniform1i(location: Any?, x: Int)
+    fun uniform1iv(location: Any?, values: IntArray)
     fun uniform1ui(location: Any?, x: Int)
     fun uniform2f(location: Any?, x: Double, y: Double)
     fun uniform2i(location: Any?, x: Int, y: Int)

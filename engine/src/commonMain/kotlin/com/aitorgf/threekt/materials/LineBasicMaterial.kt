@@ -10,7 +10,7 @@ import kotlin.js.JsExport
  * `linecap` and `linejoin` are omitted because WebGL ignores them.
  */
 @JsExport
-class LineBasicMaterial(color: Color = Color(1.0, 1.0, 1.0)) : Material() {
+open class LineBasicMaterial(color: Color = Color(1.0, 1.0, 1.0)) : Material() {
     /** Creates a material from a packed sRGB [hex] color, as `0xff0000` for red. */
     @JsExport.Ignore
     constructor(hex: Int) : this(Color(hex))

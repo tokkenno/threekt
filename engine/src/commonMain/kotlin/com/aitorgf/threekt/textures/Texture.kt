@@ -35,6 +35,15 @@ abstract class Texture {
         version++
     }
 
+    var minFilter = MinificationFilter.LinearMipmapLinear
+    var magFilter = MagnificationFilter.Linear
+
+    /** Whether to generate mipmaps when [mipmaps] is empty. Call [markUpdated] after changing this. */
+    var generateMipmaps = true
+
+    /** Optional platform images in mip level order, starting at level zero. Call [markUpdated] after changing them. */
+    var mipmaps: Array<Any> = emptyArray()
+
     /** Horizontal (U) wrapping mode. Renderers apply changes on the next draw. */
     var wrapS = Wrapping.ClampToEdge
     /** Vertical (V) wrapping mode. Renderers apply changes on the next draw. */

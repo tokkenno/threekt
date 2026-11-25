@@ -29,6 +29,16 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_custom_attributes_points', () => import('./examples/webgl_custom_attributes_points')],
     ['webgl_points_billboards', () => import('./examples/webgl_points_billboards')],
     ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
+    ['webgl_materials_texture_anisotropy', () => import('./examples/webgl_materials_texture_anisotropy')],
+    ['webgl_materials_texture_filters', () => import('./examples/webgl_materials_texture_filters')],
+    ['webgl_materials_texture_manualmipmap', () => import('./examples/webgl_materials_texture_manualmipmap')],
+    ['webgl_buffergeometry_attributes_integer', () => import('./examples/webgl_buffergeometry_attributes_integer')],
+    ['webgl_lines_colors', () => import('./examples/webgl_lines_colors')],
+    ['webgl_lines_dashed', () => import('./examples/webgl_lines_dashed')],
+    ['webgl_custom_attributes_points2', () => import('./examples/webgl_custom_attributes_points2')],
+    ['webgl_custom_attributes_points3', () => import('./examples/webgl_custom_attributes_points3')],
+    ['webgl_materials_blending', () => import('./examples/webgl_materials_blending')],
+    ['webgl_materials_wireframe', () => import('./examples/webgl_materials_wireframe')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;

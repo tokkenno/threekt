@@ -9,7 +9,7 @@ import com.aitorgf.threekt.materials.ShaderMaterial
  */
 internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fragmentSource: String) {
     /** Active uniform with its location and GLSL type constant. */
-    class UniformInfo(val name: String, val location: Any?, val type: Int)
+    class UniformInfo(val name: String, val location: Any?, val type: Int, val size: Int)
 
     val handle: Any = link(vertexSource, fragmentSource)
 
@@ -29,7 +29,7 @@ internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fra
         uniforms = (0 until uniformCount).associate { index ->
             val info = gl.getActiveUniform(handle, index)
             val name = info.name.removeSuffix("[0]")
-            name to UniformInfo(name, gl.getUniformLocation(handle, info.name), info.type)
+            name to UniformInfo(name, gl.getUniformLocation(handle, info.name), info.type, info.size)
         }
     }
 

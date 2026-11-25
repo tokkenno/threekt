@@ -37,6 +37,9 @@ abstract class BufferAttribute(
     /** Number of components in the underlying array. */
     abstract val size: Int
 
+    /** Whether integer-backed data is delivered to the shader as floats or unnormalized integers. */
+    var gpuType = GpuType.Float
+
     /** Number of complete items. */
     val count: Int get() = size / itemSize
 

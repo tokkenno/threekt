@@ -11,6 +11,9 @@ abstract class Material {
     /** Faces to render. Defaults to [Side.Front]. */
     var side = Side.Front
 
+    /** Converts fragment alpha to multisample coverage when drawing to a multisampled buffer. */
+    var alphaToCoverage = false
+
     /**
      * Whether the material is blended with what is behind it. Transparent meshes are drawn after opaque
      * ones, from back to front.

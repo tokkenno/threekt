@@ -11,6 +11,9 @@ import kotlin.js.JsExport
  */
 @JsExport
 class MeshBasicMaterial(color: Color = Color(1.0, 1.0, 1.0), var map: Texture? = null) : Material() {
+    /** Draws triangle edges as lines. */
+    var wireframe = false
+
     /** Creates a material from a packed sRGB [hex] color, as `0xff0000` for red. */
     @JsExport.Ignore
     constructor(hex: Int, map: Texture? = null) : this(Color(hex), map)

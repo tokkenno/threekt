@@ -5,10 +5,12 @@ import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.core.BufferGeometry
+import com.aitorgf.threekt.core.GpuType
 import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Blending
 import com.aitorgf.threekt.materials.LineBasicMaterial
+import com.aitorgf.threekt.materials.LineDashedMaterial
 import com.aitorgf.threekt.materials.Material
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.MeshPhongMaterial
@@ -79,6 +81,7 @@ class WebGLRenderer(context: GLContext) {
     private val modelView = Matrix4()
     private val normalMatrix = Matrix3()
     private val cameraPosition = Vector3()
+    private var scissorTest = false
 
     /** Sets the drawing-buffer dimensions from CSS pixels and the supplied [pixelRatio]. */
     fun setSize(width: Int, height: Int, pixelRatio: Double = 1.0) {
@@ -104,6 +107,25 @@ class WebGLRenderer(context: GLContext) {
     /** Copies the clear color into [target] and returns it. */
     fun getClearColor(target: Color): Color = target.copy(clearColor)
 
+    /**
+     * Sets the scissor rectangle in CSS pixels with a bottom-left origin. Rendering still uses the
+     * entire viewport, so repeated draws may compare scenes using the same camera.
+     */
+    fun setScissor(x: Int, y: Int, width: Int, height: Int) {
+        require(width >= 0 && height >= 0)
+        val left = (x * pixelRatio).roundToInt()
+        val bottom = (y * pixelRatio).roundToInt()
+        val right = ((x.toDouble() + width) * pixelRatio).roundToInt()
+        val top = ((y.toDouble() + height) * pixelRatio).roundToInt()
+        gl.scissor(left, bottom, right - left, top - bottom)
+    }
+
+    /** Restricts drawing and clears to the scissor rectangle when enabled. */
+    fun setScissorTest(enabled: Boolean) {
+        scissorTest = enabled
+        if (enabled) gl.enable(GL.SCISSOR_TEST) else gl.disable(GL.SCISSOR_TEST)
+    }
+
     /** Returns the alpha used with the clear color. */
     fun getClearAlpha(): Double = clearAlpha
 
@@ -128,6 +150,7 @@ class WebGLRenderer(context: GLContext) {
         val viewport = gl.getParameterInts(GL.VIEWPORT, IntArray(4))
         scene.updateMatrixWorld()
         camera.coordinateSystem = CoordinateSystem.WebGL
+        if (scissorTest) gl.disable(GL.SCISSOR_TEST)
         try {
             camera.update { face, faceCamera ->
                 target.bindFace(face)
@@ -136,10 +159,13 @@ class WebGLRenderer(context: GLContext) {
         } finally {
             gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, framebuffer)
             gl.viewport(viewport[0], viewport[1], viewport[2], viewport[3])
+            if (scissorTest) gl.enable(GL.SCISSOR_TEST)
         }
     }
 
     private fun renderArray(scene: Scene, camera: ArrayCamera) {
+        val scissor = if (scissorTest) gl.getParameterInts(GL.SCISSOR_BOX, IntArray(4)) else null
+        if (scissorTest) gl.disable(GL.SCISSOR_TEST)
         clear(scene, colorOnly = true)
         gl.enable(GL.SCISSOR_TEST)
         try {
@@ -150,7 +176,8 @@ class WebGLRenderer(context: GLContext) {
                 renderView(scene, subcamera, x, y, width, height)
             }
         } finally {
-            gl.disable(GL.SCISSOR_TEST)
+            if (scissor != null) gl.scissor(scissor[0], scissor[1], scissor[2], scissor[3])
+            else gl.disable(GL.SCISSOR_TEST)
         }
     }
 
@@ -196,6 +223,7 @@ class WebGLRenderer(context: GLContext) {
         for (item in renderList.opaque) renderObject(item.`object`, item.geometry, item.material, scene, camera)
         for (item in renderList.transparent) renderObject(item.`object`, item.geometry, item.material, scene, camera)
         gl.disable(GL.BLEND)
+        gl.disable(GL.SAMPLE_ALPHA_TO_COVERAGE)
         gl.depthMask(true)
     }
 
@@ -235,7 +263,14 @@ class WebGLRenderer(context: GLContext) {
         setBuiltInUniforms(program, `object`, camera)
         when (material) {
             is MeshBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
-            is LineBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
+            is LineBasicMaterial -> {
+                setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
+                if (material is LineDashedMaterial) {
+                    program.uniforms["scale"]?.let { gl.uniform1f(it.location, material.scale) }
+                    program.uniforms["dashSize"]?.let { gl.uniform1f(it.location, material.dashSize) }
+                    program.uniforms["totalSize"]?.let { gl.uniform1f(it.location, material.dashSize + material.gapSize) }
+                }
+            }
             is PointsMaterial -> setPointsUniforms(program, material)
             is MeshPhongMaterial -> setPhongUniforms(program, geometry, material)
             is ShaderMaterial -> for (name in material.uniforms.names) {
@@ -268,7 +303,12 @@ class WebGLRenderer(context: GLContext) {
             else -> GL.TRIANGLES
         }
         if (`object` is Line && material is LineBasicMaterial) gl.lineWidth(material.linewidth * pixelRatio)
-        if (`object` is Mesh && material is MeshPhongMaterial && material.wireframe) {
+        val wireframe = when (material) {
+            is MeshBasicMaterial -> material.wireframe
+            is MeshPhongMaterial -> material.wireframe
+            else -> false
+        }
+        if (`object` is Mesh && wireframe) {
             val edges = IntArray(drawCount.toInt() / 3 * 6)
             for (triangle in 0 until edges.size / 6) {
                 val start = drawStart.toInt() + triangle * 3
@@ -311,6 +351,7 @@ class WebGLRenderer(context: GLContext) {
             is LineBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
                 sceneHasFog && material.fog, fogExp2,
+                if (material is LineDashedMaterial) listOf("#define USE_DASH") else emptyList(),
             )
             is PointsMaterial -> builtInSource(
                 ShaderLib.pointsVertex, ShaderLib.pointsFragment, material, material.map, geometry, morphTargetsCount,
@@ -366,6 +407,8 @@ class WebGLRenderer(context: GLContext) {
 
     /** Applies culling, blending, and depth settings. [mirrored] flips the winding of front faces. */
     private fun setMaterialState(material: Material, mirrored: Boolean) {
+        if (material.alphaToCoverage) gl.enable(GL.SAMPLE_ALPHA_TO_COVERAGE)
+        else gl.disable(GL.SAMPLE_ALPHA_TO_COVERAGE)
         if (material.side == Side.Double) {
             gl.disable(GL.CULL_FACE)
         } else {
@@ -513,10 +556,13 @@ class WebGLRenderer(context: GLContext) {
                 else -> 1
             }
             val view = attribute as? InterleavedBufferAttribute
-            gl.vertexAttribPointer(
-                location, attribute.itemSize, type, attribute.normalized,
-                (view?.data?.stride ?: 0) * bytes, (view?.offset ?: 0) * bytes,
-            )
+            val stride = (view?.data?.stride ?: 0) * bytes
+            val offset = (view?.offset ?: 0) * bytes
+            if (type != GL.FLOAT && attribute.gpuType == GpuType.Int) {
+                gl.vertexAttribIPointer(location, attribute.itemSize, type, stride, offset)
+            } else {
+                gl.vertexAttribPointer(location, attribute.itemSize, type, attribute.normalized, stride, offset)
+            }
             used.add(location)
         }
         for (location in enabledAttributes - used) gl.disableVertexAttribArray(location)
