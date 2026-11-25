@@ -14,6 +14,7 @@ import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.MeshPhongMaterial
 import com.aitorgf.threekt.materials.PointsMaterial
 import com.aitorgf.threekt.materials.RawShaderMaterial
+import com.aitorgf.threekt.materials.ShaderMaterial
 import com.aitorgf.threekt.materials.Side
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Matrix3
@@ -235,7 +236,7 @@ class WebGLRenderer(context: GLContext) {
             is LineBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
             is PointsMaterial -> setPointsUniforms(program, material)
             is MeshPhongMaterial -> setPhongUniforms(program, geometry, material)
-            is RawShaderMaterial -> for (name in material.uniforms.names) {
+            is ShaderMaterial -> for (name in material.uniforms.names) {
                 val info = program.uniforms[name] ?: continue
                 uniforms.set(info, material.uniforms.get(name)!!.value)
             }
@@ -303,6 +304,7 @@ class WebGLRenderer(context: GLContext) {
                 val versionString = material.glslVersion?.let { "#version ${it.version}\n" } ?: ""
                 (versionString + material.vertexShader) to (versionString + material.fragmentShader)
             }
+            is ShaderMaterial -> WebGLProgram.shaderMaterialSource(material)
             else -> throw IllegalArgumentException("WebGLRenderer cannot draw ${material::class.simpleName}.")
         }
         return programs.getOrPut(vertexGlsl to fragmentGlsl) { WebGLProgram(gl, vertexGlsl, fragmentGlsl) }
