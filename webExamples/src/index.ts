@@ -70,6 +70,16 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_interactive_voxelpainter', () => import('./examples/webgl_interactive_voxelpainter')],
     ['webgl_raycaster_texture', () => import('./examples/webgl_raycaster_texture')],
     ['webgl_math_orientation_transform', () => import('./examples/webgl_math_orientation_transform')],
+    ['webgl_materials_video', () => import('./examples/webgl_materials_video')],
+    ['webgl_geometry_terrain', () => import('./examples/webgl_geometry_terrain')],
+    ['webgl_lod', () => import('./examples/webgl_lod')],
+    ['webgl_multiple_elements', () => import('./examples/webgl_multiple_elements')],
+    ['webgl_multiple_scenes_comparison', () => import('./examples/webgl_multiple_scenes_comparison')],
+    ['misc_controls_orbit', () => import('./examples/misc_controls_orbit')],
+    ['misc_controls_map', () => import('./examples/misc_controls_map')],
+    ['misc_controls_drag', () => import('./examples/misc_controls_drag')],
+    ['webgl_geometry_terrain_raycast', () => import('./examples/webgl_geometry_terrain_raycast')],
+    ['webgl_geometry_spline_editor', () => import('./examples/webgl_geometry_spline_editor')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;

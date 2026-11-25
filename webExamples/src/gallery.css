@@ -68,6 +68,18 @@ a { color: #a9d5ff; }
 #gallery h2 { margin: 1.15rem 0.55rem 0.3rem; font-size: 0.85rem; color: var(--muted); }
 #gallery ul { margin: 0; padding: 0; list-style: none; font-size: 0.9rem; }
 #gallery a[aria-current="page"] { background: #253a54; color: #fff; }
+/* Examples added in the latest iteration. Remove data-new from their links in the next one. */
+#gallery a[data-new]::after {
+    content: "new";
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.6rem;
+    background: #2f6f4f;
+    color: #e6fff1;
+    font-size: 0.7rem;
+    font-weight: 600;
+    vertical-align: 0.1rem;
+}
 
 #content { min-height: 0; }
 #welcome { padding: clamp(1rem, 4vw, 3rem); }
@@ -157,3 +169,29 @@ h1 { margin: 0; font-size: clamp(1.2rem, 3vw, 1.75rem); }
 .wave-view { aspect-ratio: 1; border: 1px solid #d8e0e8; border-radius: 0.25rem; }
 .wave-pair figcaption { margin: 0.4rem 0 1.5rem; text-align: center; }
 @media (max-width: 44rem) { .wave-pair { grid-template-columns: 1fr; } }
+
+.scene-comparison-slider {
+    position: absolute;
+    bottom: 1rem;
+    left: 10%;
+    width: 80%;
+    margin: 0;
+    accent-color: #253a54;
+}
+
+.element-scenes {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+    grid-auto-rows: max-content;
+    gap: 1rem;
+    align-content: start;
+    overflow: auto;
+    padding: 1rem;
+    color: #243447;
+}
+
+.element-scenes figure { margin: 0; }
+.element-scenes figure div { aspect-ratio: 1; outline: 1px solid #d8e0e8; }
+.element-scenes figcaption { padding: 0.4rem 0; text-align: center; }
