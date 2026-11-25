@@ -48,6 +48,10 @@ const examples = new Map([
     ['webgl_camera_array', () => import('./examples/webgl_camera_array')],
     ['webgl_interactive_cubes', () => import('./examples/webgl_interactive_cubes')],
     ['webgl_interactive_cubes_ortho', () => import('./examples/webgl_interactive_cubes_ortho')],
+    ['webgl_interactive_lines', () => import('./examples/webgl_interactive_lines')],
+    ['webgl_interactive_buffergeometry', () => import('./examples/webgl_interactive_buffergeometry')],
+    ['webgl_interactive_points', () => import('./examples/webgl_interactive_points')],
+    ['webgl_interactive_raycasting_points', () => import('./examples/webgl_interactive_raycasting_points')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
