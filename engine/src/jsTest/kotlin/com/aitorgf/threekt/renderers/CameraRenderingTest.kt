@@ -5,6 +5,7 @@ import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.PerspectiveCamera
 import com.aitorgf.threekt.geometries.Box
 import com.aitorgf.threekt.materials.MeshBasicMaterial
+import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.objects.Mesh
 import com.aitorgf.threekt.renderers.webgl.WebGL2Context
 import com.aitorgf.threekt.scenes.Scene
@@ -106,6 +107,36 @@ class CameraRenderingTest {
             assertEquals(gl.NO_ERROR, gl.getError())
         } finally {
             target.dispose()
+            renderer.dispose()
+        }
+    }
+
+    @Test
+    fun scissorUsesCssPixelsAndKeepsTheFirstSceneWhenClearingTheSecond() {
+        val gl = createContext()
+        val renderer = WebGLRenderer(WebGL2Context(gl.canvas))
+        try {
+            renderer.setSize(32, 16, 2.0)
+            val camera = PerspectiveCamera()
+            val scene = Scene()
+            renderer.setScissorTest(true)
+            renderer.setScissor(0, 0, 16, 16)
+            scene.background = Color(0xff0000)
+            renderer.render(scene, camera)
+            renderer.setScissor(16, 0, 16, 16)
+            scene.background = Color(0x00ff00)
+            renderer.render(scene, camera)
+
+            assertEquals(0xff0000, readRgb(gl, 31, 16))
+            assertEquals(0x00ff00, readRgb(gl, 32, 16))
+
+            renderer.setScissorTest(false)
+            scene.background = Color(0x0000ff)
+            renderer.render(scene, camera)
+            assertEquals(0x0000ff, readRgb(gl, 31, 16))
+            assertEquals(0x0000ff, readRgb(gl, 32, 16))
+            assertEquals(gl.NO_ERROR, gl.getError())
+        } finally {
             renderer.dispose()
         }
     }

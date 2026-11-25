@@ -20,6 +20,9 @@ const examples = new Map([
     ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
     ['webgl_buffergeometry_indexed', () => import('./examples/webgl_buffergeometry_indexed')],
     ['webgl_panorama_equirectangular', () => import('./examples/webgl_panorama_equirectangular')],
+    ['webgl_materials_texture_anisotropy', () => import('./examples/webgl_materials_texture_anisotropy')],
+    ['webgl_materials_texture_filters', () => import('./examples/webgl_materials_texture_filters')],
+    ['webgl_materials_texture_manualmipmap', () => import('./examples/webgl_materials_texture_manualmipmap')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

@@ -46,6 +46,7 @@ object GL {
     const val LINEAR = 0x2601
     const val LINEAR_MIPMAP_LINEAR = 0x2703
     const val TEXTURE_MAG_FILTER = 0x2800
+    const val TEXTURE_MAX_LEVEL = 0x813D
     const val TEXTURE_MIN_FILTER = 0x2801
     const val TEXTURE_WRAP_S = 0x2802
     const val TEXTURE_WRAP_T = 0x2803

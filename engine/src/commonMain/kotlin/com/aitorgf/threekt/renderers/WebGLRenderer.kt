@@ -77,6 +77,9 @@ class WebGLRenderer(context: GLContext) {
     private val outputColor = Color()
 
     private var pixelRatio = 1.0
+    private var scissorTest = false
+    private var scissor: IntArray? = null
+    private val scissorPixels = IntArray(4)
     /** Height in CSS pixels from [setSize], or null before the first call. */
     private var height: Int? = null
     private val viewProjection = Matrix4()
@@ -95,6 +98,43 @@ class WebGLRenderer(context: GLContext) {
         if (gl.drawingBufferWidth != pixelWidth || gl.drawingBufferHeight != pixelHeight) {
             gl.resizeDrawingBuffer(pixelWidth, pixelHeight)
         }
+        updateScissor()
+    }
+
+    /** Sets the scissor rectangle in CSS pixels, measured from the lower-left corner. */
+    fun setScissor(x: Int, y: Int, width: Int, height: Int) {
+        require(width >= 0 && height >= 0)
+        val bounds = scissor ?: IntArray(4).also { scissor = it }
+        bounds[0] = x
+        bounds[1] = y
+        bounds[2] = width
+        bounds[3] = height
+        updateScissor()
+    }
+
+    /** Limits drawing and clearing to the scissor rectangle when [enabled]. */
+    fun setScissorTest(enabled: Boolean) {
+        scissorTest = enabled
+        if (enabled) {
+            updateScissor()
+            gl.enable(GL.SCISSOR_TEST)
+        } else {
+            gl.disable(GL.SCISSOR_TEST)
+        }
+    }
+
+    private fun updateScissor() {
+        val bounds = scissor
+        if (bounds == null) {
+            if (!scissorTest) return
+            scissorPixels[0] = 0
+            scissorPixels[1] = 0
+            scissorPixels[2] = gl.drawingBufferWidth
+            scissorPixels[3] = gl.drawingBufferHeight
+        } else {
+            for (i in bounds.indices) scissorPixels[i] = (bounds[i] * pixelRatio).roundToInt()
+        }
+        gl.scissor(scissorPixels[0], scissorPixels[1], scissorPixels[2], scissorPixels[3])
     }
 
     /**
@@ -133,6 +173,7 @@ class WebGLRenderer(context: GLContext) {
         val viewport = gl.getParameterInts(GL.VIEWPORT, IntArray(4))
         scene.updateMatrixWorld()
         camera.coordinateSystem = CoordinateSystem.WebGL
+        if (scissorTest) gl.disable(GL.SCISSOR_TEST)
         try {
             camera.update { face, faceCamera ->
                 target.bindFace(face)
@@ -140,6 +181,7 @@ class WebGLRenderer(context: GLContext) {
             }
         } finally {
             gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, framebuffer)
+            if (scissorTest) gl.enable(GL.SCISSOR_TEST)
             gl.viewport(viewport[0], viewport[1], viewport[2], viewport[3])
         }
     }
@@ -151,11 +193,19 @@ class WebGLRenderer(context: GLContext) {
             for ((subcamera, viewport) in camera.views) {
                 val (x, y, width, height) = viewport
                 subcamera.updateWorldMatrix(updateParents = true, updateChildren = false)
-                gl.scissor(x, y, width, height)
+                if (scissorTest) {
+                    val left = maxOf(x, scissorPixels[0])
+                    val bottom = maxOf(y, scissorPixels[1])
+                    val right = minOf(x + width, scissorPixels[0] + scissorPixels[2])
+                    val top = minOf(y + height, scissorPixels[1] + scissorPixels[3])
+                    gl.scissor(left, bottom, maxOf(0, right - left), maxOf(0, top - bottom))
+                } else {
+                    gl.scissor(x, y, width, height)
+                }
                 renderView(scene, subcamera, x, y, width, height)
             }
         } finally {
-            gl.disable(GL.SCISSOR_TEST)
+            setScissorTest(scissorTest)
         }
     }
 

@@ -36,6 +36,26 @@ abstract class Texture {
      */
     var colorSpace = ColorSpace.SRGB
 
+    /** Minification filter, including mipmap filters. Changes apply on the next draw. */
+    var minFilter = TextureFilter.LinearMipmapLinear
+
+    /** Magnification filter. Accepts [TextureFilter.Nearest] or [TextureFilter.Linear]. */
+    var magFilter = TextureFilter.Linear
+        set(value) {
+            require(value == TextureFilter.Nearest || value == TextureFilter.Linear)
+            field = value
+        }
+
+    /** Whether to generate mipmaps when [mipmaps] is empty. Call [markUpdated] after changing it. */
+    var generateMipmaps = true
+
+    /**
+     * Optional platform images for explicit mipmap levels, starting with level zero. Each level
+     * halves the previous dimensions down to a minimum of one. When present these replace [image]
+     * and automatic generation. The renderer retains the array and uploads changes after [markUpdated].
+     */
+    var mipmaps: Array<Any> = emptyArray()
+
     /** Horizontal (U) wrapping mode. Renderers apply changes on the next draw. */
     var wrapS = Wrapping.ClampToEdge
     /** Vertical (V) wrapping mode. Renderers apply changes on the next draw. */
