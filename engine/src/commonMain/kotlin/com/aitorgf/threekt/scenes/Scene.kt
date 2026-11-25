@@ -12,4 +12,7 @@ class Scene : Object3D() {
 
     /** Fog applied to the materials that support it, or null for no fog. */
     var fog: Fog? = null
+
+    /** Exponential fog. Threekt exposes it separately for Kotlin typing and gives it precedence over [fog]. */
+    var fogExp2: FogExp2? = null
 }

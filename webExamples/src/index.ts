@@ -1,4 +1,13 @@
-const examples = new Map([
+type Example = {
+    render(seconds: number): void;
+    dispose(): void;
+};
+
+type ExampleModule = {
+    createExample(canvas: HTMLCanvasElement): Example | Promise<Example>;
+};
+
+const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_geometry_cube', () => import('./examples/webgl_geometry_cube')],
     ['webgl_materials_texture_canvas', () => import('./examples/webgl_materials_texture_canvas')],
     ['webgl_materials_texture_rotation', () => import('./examples/webgl_materials_texture_rotation')],
@@ -10,6 +19,16 @@ const examples = new Map([
     ['webgl_buffergeometry_drawrange', () => import('./examples/webgl_buffergeometry_drawrange')],
     ['webgl_buffergeometry', () => import('./examples/webgl_buffergeometry')],
     ['webgl_buffergeometry_uint', () => import('./examples/webgl_buffergeometry_uint')],
+    ['webgl_buffergeometry_points_interleaved', () => import('./examples/webgl_buffergeometry_points_interleaved')],
+    ['webgl_buffergeometry_selective_draw', () => import('./examples/webgl_buffergeometry_selective_draw')],
+    ['webgl_buffergeometry_custom_attributes_particles', () => import('./examples/webgl_buffergeometry_custom_attributes_particles')],
+    ['webgl_buffergeometry_indexed', () => import('./examples/webgl_buffergeometry_indexed')],
+    ['webgl_points_waves', () => import('./examples/webgl_points_waves')],
+    ['webgl_shader', () => import('./examples/webgl_shader')],
+    ['webgl_custom_attributes', () => import('./examples/webgl_custom_attributes')],
+    ['webgl_custom_attributes_points', () => import('./examples/webgl_custom_attributes_points')],
+    ['webgl_points_billboards', () => import('./examples/webgl_points_billboards')],
+    ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

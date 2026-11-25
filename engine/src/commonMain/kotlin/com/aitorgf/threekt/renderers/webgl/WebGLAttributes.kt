@@ -3,11 +3,12 @@ package com.aitorgf.threekt.renderers.webgl
 import com.aitorgf.threekt.core.BufferAttribute
 import com.aitorgf.threekt.core.Float32BufferAttribute
 import com.aitorgf.threekt.core.Int16BufferAttribute
+import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Uint8BufferAttribute
 
 /**
  * GPU buffers for [BufferAttribute]s, as Three.js `WebGLAttributes`. Each attribute is uploaded on first
- * use with its [BufferAttribute.usage]. When its [BufferAttribute.version] changes, the buffer contents
+ * use with its [BufferAttribute.usage]. Interleaved views share the GPU buffer of their source. When its [BufferAttribute.version] changes, the buffer contents
  * are replaced in place with `bufferSubData`; attribute arrays cannot change size. Buffers live until
  * [dispose].
  */
@@ -16,8 +17,9 @@ internal class WebGLAttributes(private val gl: GLContext) {
 
     private val bindings = mutableMapOf<BufferAttribute, Binding>()
 
-    /** Binds the buffer of [attribute] to `ARRAY_BUFFER`, uploading its data when needed. */
-    fun bind(attribute: BufferAttribute) {
+    /** Binds the buffer of [view] to `ARRAY_BUFFER`, uploading its data when needed. */
+    fun bind(view: BufferAttribute) {
+        val attribute = if (view is InterleavedBufferAttribute) view.data.storage else view
         val binding = bindings[attribute]
         if (binding == null) {
             val buffer = gl.createBuffer()
@@ -34,6 +36,7 @@ internal class WebGLAttributes(private val gl: GLContext) {
 
     /** Returns the WebGL component type of [attribute]. */
     fun componentType(attribute: BufferAttribute): Int = when (attribute) {
+        is InterleavedBufferAttribute -> componentType(attribute.data.storage)
         is Float32BufferAttribute -> GL.FLOAT
         is Uint8BufferAttribute -> GL.UNSIGNED_BYTE
         is Int16BufferAttribute -> GL.SHORT

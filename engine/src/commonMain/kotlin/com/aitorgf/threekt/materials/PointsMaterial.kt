@@ -26,6 +26,8 @@ class PointsMaterial(color: Color = Color(1.0, 1.0, 1.0)) : Material() {
 
     /** Whether points shrink with distance under a perspective camera. */
     var sizeAttenuation = true
+    /** Samples with alpha below this threshold are discarded. */
+    var alphaTest = 0.0
 
     /** Whether the scene's fog affects this material. */
     var fog = true

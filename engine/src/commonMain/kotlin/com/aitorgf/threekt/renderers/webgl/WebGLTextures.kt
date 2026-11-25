@@ -1,5 +1,6 @@
 package com.aitorgf.threekt.renderers.webgl
 
+import com.aitorgf.threekt.math.color.ColorSpace
 import com.aitorgf.threekt.textures.Texture
 import com.aitorgf.threekt.textures.Wrapping
 
@@ -8,7 +9,7 @@ import com.aitorgf.threekt.textures.Wrapping
  * [Texture.markUpdated]; wrapping and anisotropy are applied whenever they change.
  */
 internal class WebGLTextures(private val gl: GLContext, private val capabilities: WebGLCapabilities) {
-    private class Binding(val handle: Any, var version: Int) {
+    private class Binding(val handle: Any, var version: Int, var colorSpace: ColorSpace?) {
         var wrapS: Wrapping? = null
         var wrapT: Wrapping? = null
         var anisotropy = 1
@@ -21,9 +22,10 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
         gl.activeTexture(GL.TEXTURE0 + unit)
         val binding = bindings[texture] ?: create(texture)
         gl.bindTexture(GL.TEXTURE_2D, binding.handle)
-        if (binding.version != texture.version) {
+        if (binding.version != texture.version || binding.colorSpace != texture.colorSpace) {
             upload(texture)
             binding.version = texture.version
+            binding.colorSpace = texture.colorSpace
         }
         applySampling(texture, binding)
     }
@@ -39,7 +41,7 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
             gl.deleteTexture(handle)
             throw error
         }
-        return Binding(handle, texture.version).also { bindings[texture] = it }
+        return Binding(handle, texture.version, texture.colorSpace).also { bindings[texture] = it }
     }
 
     private fun applySampling(texture: Texture, binding: Binding) {
@@ -67,7 +69,8 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
 
     private fun upload(texture: Texture) {
         val image = requireNotNull(texture.image) { "The texture has no image to upload." }
-        gl.texImage2D(GL.TEXTURE_2D, 0, GL.SRGB8_ALPHA8, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = true)
+        val internalFormat = if (texture.colorSpace == ColorSpace.SRGB) GL.SRGB8_ALPHA8 else GL.RGBA8
+        gl.texImage2D(GL.TEXTURE_2D, 0, internalFormat, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = true)
         gl.generateMipmap(GL.TEXTURE_2D)
     }
 

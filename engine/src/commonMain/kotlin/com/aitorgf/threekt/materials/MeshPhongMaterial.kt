@@ -12,6 +12,8 @@ import kotlin.js.JsExport
  */
 @JsExport
 class MeshPhongMaterial(color: Color = Color(1.0, 1.0, 1.0)) : Material() {
+    /** Draws the three edges of each triangle. */
+    var wireframe = false
     /** Creates a material from a packed sRGB [hex] color, as `0xd5d5d5`. */
     @JsExport.Ignore
     constructor(hex: Int) : this(Color(hex))

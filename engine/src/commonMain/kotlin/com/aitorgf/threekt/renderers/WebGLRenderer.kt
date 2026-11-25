@@ -5,6 +5,7 @@ import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.core.BufferGeometry
+import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Blending
 import com.aitorgf.threekt.materials.LineBasicMaterial
@@ -13,6 +14,7 @@ import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.MeshPhongMaterial
 import com.aitorgf.threekt.materials.PointsMaterial
 import com.aitorgf.threekt.materials.RawShaderMaterial
+import com.aitorgf.threekt.materials.ShaderMaterial
 import com.aitorgf.threekt.materials.Side
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Matrix3
@@ -44,8 +46,9 @@ import kotlin.math.roundToInt
  * `WebGL2Context` for a browser canvas or `GLES30Context` on the JVM. Three.js takes a parameters object
  * with a canvas instead. [MeshBasicMaterial] and [LineBasicMaterial] are unlit and support a color
  * texture, vertex colors, and position morph targets, [PointsMaterial] draws sized points, and
- * [MeshPhongMaterial] is lit by ambient and directional lights. Built-in materials apply the scene's fog. [RawShaderMaterial] uses its own shaders. Opaque
- * objects are drawn before transparent ones, which are blended back to front.
+ * [MeshPhongMaterial] is lit by ambient, directional, and hemisphere lights. Built-in materials
+ * apply the scene's fog, while [ShaderMaterial] uses custom GLSL. Opaque objects are drawn before
+ * transparent ones, which are blended back to front.
  */
 @JsExport
 class WebGLRenderer(context: GLContext) {
@@ -223,7 +226,8 @@ class WebGLRenderer(context: GLContext) {
         }
         val morphTargetsCount = if (morphTargetInfluences != null) geometry.morphAttributes["position"]?.size ?: 0 else 0
         val fog = scene.fog
-        val program = getProgram(material, geometry, morphTargetsCount, fog != null)
+        val fogExp2 = scene.fogExp2
+        val program = getProgram(material, geometry, morphTargetsCount, fog != null || fogExp2 != null, fogExp2 != null)
         gl.useProgram(program.handle)
         setMaterialState(material, `object`.matrixWorld.determinantAffine() < 0.0)
 
@@ -234,19 +238,24 @@ class WebGLRenderer(context: GLContext) {
             is LineBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
             is PointsMaterial -> setPointsUniforms(program, material)
             is MeshPhongMaterial -> setPhongUniforms(program, geometry, material)
-            is RawShaderMaterial -> for (name in material.uniforms.names) {
+            is ShaderMaterial -> for (name in material.uniforms.names) {
                 val info = program.uniforms[name] ?: continue
                 uniforms.set(info, material.uniforms.get(name)!!.value)
             }
         }
-        if (fog != null) {
+        val fogColor = fogExp2?.color ?: fog?.color
+        if (fogColor != null) {
             program.uniforms["fogColor"]?.let {
                 // Fog is blended after the sRGB encoding, so its color is converted to sRGB here.
-                outputColor.copyLinearToSRGB(fog.color)
+                outputColor.copyLinearToSRGB(fogColor)
                 gl.uniform3f(it.location, outputColor.r, outputColor.g, outputColor.b)
             }
-            program.uniforms["fogNear"]?.let { gl.uniform1f(it.location, fog.near) }
-            program.uniforms["fogFar"]?.let { gl.uniform1f(it.location, fog.far) }
+            if (fogExp2 != null) {
+                program.uniforms["fogDensity"]?.let { gl.uniform1f(it.location, fogExp2.density) }
+            } else if (fog != null) {
+                program.uniforms["fogNear"]?.let { gl.uniform1f(it.location, fog.near) }
+                program.uniforms["fogFar"]?.let { gl.uniform1f(it.location, fog.far) }
+            }
         }
         if (morphTargetsCount > 0) morphtargets.update(morphTargetInfluences!!, geometry, program)
         bindAttributes(program, geometry)
@@ -259,7 +268,25 @@ class WebGLRenderer(context: GLContext) {
             else -> GL.TRIANGLES
         }
         if (`object` is Line && material is LineBasicMaterial) gl.lineWidth(material.linewidth * pixelRatio)
-        if (index == null) {
+        if (`object` is Mesh && material is MeshPhongMaterial && material.wireframe) {
+            val edges = IntArray(drawCount.toInt() / 3 * 6)
+            for (triangle in 0 until edges.size / 6) {
+                val start = drawStart.toInt() + triangle * 3
+                val a = index?.get(start) ?: start
+                val b = index?.get(start + 1) ?: (start + 1)
+                val c = index?.get(start + 2) ?: (start + 2)
+                val edge = triangle * 6
+                edges[edge] = a
+                edges[edge + 1] = b
+                edges[edge + 2] = b
+                edges[edge + 3] = c
+                edges[edge + 4] = c
+                edges[edge + 5] = a
+            }
+            gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer)
+            gl.bufferIntData(GL.ELEMENT_ARRAY_BUFFER, edges, GL.STREAM_DRAW)
+            gl.drawElements(GL.LINES, edges.size, GL.UNSIGNED_INT, 0)
+        } else if (index == null) {
             gl.drawArrays(mode, drawStart.toInt(), drawCount.toInt())
         } else {
             gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer)
@@ -273,25 +300,31 @@ class WebGLRenderer(context: GLContext) {
      * `#version 300 es` and the defines for their features, as Three.js `WebGLPrograms` does; raw shaders
      * get only the version line, when the material sets one. Programs are cached by their final source.
      */
-    private fun getProgram(material: Material, geometry: BufferGeometry, morphTargetsCount: Int, sceneHasFog: Boolean): WebGLProgram {
+    private fun getProgram(
+        material: Material, geometry: BufferGeometry, morphTargetsCount: Int, sceneHasFog: Boolean, fogExp2: Boolean,
+    ): WebGLProgram {
         val (vertexGlsl, fragmentGlsl) = when (material) {
             is MeshBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                sceneHasFog && material.fog, fogExp2,
             )
             is LineBasicMaterial -> builtInSource(
                 ShaderLib.basicVertex, ShaderLib.basicFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                sceneHasFog && material.fog, fogExp2,
             )
             is PointsMaterial -> builtInSource(
                 ShaderLib.pointsVertex, ShaderLib.pointsFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
-                if (material.sizeAttenuation) listOf("#define USE_SIZEATTENUATION") else emptyList(),
+                sceneHasFog && material.fog, fogExp2,
+                buildList {
+                    if (material.sizeAttenuation) add("#define USE_SIZEATTENUATION")
+                    if (material.alphaTest > 0) add("#define USE_ALPHATEST")
+                },
             )
             is MeshPhongMaterial -> builtInSource(
                 ShaderLib.phongVertex, ShaderLib.phongFragment, material, material.map, geometry, morphTargetsCount,
-                sceneHasFog && material.fog,
+                sceneHasFog && material.fog, fogExp2,
                 buildList {
+                    add("#define NUM_HEMI_LIGHTS ${lights.hemisphere.size}")
                     add("#define NUM_DIR_LIGHTS ${lights.directional.size}")
                     if (material.flatShading) add("#define FLAT_SHADED")
                     if (material.side == Side.Double) add("#define DOUBLE_SIDED")
@@ -302,6 +335,7 @@ class WebGLRenderer(context: GLContext) {
                 val versionString = material.glslVersion?.let { "#version ${it.version}\n" } ?: ""
                 (versionString + material.vertexShader) to (versionString + material.fragmentShader)
             }
+            is ShaderMaterial -> WebGLProgram.shaderMaterialSources(material)
             else -> throw IllegalArgumentException("WebGLRenderer cannot draw ${material::class.simpleName}.")
         }
         return programs.getOrPut(vertexGlsl to fragmentGlsl) { WebGLProgram(gl, vertexGlsl, fragmentGlsl) }
@@ -310,12 +344,13 @@ class WebGLRenderer(context: GLContext) {
     /** Prepends `#version 300 es` and the defines of the material's features, as Three.js `WebGLProgram` does. */
     private fun builtInSource(
         vertexShader: String, fragmentShader: String, material: Material, map: Texture?, geometry: BufferGeometry,
-        morphTargetsCount: Int, fog: Boolean, extraDefines: List<String> = emptyList(),
+        morphTargetsCount: Int, fog: Boolean, fogExp2: Boolean, extraDefines: List<String> = emptyList(),
     ): Pair<String, String> {
         val defines = buildList {
             addAll(extraDefines)
             if (material.transparent == false && material.blending == Blending.Normal) add("#define OPAQUE")
             if (fog) add("#define USE_FOG")
+            if (fog && fogExp2) add("#define FOG_EXP2")
             if (material.premultipliedAlpha) add("#define PREMULTIPLIED_ALPHA")
             if (map != null) add("#define USE_MAP")
             if (material.vertexColors && geometry.hasAttribute("color")) add("#define USE_COLOR")
@@ -403,6 +438,17 @@ class WebGLRenderer(context: GLContext) {
         programUniforms["emissive"]?.let { gl.uniform3f(it.location, emissive.r * intensity, emissive.g * intensity, emissive.b * intensity) }
         val ambient = lights.ambient
         programUniforms["ambientLightColor"]?.let { gl.uniform3f(it.location, ambient.r, ambient.g, ambient.b) }
+        for ((index, light) in lights.hemisphere.withIndex()) {
+            programUniforms["hemisphereLights[$index].direction"]?.let {
+                gl.uniform3f(it.location, light.direction.x, light.direction.y, light.direction.z)
+            }
+            programUniforms["hemisphereLights[$index].skyColor"]?.let {
+                gl.uniform3f(it.location, light.skyColor.r, light.skyColor.g, light.skyColor.b)
+            }
+            programUniforms["hemisphereLights[$index].groundColor"]?.let {
+                gl.uniform3f(it.location, light.groundColor.r, light.groundColor.g, light.groundColor.b)
+            }
+        }
         for ((index, light) in lights.directional.withIndex()) {
             programUniforms["directionalLights[$index].direction"]?.let {
                 gl.uniform3f(it.location, light.direction.x, light.direction.y, light.direction.z)
@@ -419,6 +465,7 @@ class WebGLRenderer(context: GLContext) {
         val color = material.color
         programUniforms["diffuse"]?.let { gl.uniform3f(it.location, color.r, color.g, color.b) }
         programUniforms["opacity"]?.let { gl.uniform1f(it.location, material.opacity) }
+        programUniforms["alphaTest"]?.let { gl.uniform1f(it.location, material.alphaTest) }
         programUniforms["size"]?.let { gl.uniform1f(it.location, material.size * pixelRatio) }
         programUniforms["scale"]?.let {
             val cssHeight = height?.toDouble() ?: (gl.drawingBufferHeight / pixelRatio)
@@ -459,8 +506,16 @@ class WebGLRenderer(context: GLContext) {
             require(attribute.itemSize in 1..4) { "Attribute '$name' must have one to four components." }
             attributes.bind(attribute)
             gl.enableVertexAttribArray(location)
+            val type = attributes.componentType(attribute)
+            val bytes = when (type) {
+                GL.FLOAT -> Float.SIZE_BYTES
+                GL.SHORT -> Short.SIZE_BYTES
+                else -> 1
+            }
+            val view = attribute as? InterleavedBufferAttribute
             gl.vertexAttribPointer(
-                location, attribute.itemSize, attributes.componentType(attribute), attribute.normalized, 0, 0,
+                location, attribute.itemSize, type, attribute.normalized,
+                (view?.data?.stride ?: 0) * bytes, (view?.offset ?: 0) * bytes,
             )
             used.add(location)
         }

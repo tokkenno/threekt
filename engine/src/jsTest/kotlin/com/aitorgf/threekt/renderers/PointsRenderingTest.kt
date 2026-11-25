@@ -4,6 +4,9 @@ import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.cameras.PerspectiveCamera
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
+import com.aitorgf.threekt.core.InterleavedBuffer
+import com.aitorgf.threekt.core.InterleavedBufferAttribute
+import com.aitorgf.threekt.core.Usage
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.PointsMaterial
 import com.aitorgf.threekt.math.Color
@@ -75,6 +78,32 @@ class PointsRenderingTest {
         renderer.render(scene, camera)
         assertNear(red, read(gl, 16, 16))
         assertNear(black, read(gl, 10, 16))
+    }
+
+    @Test
+    fun interleavedPointsRespectOffsetsAndUpdateAllViews() = withRenderer { renderer, gl ->
+        val data = floatArrayOf(-0.5f, 0f, 0f, 1f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 1f)
+        val buffer = InterleavedBuffer.fromFloat32(data, 6).setUsage(Usage.DynamicDraw)
+        val positions = InterleavedBufferAttribute(buffer, 3, 0)
+        val color = InterleavedBufferAttribute(buffer, 3, 3)
+        val geometry = BufferGeometry().setAttribute("position", positions).setAttribute("color", color)
+        val material = PointsMaterial().apply { size = 4.0; sizeAttenuation = false; vertexColors = true }
+        val scene = Scene().apply { add(Points(geometry, material)) }
+        val camera = OrthographicCamera().apply { position.z = 1.0 }
+
+        renderer.render(scene, camera)
+        assertNear(red, read(gl, 8, 16))
+        assertNear(listOf(0, 0, 255, 255), read(gl, 24, 16))
+
+        data[6] = 0f
+        data[10] = 1f
+        data[11] = 0f
+        color.markUpdated()
+        assertEquals(color.version, positions.version)
+        renderer.render(scene, camera)
+        assertNear(red, read(gl, 8, 16))
+        assertNear(black, read(gl, 24, 16))
+        assertNear(listOf(0, 255, 0, 255), read(gl, 16, 16))
     }
 
     @Test

@@ -1,5 +1,8 @@
 package com.aitorgf.threekt.renderers.webgl
 
+import com.aitorgf.threekt.materials.GLSLVersion
+import com.aitorgf.threekt.materials.ShaderMaterial
+
 /**
  * Linked shader program with the locations of its active attributes and uniforms. Array uniforms are
  * listed under their name without the `[0]` suffix.
@@ -27,6 +30,49 @@ internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fra
             val info = gl.getActiveUniform(handle, index)
             val name = info.name.removeSuffix("[0]")
             name to UniformInfo(name, gl.getUniformLocation(handle, info.name), info.type)
+        }
+    }
+
+    companion object {
+        /** Adds the declarations supplied by Three.js for custom shaders. */
+        fun shaderMaterialSources(material: ShaderMaterial): Pair<String, String> {
+            val prefix = """
+                #version 300 es
+                precision highp float;
+                precision highp int;
+                uniform mat4 viewMatrix;
+                uniform vec3 cameraPosition;
+                uniform bool isOrthographic;
+            """.trimIndent() + "\n"
+            val vertexPrefix = """
+                #define attribute in
+                #define varying out
+                #define texture2D texture
+                uniform mat4 modelMatrix, modelViewMatrix, projectionMatrix;
+                uniform mat3 normalMatrix;
+                in vec3 position, normal;
+                in vec2 uv;
+            """.trimIndent() + "\n"
+            val color = if (material.vertexColors) "#define USE_COLOR\nin vec3 color;\n" else ""
+            val fragmentPrefix = """
+                #define varying in
+                #define gl_FragDepthEXT gl_FragDepth
+                #define texture2D texture
+                #define textureCube texture
+                #define texture2DProj textureProj
+                #define texture2DLodEXT textureLod
+                #define texture2DProjLodEXT textureProjLod
+                #define textureCubeLodEXT textureLod
+                #define texture2DGradEXT textureGrad
+                #define texture2DProjGradEXT textureProjGrad
+                #define textureCubeGradEXT textureGrad
+            """.trimIndent() + "\n"
+            val fragmentOutput = if (material.glslVersion == GLSLVersion.GLSL3) "" else """
+                layout(location = 0) out highp vec4 pc_fragColor;
+                #define gl_FragColor pc_fragColor
+            """.trimIndent() + "\n"
+            return (prefix + vertexPrefix + color + material.vertexShader) to
+                (prefix + fragmentPrefix + fragmentOutput + material.fragmentShader)
         }
     }
 

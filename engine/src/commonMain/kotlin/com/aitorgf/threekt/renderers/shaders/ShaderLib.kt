@@ -111,8 +111,12 @@ internal object ShaderLib {
         #ifdef USE_FOG
         uniform vec3 fogColor;
         in float vFogDepth;
+        #ifdef FOG_EXP2
+        uniform float fogDensity;
+        #else
         uniform float fogNear;
         uniform float fogFar;
+        #endif
         #endif
     """.trimIndent()
 
@@ -129,7 +133,11 @@ internal object ShaderLib {
         pc_fragColor = sRGBTransferOETF( vec4( outgoingLight, diffuseColor.a ) );
 
         #ifdef USE_FOG
+        #ifdef FOG_EXP2
+        float fogFactor = 1.0 - exp( -fogDensity * fogDensity * vFogDepth * vFogDepth );
+        #else
         float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );
+        #endif
         pc_fragColor.rgb = mix( pc_fragColor.rgb, fogColor, fogFactor );
         #endif
 
@@ -174,6 +182,14 @@ internal object ShaderLib {
     private val lightsParsBegin = """
         uniform bool isOrthographic;
         uniform vec3 ambientLightColor;
+        #if NUM_HEMI_LIGHTS > 0
+        struct HemisphereLight {
+            vec3 direction;
+            vec3 skyColor;
+            vec3 groundColor;
+        };
+        uniform HemisphereLight hemisphereLights[ NUM_HEMI_LIGHTS ];
+        #endif
 
         #if NUM_DIR_LIGHTS > 0
         struct DirectionalLight {
@@ -276,6 +292,9 @@ internal object ShaderLib {
         |#endif
         |
         |$colorParsFragment
+        |#ifdef USE_ALPHATEST
+        |uniform float alphaTest;
+        |#endif
         |$fogParsFragment
         |
         |void main() {
@@ -409,6 +428,13 @@ internal object ShaderLib {
         |    #endif
         |
         |    vec3 irradiance = ambientLightColor;
+        |#if NUM_HEMI_LIGHTS > 0
+        |    for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {
+        |        float dotNL = dot( normal, hemisphereLights[i].direction );
+        |        float hemiDiffuseWeight = 0.5 * dotNL + 0.5;
+        |        irradiance += mix( hemisphereLights[i].groundColor, hemisphereLights[i].skyColor, hemiDiffuseWeight );
+        |    }
+        |#endif
         |    indirectDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
         |
         |    vec3 outgoingLight = directDiffuse + indirectDiffuse + directSpecular + totalEmissiveRadiance;

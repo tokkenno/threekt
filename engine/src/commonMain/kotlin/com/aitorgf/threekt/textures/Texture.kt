@@ -2,6 +2,7 @@ package com.aitorgf.threekt.textures
 
 import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Vector2
+import com.aitorgf.threekt.math.color.ColorSpace
 import kotlin.js.JsExport
 
 /**
@@ -15,6 +16,12 @@ abstract class Texture {
      * null when the texture has no source yet.
      */
     open val image: Any? get() = null
+
+    /**
+     * Encoding of the source pixels. Threekt defaults to sRGB for existing image textures.
+     * Use null for data textures that should be sampled without decoding.
+     */
+    var colorSpace: ColorSpace? = ColorSpace.SRGB
 
     /** Incremented by [markUpdated] so that renderers know to upload the pixels again. */
     var version = 0

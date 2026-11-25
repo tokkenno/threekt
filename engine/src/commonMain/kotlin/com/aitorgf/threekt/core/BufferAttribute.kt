@@ -22,12 +22,12 @@ abstract class BufferAttribute(
     }
 
     /** Expected update pattern, which renderers pass to the GPU as a hint. Change it before the first draw. */
-    var usage = Usage.StaticDraw
-        private set
+    private var usageHint = Usage.StaticDraw
+    open val usage: Usage get() = usageHint
 
     /** Sets [usage] and returns this attribute, as Three.js `setUsage()` does. */
-    fun setUsage(value: Usage): BufferAttribute {
-        usage = value
+    open fun setUsage(value: Usage): BufferAttribute {
+        usageHint = value
         return this
     }
 
@@ -41,12 +41,12 @@ abstract class BufferAttribute(
     val count: Int get() = size / itemSize
 
     /** Incremented by [markUpdated] so that renderers know to upload the data again. */
-    var version = 0
-        private set
+    private var revision = 0
+    open val version: Int get() = revision
 
     /** Marks the data as changed so that it is uploaded before the next draw. */
-    fun markUpdated() {
-        version++
+    open fun markUpdated() {
+        revision++
     }
 
     /** Returns component [component] of item [index], normalized when [normalized] is set. */
