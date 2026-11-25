@@ -23,6 +23,19 @@ abstract class Material {
      */
     var blending = Blending.Normal
 
+    /** Equation for [Blending.Custom]. */
+    var blendEquation = BlendEquation.Add
+
+    /** Source multiplier for [Blending.Custom]. */
+    var blendSrc = BlendFactor.SrcAlpha
+
+    /** Destination multiplier for [Blending.Custom]. */
+    var blendDst = BlendFactor.OneMinusSrcAlpha
+        set(value) {
+            require(value != BlendFactor.SrcAlphaSaturate)
+            field = value
+        }
+
     /**
      * Whether the shader output is premultiplied by its alpha. [Blending.Subtractive] and
      * [Blending.Multiply] require it.

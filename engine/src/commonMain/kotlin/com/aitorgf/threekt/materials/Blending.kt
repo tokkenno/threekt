@@ -15,4 +15,7 @@ enum class Blending {
     Subtractive,
     /** Fragment colors multiply the colors behind them. Requires premultiplied alpha. */
     Multiply,
+
+    /** Uses a material's blend equation and factors. */
+    Custom,
 }

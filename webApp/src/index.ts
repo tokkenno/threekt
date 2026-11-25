@@ -30,6 +30,8 @@ const examples = new Map([
     ['webgl_loader_imagebitmap', () => import('./examples/webgl_loader_imagebitmap')],
     ['webgl_video_panorama_equirectangular', () => import('./examples/webgl_video_panorama_equirectangular')],
     ['webgl_materials_video_webcam', () => import('./examples/webgl_materials_video_webcam')],
+    ['webgl_lines_colors', () => import('./examples/webgl_lines_colors')],
+    ['webgl_materials_blending_custom', () => import('./examples/webgl_materials_blending_custom')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

@@ -411,7 +411,13 @@ class WebGLRenderer(context: GLContext) {
         gl.frontFace(if (mirrored) GL.CW else GL.CCW)
 
         val blending = if (material.blending == Blending.Normal && !material.transparent) Blending.None else material.blending
-        setBlending(blending, material.premultipliedAlpha)
+        if (blending == Blending.Custom) {
+            gl.enable(GL.BLEND)
+            gl.blendEquation(material.blendEquation.glValue)
+            gl.blendFunc(material.blendSrc.glValue, material.blendDst.glValue)
+        } else {
+            setBlending(blending, material.premultipliedAlpha)
+        }
 
         if (material.depthTest) gl.enable(GL.DEPTH_TEST) else gl.disable(GL.DEPTH_TEST)
         gl.depthMask(material.depthWrite)
@@ -431,7 +437,7 @@ class WebGLRenderer(context: GLContext) {
                 Blending.Additive -> gl.blendFunc(GL.ONE, GL.ONE)
                 Blending.Subtractive -> gl.blendFuncSeparate(GL.ZERO, GL.ONE_MINUS_SRC_COLOR, GL.ZERO, GL.ONE)
                 Blending.Multiply -> gl.blendFuncSeparate(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA, GL.ZERO, GL.ONE)
-                Blending.None -> Unit
+                Blending.None, Blending.Custom -> Unit
             }
         } else {
             when (blending) {
@@ -440,7 +446,7 @@ class WebGLRenderer(context: GLContext) {
                 Blending.Subtractive, Blending.Multiply -> throw IllegalArgumentException(
                     "$blending blending requires material.premultipliedAlpha = true.",
                 )
-                Blending.None -> Unit
+                Blending.None, Blending.Custom -> Unit
             }
         }
     }
