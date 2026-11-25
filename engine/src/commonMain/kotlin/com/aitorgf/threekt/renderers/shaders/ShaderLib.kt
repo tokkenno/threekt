@@ -193,6 +193,21 @@ internal object ShaderLib {
         };
         uniform DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];
         #endif
+
+        #if NUM_HEMI_LIGHTS > 0
+        struct HemisphereLight {
+            vec3 direction;
+            vec3 skyColor;
+            vec3 groundColor;
+        };
+        uniform HemisphereLight hemisphereLights[ NUM_HEMI_LIGHTS ];
+
+        vec3 getHemisphereLightIrradiance( const in HemisphereLight light, const in vec3 normal ) {
+            float dotNL = dot( normal, light.direction );
+            float hemiDiffuseWeight = 0.5 * dotNL + 0.5;
+            return mix( light.groundColor, light.skyColor, hemiDiffuseWeight );
+        }
+        #endif
     """.trimIndent()
 
     /** Vertex shader of `MeshBasicMaterial` and `LineBasicMaterial`. */
@@ -429,6 +444,11 @@ internal object ShaderLib {
         |    #endif
         |
         |    vec3 irradiance = ambientLightColor;
+        |    #if NUM_HEMI_LIGHTS > 0
+        |    for ( int i = 0; i < NUM_HEMI_LIGHTS; i++ ) {
+        |        irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometryNormal );
+        |    }
+        |    #endif
         |    indirectDiffuse += irradiance * BRDF_Lambert( diffuseColor.rgb );
         |
         |    vec3 outgoingLight = directDiffuse + indirectDiffuse + directSpecular + totalEmissiveRadiance;

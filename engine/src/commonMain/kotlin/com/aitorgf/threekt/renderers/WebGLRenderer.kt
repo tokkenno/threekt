@@ -31,6 +31,7 @@ import com.aitorgf.threekt.renderers.webgl.GL
 import com.aitorgf.threekt.renderers.webgl.GLContext
 import com.aitorgf.threekt.renderers.webgl.WebGLAttributes
 import com.aitorgf.threekt.renderers.webgl.WebGLCapabilities
+import com.aitorgf.threekt.renderers.webgl.WebGLGeometries
 import com.aitorgf.threekt.renderers.webgl.WebGLLights
 import com.aitorgf.threekt.renderers.webgl.WebGLMorphtargets
 import com.aitorgf.threekt.renderers.webgl.WebGLProgram
@@ -62,6 +63,7 @@ class WebGLRenderer(context: GLContext) {
 
     private val textures = WebGLTextures(gl, capabilities)
     private val attributes = WebGLAttributes(gl)
+    private val geometries = WebGLGeometries()
     private val uniforms = WebGLUniforms(gl, textures)
     private val morphtargets = WebGLMorphtargets(gl, uniforms)
     private val lights = WebGLLights()
@@ -204,12 +206,14 @@ class WebGLRenderer(context: GLContext) {
 
     /** Draws one object, as `renderBufferDirect` does in Three.js. */
     private fun renderObject(`object`: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera) {
-        val index = geometry.index
         val position = geometry.getAttribute("position")
+        val wireframe = `object` is Mesh && material.wireframe
+        val index = if (wireframe) geometries.getWireframeIndices(geometry.index, position?.count ?: 0) else geometry.index
+        val rangeFactor = if (wireframe) 2 else 1
         // Clamp the draw range to the available indices or vertices, as Three.js does.
         val drawRange = geometry.drawRange
-        var drawStart = drawRange.start.toLong()
-        var drawEnd = drawRange.start.toLong() + drawRange.count
+        var drawStart = drawRange.start.toLong() * rangeFactor
+        var drawEnd = drawStart + drawRange.count.toLong() * rangeFactor
         if (index != null) {
             drawStart = maxOf(drawStart, 0)
             drawEnd = minOf(drawEnd, index.size.toLong())
@@ -268,8 +272,9 @@ class WebGLRenderer(context: GLContext) {
             is LineLoop -> GL.LINE_LOOP
             is Line -> GL.LINE_STRIP
             is Points -> GL.POINTS
-            else -> GL.TRIANGLES
+            else -> if (wireframe) GL.LINES else GL.TRIANGLES
         }
+        if (wireframe) gl.lineWidth(pixelRatio)
         if (`object` is Line && material is LineBasicMaterial) gl.lineWidth(material.linewidth * pixelRatio)
         if (index == null) {
             gl.drawArrays(mode, drawStart.toInt(), drawCount.toInt())
@@ -305,6 +310,7 @@ class WebGLRenderer(context: GLContext) {
                 fog.takeIf { material.fog },
                 buildList {
                     add("#define NUM_DIR_LIGHTS ${lights.directional.size}")
+                    add("#define NUM_HEMI_LIGHTS ${lights.hemisphere.size}")
                     if (material.flatShading) add("#define FLAT_SHADED")
                     if (material.side == Side.Double) add("#define DOUBLE_SIDED")
                     if (material.side == Side.Back) add("#define FLIP_SIDED")
@@ -424,6 +430,17 @@ class WebGLRenderer(context: GLContext) {
             }
             programUniforms["directionalLights[$index].color"]?.let {
                 gl.uniform3f(it.location, light.color.r, light.color.g, light.color.b)
+            }
+        }
+        for ((index, light) in lights.hemisphere.withIndex()) {
+            programUniforms["hemisphereLights[$index].direction"]?.let {
+                gl.uniform3f(it.location, light.direction.x, light.direction.y, light.direction.z)
+            }
+            programUniforms["hemisphereLights[$index].skyColor"]?.let {
+                gl.uniform3f(it.location, light.skyColor.r, light.skyColor.g, light.skyColor.b)
+            }
+            programUniforms["hemisphereLights[$index].groundColor"]?.let {
+                gl.uniform3f(it.location, light.groundColor.r, light.groundColor.g, light.groundColor.b)
             }
         }
     }

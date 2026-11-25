@@ -32,6 +32,9 @@ abstract class Material {
     /** Opacity in `[0, 1]`, used by built-in materials when [transparent] is set. */
     var opacity = 1.0
 
+    /** Draws the three edges of each mesh triangle instead of its face. */
+    var wireframe = false
+
     /** Built-in materials discard fragments whose alpha is below this threshold. Zero disables the test. */
     var alphaTest = 0.0
 

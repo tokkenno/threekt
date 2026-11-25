@@ -18,6 +18,8 @@ const examples = new Map([
     ['webgl_points_waves', () => import('./examples/webgl_points_waves')],
     ['webgl_points_billboards', () => import('./examples/webgl_points_billboards')],
     ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
+    ['webgl_buffergeometry_indexed', () => import('./examples/webgl_buffergeometry_indexed')],
+    ['webgl_panorama_equirectangular', () => import('./examples/webgl_panorama_equirectangular')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
