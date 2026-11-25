@@ -80,12 +80,12 @@ export function createExample(canvas: HTMLCanvasElement) {
     const status = document.createElement('p');
     const hide = document.createElement('button');
     const show = document.createElement('button');
-    hide.textContent = 'Ocultar algunas líneas';
-    show.textContent = 'Mostrar todas las líneas';
+    hide.textContent = 'Hide some lines';
+    show.textContent = 'Show all lines';
     panel.append(status, hide, show);
     let culled = 0;
     const updateCount = () => {
-        status.textContent = `1 llamada de dibujo, ${count.toLocaleString()} líneas, ${culled.toLocaleString()} ocultas`;
+        status.textContent = `1 draw call, ${count.toLocaleString('en')} lines, ${culled.toLocaleString('en')} hidden`;
     };
     hide.addEventListener('click', () => {
         for (let i = 0; i < visible.length; i += 2) {

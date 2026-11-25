@@ -8,9 +8,9 @@ export async function createExample(canvas: HTMLCanvasElement) {
     drawingCanvas.height = 128;
     drawingCanvas.style.touchAction = 'none';
     drawingCanvas.style.display = 'block';
-    drawingCanvas.setAttribute('aria-label', 'Lienzo para dibujar la textura');
+    drawingCanvas.setAttribute('aria-label', 'Texture drawing canvas');
     const drawing = drawingCanvas.getContext('2d');
-    if (!drawing) throw new Error('Canvas 2D no está disponible.');
+    if (!drawing) throw new Error('The 2D canvas context is unavailable.');
     drawing.fillStyle = '#ffffff';
     drawing.fillRect(0, 0, 128, 128);
     drawing.strokeStyle = '#000000';
@@ -53,7 +53,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const panel = document.createElement('aside');
     panel.className = 'example-panel';
     const instructions = document.createElement('p');
-    instructions.textContent = 'Dibuja en el recuadro para cambiar la textura del cubo.';
+    instructions.textContent = 'Draw in the box to change the cube’s texture.';
     panel.append(instructions, drawingCanvas);
     canvas.parentElement?.append(panel);
 

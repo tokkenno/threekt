@@ -222,8 +222,17 @@ function createPanel(
     const panel = document.createElement('aside');
     panel.className = 'example-panel';
     const instructions = document.createElement('p');
-    instructions.textContent = 'Arrastra para orbitar y usa la rueda para acercarte.';
+    instructions.textContent = 'Drag to orbit and scroll to zoom.';
     panel.append(instructions);
+
+    const labels = {
+        showDots: 'Show points',
+        showLines: 'Show lines',
+        limitConnections: 'Limit connections',
+        minDistance: 'Connection distance',
+        maxConnections: 'Max connections',
+        particleCount: 'Particle count',
+    };
 
     const checkbox = (name: 'showDots' | 'showLines' | 'limitConnections', change?: (value: boolean) => void) => {
         const label = document.createElement('label');
@@ -236,7 +245,7 @@ function createPanel(
             change?.(input.checked);
         });
         const text = document.createElement('span');
-        text.textContent = name;
+        text.textContent = labels[name];
         label.append(text, input);
         panel.append(label);
     };
@@ -248,7 +257,7 @@ function createPanel(
         const label = document.createElement('label');
         label.className = 'example-setting';
         const text = document.createElement('span');
-        text.textContent = name;
+        text.textContent = labels[name];
         const output = document.createElement('output');
         output.textContent = String(settings[name]);
         const input = document.createElement('input');

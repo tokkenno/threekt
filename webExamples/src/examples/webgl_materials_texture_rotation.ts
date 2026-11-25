@@ -31,14 +31,14 @@ export async function createExample(canvas: HTMLCanvasElement) {
     scene.add(new Mesh(new Box(10, 10, 10), new MeshBasicMaterial(Color.fromHex(0xffffff), texture)));
 
     const settings = {
-        offsetX: { label: 'offset.x', min: 0, max: 1, value: 0 },
-        offsetY: { label: 'offset.y', min: 0, max: 1, value: 0 },
-        repeatX: { label: 'repeat.x', min: 0.25, max: 2, value: 0.25 },
-        repeatY: { label: 'repeat.y', min: 0.25, max: 2, value: 0.25 },
+        offsetX: { label: 'Offset X', min: 0, max: 1, value: 0 },
+        offsetY: { label: 'Offset Y', min: 0, max: 1, value: 0 },
+        repeatX: { label: 'Repeat X', min: 0.25, max: 2, value: 0.25 },
+        repeatY: { label: 'Repeat Y', min: 0.25, max: 2, value: 0.25 },
         // Positive values rotate counterclockwise around the center.
-        rotation: { label: 'rotation', min: -2, max: 2, value: Math.PI / 4 },
-        centerX: { label: 'center.x', min: 0, max: 1, value: 0.5 },
-        centerY: { label: 'center.y', min: 0, max: 1, value: 0.5 },
+        rotation: { label: 'Rotation', min: -2, max: 2, value: Math.PI / 4 },
+        centerX: { label: 'Pivot X', min: 0, max: 1, value: 0.5 },
+        centerY: { label: 'Pivot Y', min: 0, max: 1, value: 0.5 },
     } satisfies Record<string, Setting>;
 
     const updateUvTransform = () => {
@@ -52,7 +52,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const panel = document.createElement('aside');
     panel.className = 'example-panel';
     const instructions = document.createElement('p');
-    instructions.textContent = 'Arrastra para orbitar, usa la rueda para acercarte y el botón derecho para desplazarte.';
+    instructions.textContent = 'Drag to orbit, scroll to zoom, and right-drag to pan.';
     panel.append(instructions);
     for (const setting of Object.values(settings)) {
         const label = document.createElement('label');

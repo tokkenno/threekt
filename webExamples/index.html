@@ -1,66 +1,102 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejemplos · Threekt</title>
-    <style>
-        body {
-            margin: 0;
-            background: #101826;
-            color: #edf5ff;
-            font-family: system-ui, sans-serif;
-        }
-        a { color: #a9d5ff; }
-        #gallery { max-width: 50rem; margin: 3rem auto; padding: 0 1rem; }
-        #example-canvas { display: block; width: 100%; height: 100dvh; }
-        #example-view nav, #example-error, .example-panel {
-            position: fixed;
-            left: 1rem;
-            padding: 0.65rem 0.8rem;
-            background: #101826;
-            border: 1px solid #354153;
-            border-radius: 0.4rem;
-        }
-        #example-view nav { top: 1rem; }
-        #example-error { bottom: 1rem; }
-        .example-panel { top: 4.1rem; max-width: 12rem; }
-        .example-panel p { margin: 0 0 0.65rem; }
-        .example-setting { display: grid; grid-template-columns: 1fr auto; gap: 0 0.5rem; align-items: center; margin-top: 0.4rem; font-size: 0.85rem; }
-        .example-setting input[type=range] { grid-column: 1 / -1; width: 100%; }
-    </style>
+    <title>Threekt Examples</title>
+    <link rel="stylesheet" href="/src/gallery.css">
 </head>
 <body>
-<main id="gallery">
-    <h1>Ejemplos de Threekt</h1>
-    <ul>
-        <li><a href="?example=webgl_geometry_cube">Cubo con textura</a></li>
-        <li><a href="?example=webgl_materials_texture_canvas">Textura dibujada en un canvas</a></li>
-        <li><a href="?example=webgl_materials_texture_rotation">Rotación y repetición de texturas</a></li>
-        <li><a href="?example=webgl_buffergeometry_rawshader">Geometría con shader propio</a></li>
-        <li><a href="?example=webgl_buffergeometry_attributes_none">Geometría sin atributos</a></li>
-        <li><a href="?example=webgl_buffergeometry_lines">Líneas con morph targets</a></li>
-        <li><a href="?example=webgl_buffergeometry_lines_indexed">Copos de Koch con líneas indexadas</a></li>
-        <li><a href="?example=webgl_buffergeometry_points">Nube de puntos con niebla</a></li>
-        <li><a href="?example=webgl_buffergeometry_drawrange">Partículas conectadas con rangos de dibujo</a></li>
-        <li><a href="?example=webgl_buffergeometry">Triángulos con iluminación Phong</a></li>
-        <li><a href="?example=webgl_buffergeometry_uint">Triángulos Phong con atributos enteros</a></li>
-        <li><a href="?example=webgl_buffergeometry_points_interleaved">Nube de puntos con atributos intercalados</a></li>
-        <li><a href="?example=webgl_buffergeometry_selective_draw">Ocultación selectiva de líneas</a></li>
-        <li><a href="?example=webgl_buffergeometry_custom_attributes_particles">Partículas con tamaño por vértice</a></li>
-        <li><a href="?example=webgl_buffergeometry_indexed">Geometría indexada con iluminación hemisférica</a></li>
-        <li><a href="?example=webgl_points_waves">Ondas de puntos</a></li>
-        <li><a href="?example=webgl_shader">Shader Monjori</a></li>
-        <li><a href="?example=webgl_custom_attributes">Esfera con desplazamiento de vértices</a></li>
-        <li><a href="?example=webgl_custom_attributes_points">Nube de puntos con atributos personalizados</a></li>
-        <li><a href="?example=webgl_points_billboards">Puntos con atenuación por distancia</a></li>
-        <li><a href="?example=webgl_points_sprites">Copos de nieve con texturas</a></li>
-    </ul>
-</main>
-<main id="example-view" hidden>
-    <canvas id="example-canvas" aria-label="Vista WebGL del ejemplo"></canvas>
-    <nav aria-label="Ejemplos"><a href="./">Volver a los ejemplos</a></nav>
-    <p id="example-error" role="alert" hidden></p>
+<aside id="sidebar">
+    <button id="menu-toggle" type="button" aria-controls="gallery" aria-expanded="true" aria-label="Collapse examples menu">
+        <span aria-hidden="true">☰</span>
+    </button>
+    <nav id="gallery" aria-label="Examples">
+        <a class="gallery-home" href="./">Threekt Examples</a>
+        <section>
+            <h2>Textures</h2>
+            <ul>
+                <li><a href="?example=webgl_geometry_cube"
+                    data-description="A rotating cube shows how an image texture is mapped onto each face of a mesh.">Textured cube</a></li>
+                <li><a href="?example=webgl_materials_texture_canvas"
+                    data-description="Draw in the panel to update the texture on the rotating cube in real time.">Canvas texture</a></li>
+                <li><a href="?example=webgl_materials_texture_rotation"
+                    data-description="Adjust the UV grid’s offset, repeat, rotation, and pivot while orbiting the textured surface.">Texture transforms</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Buffer geometry</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry"
+                    data-description="Ambient and directional lights illuminate 160,000 translucent triangles with per-vertex colors.">Phong-lit triangles</a></li>
+                <li><a href="?example=webgl_buffergeometry_uint"
+                    data-description="Half a million Phong-lit triangles use normalized 16-bit normals and 8-bit colors.">Integer vertex attributes</a></li>
+                <li><a href="?example=webgl_buffergeometry_indexed"
+                    data-description="A rotating grid shares vertices between triangles and uses hemisphere lighting. Toggle wireframe to see the triangle edges.">Indexed geometry</a></li>
+                <li><a href="?example=webgl_buffergeometry_attributes_none"
+                    data-description="A GLSL vertex shader generates 10,000 triangles from gl_VertexID, while the draw range determines how many vertices are drawn.">Geometry without attributes</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Lines</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_lines"
+                    data-description="Ten thousand colored line segments rotate and blend toward a second set of positions.">Line morph targets</a></li>
+                <li><a href="?example=webgl_buffergeometry_lines_indexed"
+                    data-description="Four colors distinguish the rotating Koch curves, drawn at several levels of subdivision with indexed line segments.">Indexed Koch curves</a></li>
+                <li><a href="?example=webgl_buffergeometry_selective_draw"
+                    data-description="Twenty thousand segments form a rotating sphere. Use the buttons to hide a random subset or restore every line.">Selective line drawing</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Points and particles</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_points"
+                    data-description="Half a million colored points fill a rotating cube. Distance fog fades the far side into the background.">Point cloud with fog</a></li>
+                <li><a href="?example=webgl_buffergeometry_points_interleaved"
+                    data-description="Each point packs its floating-point position and normalized byte color into a shared 16-byte record.">Interleaved point cloud</a></li>
+                <li><a href="?example=webgl_buffergeometry_drawrange"
+                    data-description="Particles bounce inside a box, and nearby pairs are joined by lines. The position buffers and draw ranges update as the particles move.">Connected particles</a></li>
+                <li><a href="?example=webgl_buffergeometry_custom_attributes_particles"
+                    data-description="A custom size attribute makes 100,000 textured particles pulse independently as their rainbow-colored cloud rotates.">Animated particle sizes</a></li>
+                <li><a href="?example=webgl_custom_attributes_points"
+                    data-description="A shader uses per-point color and size to animate a rotating cloud of sparks with warm and cool halves.">Two-tone spark cloud</a></li>
+                <li><a href="?example=webgl_points_waves"
+                    data-description="Two sine waves change the height and size of points on a grid. Move the pointer to change the viewpoint.">Point waves</a></li>
+                <li><a href="?example=webgl_points_billboards"
+                    data-description="Textured discs face the camera and fade into distance fog. Toggle size attenuation to compare fixed and distance-scaled sizes.">Point billboards</a></li>
+                <li><a href="?example=webgl_points_sprites"
+                    data-description="Five layers of snowflake sprites rotate through exponential fog. Toggle the textures to see the underlying points.">Point sprites</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Shaders</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_rawshader"
+                    data-description="A raw GLSL program draws two hundred translucent triangles and animates their red channel with a time uniform.">Raw shader material</a></li>
+                <li><a href="?example=webgl_shader"
+                    data-description="The Monjori fragment shader uses elapsed time to animate a full-screen procedural pattern.">Monjori shader</a></li>
+                <li><a href="?example=webgl_custom_attributes"
+                    data-description="A custom attribute displaces the vertices of a rotating, water-textured sphere along their normals.">Vertex displacement</a></li>
+            </ul>
+        </section>
+    </nav>
+</aside>
+<main id="content">
+    <section id="welcome">
+        <h1>Threekt Examples</h1>
+        <p>Select an example from the menu to open its WebGL demo.</p>
+    </section>
+    <section id="example-view" hidden>
+        <header>
+            <h1 id="example-title"></h1>
+            <p id="example-description"></p>
+        </header>
+        <div id="example-stage">
+            <canvas id="example-canvas" aria-label="WebGL example view"></canvas>
+            <p id="example-error" role="alert" hidden></p>
+        </div>
+    </section>
 </main>
 <script type="module" src="/src/index.ts"></script>
 </body>

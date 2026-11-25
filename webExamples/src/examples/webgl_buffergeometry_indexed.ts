@@ -52,7 +52,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     const rotation = new Euler();
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
     const panel = examplePanel(canvas);
-    addToggle(panel, 'Malla de alambre', false, (value) => { material.wireframe = value; });
+    addToggle(panel, 'Wireframe', false, (value) => { material.wireframe = value; });
     return {
         render(seconds: number) {
             if (!fitPerspective(canvas, camera, renderer)) return;

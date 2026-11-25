@@ -44,7 +44,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
     const pointer = followPointer(canvas, camera, scene);
     const panel = examplePanel(canvas);
-    addToggle(panel, 'Texturas', true, (value) => {
+    addToggle(panel, 'Textures', true, (value) => {
         for (const { material, texture } of layers) material.map = value ? texture : null;
     });
     return {

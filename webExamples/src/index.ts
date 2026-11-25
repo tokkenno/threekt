@@ -31,59 +31,101 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
 ]);
 
+const gallery = document.querySelector<HTMLElement>('#gallery')!;
+const menuToggle = document.querySelector<HTMLButtonElement>('#menu-toggle')!;
+const compactLayout = window.matchMedia('(max-width: 44rem)');
+const menuPreference = () => sessionStorage.getItem(compactLayout.matches ? 'compact-menu' : 'desktop-menu');
+
+function setMenuExpanded(expanded: boolean) {
+    gallery.hidden = !expanded;
+    menuToggle.setAttribute('aria-expanded', String(expanded));
+    menuToggle.setAttribute('aria-label', expanded ? 'Collapse examples menu' : 'Expand examples menu');
+    if (expanded) gallery.querySelector('[aria-current="page"]')?.scrollIntoView({ block: 'nearest' });
+}
+
+function restoreMenu() {
+    const saved = menuPreference();
+    setMenuExpanded(saved === null ? !compactLayout.matches : saved === 'open');
+}
+
+function saveMenu(expanded: boolean) {
+    sessionStorage.setItem(compactLayout.matches ? 'compact-menu' : 'desktop-menu', expanded ? 'open' : 'closed');
+    setMenuExpanded(expanded);
+}
+
+menuToggle.addEventListener('click', () => saveMenu(gallery.hidden === true));
+compactLayout.addEventListener('change', restoreMenu);
+gallery.addEventListener('click', (event) => {
+    if (compactLayout.matches && event.button === 0 && !event.ctrlKey && !event.metaKey &&
+        !event.shiftKey && !event.altKey && event.target instanceof Element && event.target.closest('a')) {
+        saveMenu(false);
+    }
+});
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !gallery.hidden &&
+        (gallery.contains(document.activeElement) || document.activeElement === menuToggle)) {
+        saveMenu(false);
+        menuToggle.focus();
+    }
+});
+
+restoreMenu();
+
 const exampleId = new URLSearchParams(window.location.search).get('example');
+const load = exampleId !== null ? examples.get(exampleId) : undefined;
+const selected = Array.from(gallery.querySelectorAll<HTMLAnchorElement>('a[data-description]'))
+    .find(link => new URL(link.href).searchParams.get('example') === exampleId);
 
-if (exampleId !== null) {
-    const load = examples.get(exampleId);
-    const canvas = document.querySelector<HTMLCanvasElement>('#example-canvas');
-    const errorMessage = document.querySelector<HTMLParagraphElement>('#example-error');
-    const gallery = document.querySelector<HTMLElement>('#gallery');
-    const view = document.querySelector<HTMLElement>('#example-view');
+if (load && selected) {
+    const canvas = document.querySelector<HTMLCanvasElement>('#example-canvas')!;
+    const errorMessage = document.querySelector<HTMLParagraphElement>('#example-error')!;
+    const title = selected.textContent.trim();
+    document.querySelector<HTMLElement>('#example-title')!.textContent = title;
+    document.querySelector<HTMLElement>('#example-description')!.textContent = selected.dataset.description ?? '';
+    document.querySelector<HTMLElement>('#welcome')!.hidden = true;
+    document.querySelector<HTMLElement>('#example-view')!.hidden = false;
+    document.title = `${title} · Threekt`;
+    selected.setAttribute('aria-current', 'page');
+    if (!gallery.hidden) selected.scrollIntoView({ block: 'nearest' });
 
-    if (load && canvas && errorMessage && gallery && view) {
-        const showError = (error: unknown) => {
-            errorMessage.textContent = `No se pudo iniciar el ejemplo. ${String(error)}`;
-            errorMessage.hidden = false;
+    const showError = (error: unknown) => {
+        errorMessage.textContent = `Could not run the example. ${String(error)}`;
+        errorMessage.hidden = false;
+    };
+
+    let stop = () => {};
+    let closed = false;
+    window.addEventListener('pagehide', (event) => {
+        if (!event.persisted) {
+            closed = true;
+            stop();
+        }
+    });
+
+    load().then(async ({ createExample }) => {
+        const example = await createExample(canvas);
+        if (closed) {
+            example.dispose();
+            return;
+        }
+
+        let frame: number | undefined;
+        const startedAt = performance.now();
+        stop = () => {
+            if (frame !== undefined) cancelAnimationFrame(frame);
+            example.dispose();
+            stop = () => {};
         };
 
-        gallery.hidden = true;
-        view.hidden = false;
-        document.title = `${exampleId} · Threekt`;
-
-        let stop = () => {};
-        let closed = false;
-        window.addEventListener('pagehide', (event) => {
-            if (!event.persisted) {
-                closed = true;
+        const draw = (now: number) => {
+            try {
+                example.render((now - startedAt) / 1000);
+                frame = requestAnimationFrame(draw);
+            } catch (error) {
                 stop();
+                showError(error);
             }
-        });
-
-        load().then(async ({ createExample }) => {
-            const example = await createExample(canvas);
-            if (closed) {
-                example.dispose();
-                return;
-            }
-
-            let frame: number | undefined;
-            const startedAt = performance.now();
-            stop = () => {
-                if (frame !== undefined) cancelAnimationFrame(frame);
-                example.dispose();
-                stop = () => {};
-            };
-
-            const draw = (now: number) => {
-                try {
-                    example.render((now - startedAt) / 1000);
-                    frame = requestAnimationFrame(draw);
-                } catch (error) {
-                    stop();
-                    showError(error);
-                }
-            };
-            frame = requestAnimationFrame(draw);
-        }).catch(showError);
-    }
+        };
+        frame = requestAnimationFrame(draw);
+    }).catch(showError);
 }

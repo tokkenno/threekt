@@ -27,7 +27,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
     const pointer = followPointer(canvas, camera, scene);
     const panel = examplePanel(canvas);
-    addToggle(panel, 'Atenuación por distancia', true, (value) => { material.sizeAttenuation = value; });
+    addToggle(panel, 'Size attenuation', true, (value) => { material.sizeAttenuation = value; });
     return {
         render(seconds: number) {
             if (!fitPerspective(canvas, camera, renderer)) return;
