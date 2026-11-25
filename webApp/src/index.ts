@@ -38,6 +38,9 @@ const examples = new Map([
     ['webgl_camera', () => import('./examples/webgl_camera')],
     ['webgl_multiple_views', () => import('./examples/webgl_multiple_views')],
     ['webgl_lines_dashed', () => import('./examples/webgl_lines_dashed')],
+    ['webgl_morphtargets', () => import('./examples/webgl_morphtargets')],
+    ['webgl_video_kinect', () => import('./examples/webgl_video_kinect')],
+    ['webgl_loader_texture_tga', () => import('./examples/webgl_loader_texture_tga')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
