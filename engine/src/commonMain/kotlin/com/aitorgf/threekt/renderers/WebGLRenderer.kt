@@ -4,8 +4,9 @@ import com.aitorgf.threekt.cameras.ArrayCamera
 import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.OrthographicCamera
-import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.BufferGeometry
+import com.aitorgf.threekt.core.GpuType
+import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Blending
 import com.aitorgf.threekt.materials.LineBasicMaterial
@@ -465,10 +466,14 @@ class WebGLRenderer(context: GLContext) {
             val bytesPerElement = interleaved?.data?.bytesPerElement ?: 0
             attributes.bind(storage)
             gl.enableVertexAttribArray(location)
-            gl.vertexAttribPointer(
-                location, attribute.itemSize, attributes.componentType(storage), attribute.normalized,
-                (interleaved?.data?.stride ?: 0) * bytesPerElement, (interleaved?.offset ?: 0) * bytesPerElement,
-            )
+            val type = attributes.componentType(storage)
+            val stride = (interleaved?.data?.stride ?: 0) * bytesPerElement
+            val offset = (interleaved?.offset ?: 0) * bytesPerElement
+            if (type != GL.FLOAT && attribute.gpuType == GpuType.Int) {
+                gl.vertexAttribIPointer(location, attribute.itemSize, type, stride, offset)
+            } else {
+                gl.vertexAttribPointer(location, attribute.itemSize, type, attribute.normalized, stride, offset)
+            }
             used.add(location)
         }
         for (location in enabledAttributes - used) gl.disableVertexAttribArray(location)

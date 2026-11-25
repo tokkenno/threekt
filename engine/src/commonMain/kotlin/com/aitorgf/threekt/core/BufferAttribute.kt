@@ -31,6 +31,9 @@ abstract class BufferAttribute(
         return this
     }
 
+    /** Shader input type for integer-backed data. Has no effect on floating-point storage. */
+    var gpuType = GpuType.Float
+
     /** Optional name, used for example as the key of a morph target. */
     var name = ""
 

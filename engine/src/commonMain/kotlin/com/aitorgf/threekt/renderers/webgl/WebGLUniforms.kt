@@ -49,13 +49,31 @@ internal class WebGLUniforms(private val gl: GLContext, private val textures: We
             }
             GL.FLOAT_MAT3 -> gl.uniformMatrix3fv(location, false, floats(expect<Matrix3>(uniform, value).elements, matrix3))
             GL.FLOAT_MAT4 -> gl.uniformMatrix4fv(location, false, floats(expect<Matrix4>(uniform, value).elements, matrix4))
-            GL.SAMPLER_2D -> {
-                val unit = nextTextureUnit++
-                textures.bind(expect<Texture>(uniform, value), unit)
-                gl.uniform1i(location, unit)
-            }
+            GL.SAMPLER_2D -> setSampler2D(uniform, value)
             else -> throw IllegalArgumentException("Uniform '${uniform.name}' has an unsupported GLSL type.")
         }
+    }
+
+    private fun setSampler2D(uniform: WebGLProgram.UniformInfo, value: Any) {
+        val arraySize = uniform.arraySize
+        if (arraySize == null) {
+            val unit = allocateTextureUnit()
+            textures.bind(expect<Texture>(uniform, value), unit)
+            gl.uniform1i(uniform.location, unit)
+            return
+        }
+
+        val images = expect<Array<*>>(uniform, value)
+        require(images.size >= arraySize) { "Uniform '${uniform.name}' needs at least $arraySize textures." }
+        val units = IntArray(arraySize)
+        for (index in units.indices) {
+            val image = images[index] as? Texture
+                ?: throw IllegalArgumentException("Uniform '${uniform.name}[$index]' needs a texture.")
+            val unit = allocateTextureUnit()
+            units[index] = unit
+            textures.bind(image, unit)
+        }
+        gl.uniform1iv(uniform.location, units)
     }
 
     /** Sets a `mat4` uniform from [matrix] when the program declares it. */

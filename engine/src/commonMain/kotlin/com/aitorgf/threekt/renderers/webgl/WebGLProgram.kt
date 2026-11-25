@@ -8,8 +8,8 @@ import com.aitorgf.threekt.materials.ShaderMaterial
  * listed under their name without the `[0]` suffix.
  */
 internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fragmentSource: String) {
-    /** Active uniform with its location and GLSL type constant. */
-    class UniformInfo(val name: String, val location: Any?, val type: Int)
+    /** Active uniform with its GLSL type and an array length when it refers to a whole array. */
+    class UniformInfo(val name: String, val location: Any?, val type: Int, val arraySize: Int?)
 
     val handle: Any = link(vertexSource, fragmentSource)
 
@@ -29,7 +29,8 @@ internal class WebGLProgram(private val gl: GLContext, vertexSource: String, fra
         uniforms = (0 until uniformCount).associate { index ->
             val info = gl.getActiveUniform(handle, index)
             val name = info.name.removeSuffix("[0]")
-            name to UniformInfo(name, gl.getUniformLocation(handle, info.name), info.type)
+            val arraySize = info.size.takeIf { name != info.name }
+            name to UniformInfo(name, gl.getUniformLocation(handle, info.name), info.type, arraySize)
         }
     }
 

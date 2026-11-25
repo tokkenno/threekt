@@ -3,16 +3,20 @@ package com.aitorgf.threekt.renderers
 import com.aitorgf.threekt.cameras.PerspectiveCamera
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
+import com.aitorgf.threekt.core.GpuType
+import com.aitorgf.threekt.core.Int16BufferAttribute
 import com.aitorgf.threekt.core.Uint8BufferAttribute
 import com.aitorgf.threekt.core.Uniform
 import com.aitorgf.threekt.materials.GLSLVersion
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.RawShaderMaterial
+import com.aitorgf.threekt.materials.ShaderMaterial
 import com.aitorgf.threekt.materials.Side
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.objects.Mesh
 import com.aitorgf.threekt.renderers.webgl.WebGL2Context
 import com.aitorgf.threekt.scenes.Scene
+import com.aitorgf.threekt.textures.ImageTexture
 import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -76,6 +80,55 @@ class MaterialRenderingTest {
 
     private fun assertNear(expected: List<Int>, actual: List<Int>, tolerance: Int = 3) {
         assertTrue(expected.indices.all { abs(expected[it] - actual[it]) <= tolerance }, "Expected $expected, got $actual")
+    }
+
+    @Test
+    fun signedIntegerAttributesSelectTexturesFromDistinctSamplerUnits() = withRenderer { renderer, gl ->
+        fun texture(cssColor: String): ImageTexture {
+            val canvas: dynamic = js("document.createElement('canvas')")
+            canvas.width = 1
+            canvas.height = 1
+            val context = canvas.getContext("2d")
+            context.fillStyle = cssColor
+            context.fillRect(0, 0, 1, 1)
+            return ImageTexture(canvas)
+        }
+
+        val values = shortArrayOf(-1, -1, -1)
+        val index = Int16BufferAttribute(values, 1).apply { gpuType = GpuType.Int }
+        val geometry = triangle().setAttribute("textureIndex", index)
+        val material = ShaderMaterial(
+            """
+                in int textureIndex;
+                flat out int index;
+                void main() {
+                    index = textureIndex;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            """.trimIndent(),
+            """
+                uniform sampler2D maps[2];
+                flat in int index;
+                out vec4 outColor;
+                void main() {
+                    outColor = index == -1 ? texture(maps[0], vec2(0.5)) : texture(maps[1], vec2(0.5));
+                }
+            """.trimIndent(),
+        ).apply {
+            glslVersion = GLSLVersion.GLSL3
+            uniforms.set("maps", Uniform(arrayOf(texture("#ff0000"), texture("#00ff00"))))
+        }
+        val scene = Scene()
+        scene.add(Mesh(geometry, material))
+        val camera = PerspectiveCamera().apply { position.z = 3.0 }
+
+        renderer.render(scene, camera)
+        assertNear(listOf(255, 0, 0, 255), readRgba(gl))
+
+        values.fill(1)
+        index.markUpdated()
+        renderer.render(scene, camera)
+        assertNear(listOf(0, 255, 0, 255), readRgba(gl))
     }
 
     @Test

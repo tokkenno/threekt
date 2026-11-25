@@ -72,6 +72,9 @@ class WebGL2Context(private val canvas: dynamic) : GLContext {
     override fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, offset: Int) {
         gl.vertexAttribPointer(index, size, type, normalized, stride, offset)
     }
+    override fun vertexAttribIPointer(index: Int, size: Int, type: Int, stride: Int, offset: Int) {
+        gl.vertexAttribIPointer(index, size, type, stride, offset)
+    }
     override fun lineWidth(width: Double) { gl.lineWidth(width) }
     override fun drawArrays(mode: Int, first: Int, count: Int) { gl.drawArrays(mode, first, count) }
     override fun drawElements(mode: Int, count: Int, type: Int, offset: Int) { gl.drawElements(mode, count, type, offset) }
@@ -97,6 +100,7 @@ class WebGL2Context(private val canvas: dynamic) : GLContext {
     override fun uniform1f(location: Any?, x: Double) { gl.uniform1f(location, x) }
     override fun uniform1fv(location: Any?, value: FloatArray) { gl.uniform1fv(location, value) }
     override fun uniform1i(location: Any?, x: Int) { gl.uniform1i(location, x) }
+    override fun uniform1iv(location: Any?, value: IntArray) { gl.uniform1iv(location, value) }
     override fun uniform1ui(location: Any?, x: Int) { gl.uniform1ui(location, x) }
     override fun uniform2f(location: Any?, x: Double, y: Double) { gl.uniform2f(location, x, y) }
     override fun uniform2i(location: Any?, x: Int, y: Int) { gl.uniform2i(location, x, y) }
