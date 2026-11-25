@@ -19,7 +19,15 @@ npm ci
 npm start
 ```
 
-Open the local URL printed by Vite. To build the examples for production, run `npm run build`.
+Vite prints both URLs. From another device on the same network, open
+`http://<development-machine-ip>:8080` or `https://<development-machine-ip>:8443`.
+
+HTTPS uses a self-signed certificate generated locally with OpenSSL. To avoid browser trust errors, trust
+the public certificate printed at startup on the device you are testing from, or set
+`THREEKT_HTTPS_CERT` and `THREEKT_HTTPS_KEY` to the absolute paths of your own PEM certificate and key
+before starting the app.
+
+To build the examples for production, run `npm run build`.
 
 ## Run the JVM examples
 
