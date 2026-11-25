@@ -11,6 +11,9 @@ import kotlin.js.JsExport
  */
 @JsExport
 open class Object3D {
+    /** Optional name used to identify the object. */
+    var name = ""
+
     /** Unique number of this node, assigned in creation order. */
     val id: Int = nextId++
 
