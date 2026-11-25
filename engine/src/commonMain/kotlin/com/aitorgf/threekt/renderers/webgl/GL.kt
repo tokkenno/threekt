@@ -32,6 +32,7 @@ object GL {
     const val DEPTH_TEST = 0x0B71
     const val VIEWPORT = 0x0BA2
     const val BLEND = 0x0BE2
+    const val SAMPLE_ALPHA_TO_COVERAGE = 0x809E
     const val SCISSOR_TEST = 0x0C11
     const val MAX_TEXTURE_SIZE = 0x0D33
     const val TEXTURE_2D = 0x0DE1

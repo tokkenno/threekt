@@ -276,6 +276,7 @@ class WebGLRenderer(context: GLContext) {
         for (item in renderList.opaque) renderObject(item.`object`, item.geometry, item.material, scene, camera)
         for (item in renderList.transparent) renderObject(item.`object`, item.geometry, item.material, scene, camera)
         gl.disable(GL.BLEND)
+        gl.disable(GL.SAMPLE_ALPHA_TO_COVERAGE)
         gl.depthMask(true)
     }
 
@@ -433,6 +434,8 @@ class WebGLRenderer(context: GLContext) {
 
     /** Applies culling, blending, and depth settings. [mirrored] flips the winding of front faces. */
     private fun setMaterialState(material: Material, mirrored: Boolean) {
+        if (material.alphaToCoverage) gl.enable(GL.SAMPLE_ALPHA_TO_COVERAGE)
+        else gl.disable(GL.SAMPLE_ALPHA_TO_COVERAGE)
         if (material.side == Side.Double) {
             gl.disable(GL.CULL_FACE)
         } else {

@@ -141,6 +141,32 @@ class CameraRenderingTest {
         }
     }
 
+    @Test
+    fun scissorRestrictsClearsInCssPixelsAndRestoresFullDrawingWhenDisabled() {
+        val gl = createContext()
+        val renderer = WebGLRenderer(WebGL2Context(gl.canvas))
+        try {
+            renderer.setSize(32, 16, 2.0)
+            val scene = Scene().apply { background = Color(0xff0000) }
+            val camera = PerspectiveCamera()
+            renderer.render(scene, camera)
+            renderer.setScissor(16, 0, 16, 16)
+            renderer.setScissorTest(true)
+
+            scene.background = Color(0x0000ff)
+            renderer.render(scene, camera)
+            assertEquals(0xff0000, readRgb(gl, 31, 16))
+            assertEquals(0x0000ff, readRgb(gl, 32, 16))
+
+            renderer.setScissorTest(false)
+            renderer.render(scene, camera)
+            assertEquals(0x0000ff, readRgb(gl, 31, 16))
+            assertEquals(gl.NO_ERROR, gl.getError())
+        } finally {
+            renderer.dispose()
+        }
+    }
+
     private fun createContext(): dynamic {
         val canvas: dynamic = js("document.createElement('canvas')")
         canvas.width = 64

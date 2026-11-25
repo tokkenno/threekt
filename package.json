@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "webApp",
+    "webExamples",
     "engine/build/dist/js/developmentLibrary"
   ],
   "scripts": {
     "build:engine": "./gradlew :engine:jsBrowserDevelopmentLibraryDistribution",
-    "build": "npm run build:engine && npm run build -w webApp",
-    "start": "npm run build:engine && npm run start -w webApp"
+    "build": "npm run build:engine && npm run build -w webExamples",
+    "start": "npm run build:engine && npm run start -w webExamples"
   }
 }

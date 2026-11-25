@@ -32,10 +32,10 @@ To build the examples for production, run `npm run build`.
 ## Run the JVM examples
 
 ```sh
-./gradlew :jvmApp:run
+./gradlew :jvmExamples:run
 ```
 
-The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmApp:run --args="--example webgl_buffergeometry_rawshader"`.
+The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmExamples:run --args="--example webgl_buffergeometry_rawshader"`.
 
 ### Parameters
 - `--headless` runs without a window.

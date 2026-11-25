@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threekt Examples</title>
+    <link rel="stylesheet" href="/src/gallery.css">
+</head>
+<body>
+<aside id="sidebar">
+    <button id="menu-toggle" type="button" aria-controls="gallery" aria-expanded="true" aria-label="Collapse examples menu">
+        <span aria-hidden="true">☰</span>
+    </button>
+    <nav id="gallery" aria-label="Examples">
+        <a class="gallery-home" href="./">Threekt Examples</a>
+        <section>
+            <h2>Textures</h2>
+            <ul>
+                <li><a href="?example=webgl_geometry_cube"
+                    data-description="A rotating cube shows how an image texture is mapped onto each face of a mesh.">Textured cube</a></li>
+                <li><a href="?example=webgl_materials_texture_canvas"
+                    data-description="Draw in the panel to update the texture on the rotating cube in real time.">Canvas texture</a></li>
+                <li><a href="?example=webgl_materials_texture_rotation"
+                    data-description="Adjust the UV grid’s offset, repeat, rotation, and pivot while orbiting the textured surface.">Texture transforms</a></li>
+                <li><a href="?example=webgl_materials_texture_anisotropy"
+                    data-description="Move the pointer over a tiled floor to compare maximum anisotropic filtering with a single sample at grazing angles.">Anisotropic filtering</a></li>
+                <li><a href="?example=webgl_materials_texture_filters"
+                    data-description="Compare linear and nearest filtering on Caravaggio’s Basket of Fruit and on a receding checkerboard floor. Move the pointer to change the viewpoint.">Texture filter comparison</a></li>
+                <li><a href="?example=webgl_materials_texture_manualmipmap"
+                    data-description="Color-coded mip levels on a tiled floor reveal where trilinear filtering blends levels and where nearest filtering switches between them.">Manual mipmaps</a></li>
+                <li><a href="?example=webgl_materials_video_webcam"
+                    data-description="Start the webcam to map its live video onto rotating cubes. This example requires camera permission and a secure context.">Webcam textures</a></li>
+                <li><a href="?example=webgl_video_kinect"
+                    data-description="A shader reconstructs a point cloud from a prerecorded Kinect depth video. Adjust point size and the near and far depth limits.">Kinect depth video</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Buffer geometry</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry"
+                    data-description="Ambient and directional lights illuminate 160,000 translucent triangles with per-vertex colors.">Phong-lit triangles</a></li>
+                <li><a href="?example=webgl_buffergeometry_uint"
+                    data-description="Half a million Phong-lit triangles use normalized 16-bit normals and 8-bit colors.">Integer vertex attributes</a></li>
+                <li><a href="?example=webgl_buffergeometry_indexed"
+                    data-description="A rotating grid shares vertices between triangles and uses hemisphere lighting. Toggle wireframe to see the triangle edges.">Indexed geometry</a></li>
+                <li><a href="?example=webgl_buffergeometry_attributes_none"
+                    data-description="A GLSL vertex shader generates 10,000 triangles from gl_VertexID, while the draw range determines how many vertices are drawn.">Geometry without attributes</a></li>
+                <li><a href="?example=webgl_buffergeometry_attributes_integer"
+                    data-description="Each of 10,000 rotating triangles uses an unnormalized integer vertex attribute to choose one of three textures in a GLSL shader.">Integer texture indices</a></li>
+                <li><a href="?example=webgl_geometry_colors"
+                    data-description="Three polyhedra use different vertex color gradients, with wireframe overlays that show how the faces are constructed.">Vertex colors on polyhedra</a></li>
+                <li><a href="?example=webgl_morphtargets"
+                    data-description="Blend the cube into alternate shapes using the morph target sliders.">Mesh morph targets</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Lines</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_lines"
+                    data-description="Ten thousand colored line segments rotate and blend toward a second set of positions.">Line morph targets</a></li>
+                <li><a href="?example=webgl_buffergeometry_lines_indexed"
+                    data-description="Four colors distinguish the rotating Koch curves, drawn at several levels of subdivision with indexed line segments.">Indexed Koch curves</a></li>
+                <li><a href="?example=webgl_buffergeometry_selective_draw"
+                    data-description="Twenty thousand segments form a rotating sphere. Use the buttons to hide a random subset or restore every line.">Selective line drawing</a></li>
+                <li><a href="?example=webgl_lines_colors"
+                    data-description="Three color schemes show how vertex colors interpolate along angular and smoothed Hilbert curves. Move the pointer to change the viewpoint.">Hilbert curve colors</a></li>
+                <li><a href="?example=webgl_lines_dashed"
+                    data-description="A Hilbert spline and a box rotate together. Their line distances drive two different dash and gap patterns that fade into fog.">Dashed curves and edges</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Points and particles</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_points"
+                    data-description="Half a million colored points fill a rotating cube. Distance fog fades the far side into the background.">Point cloud with fog</a></li>
+                <li><a href="?example=webgl_buffergeometry_points_interleaved"
+                    data-description="Each point packs its floating-point position and normalized byte color into a shared 16-byte record.">Interleaved point cloud</a></li>
+                <li><a href="?example=webgl_buffergeometry_drawrange"
+                    data-description="Particles bounce inside a box, and nearby pairs are joined by lines. The position buffers and draw ranges update as the particles move.">Connected particles</a></li>
+                <li><a href="?example=webgl_buffergeometry_custom_attributes_particles"
+                    data-description="A custom size attribute makes 100,000 textured particles pulse independently as their rainbow-colored cloud rotates.">Animated particle sizes</a></li>
+                <li><a href="?example=webgl_custom_attributes_points"
+                    data-description="A shader uses per-point color and size to animate a rotating cloud of sparks with warm and cool halves.">Two-tone spark cloud</a></li>
+                <li><a href="?example=webgl_points_waves"
+                    data-description="Two sine waves change the height and size of points on a grid. Move the pointer to change the viewpoint.">Point waves</a></li>
+                <li><a href="?example=webgl_points_billboards"
+                    data-description="Textured discs face the camera and fade into distance fog. Toggle size attenuation to compare fixed and distance-scaled sizes.">Point billboards</a></li>
+                <li><a href="?example=webgl_points_sprites"
+                    data-description="Five layers of snowflake sprites rotate through exponential fog. Toggle the textures to see the underlying points.">Point sprites</a></li>
+                <li><a href="?example=webgl_custom_attributes_points2"
+                    data-description="A warm sphere of pulsing sprites encloses a cooler box. Points are sorted back to front each frame so their translucent edges blend in depth order.">Depth-sorted point sprites</a></li>
+                <li><a href="?example=webgl_custom_attributes_points3"
+                    data-description="An orange frame surrounds a hollow cloud of blue and violet point sprites. The inner points pulse independently while the scene rotates.">Point cloud in a box frame</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Materials</h2>
+            <ul>
+                <li><a href="?example=webgl_materials_blending"
+                    data-description="Five image rows compare no blending, normal, additive, subtractive, and multiply blending over a moving checkerboard.">Blending modes</a></li>
+                <li><a href="?example=webgl_materials_wireframe"
+                    data-description="Orbit two copies of the same head mesh to compare standard wireframe lines with shader-based edges. The slider adjusts the shader’s edge thickness.">Shader wireframe</a></li>
+                <li><a href="?example=webgl_materials_blending_custom"
+                    data-description="Compare compositing results by changing the blend equation and inspecting the grid of source and destination factors.">Custom blending equations</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Shaders</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_rawshader"
+                    data-description="A raw GLSL program draws two hundred translucent triangles and animates their red channel with a time uniform.">Raw shader material</a></li>
+                <li><a href="?example=webgl_shader"
+                    data-description="The Monjori fragment shader uses elapsed time to animate a full-screen procedural pattern.">Monjori shader</a></li>
+                <li><a href="?example=webgl_custom_attributes"
+                    data-description="A custom attribute displaces the vertices of a rotating, water-textured sphere along their normals.">Vertex displacement</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Panoramas</h2>
+            <ul>
+                <li><a href="?example=webgl_panorama_equirectangular"
+                    data-description="Look around a panoramic photograph mapped to the inside of a sphere. Drag to turn the view.">Equirectangular panorama</a></li>
+                <li><a href="?example=webgl_panorama_cube"
+                    data-description="Look around a panorama assembled from six cube faces.">Cube panorama</a></li>
+                <li><a href="?example=webgl_video_panorama_equirectangular"
+                    data-description="Look around a panoramic video mapped to the inside of a sphere.">Video panorama</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Cameras and views</h2>
+            <ul>
+                <li><a href="?example=webgl_multiple_elements_text"
+                    data-description="Six embedded views show plane, cylindrical and spherical waves on regular grids and random point distributions. Scroll to explore the article.">3D waves in text</a></li>
+                <li><a href="?example=webgl_camera"
+                    data-description="Compare perspective and orthographic projections alongside a view of the active camera frustum.">Camera projections</a></li>
+                <li><a href="?example=webgl_multiple_views"
+                    data-description="Three cameras render the same scene from different viewpoints into one canvas.">Multiple viewports</a></li>
+                <li><a href="?example=webgl_camera_array"
+                    data-description="An array camera renders a grid of 36 views of a rotating cylinder into one canvas.">Array camera</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Loaders and exporters</h2>
+            <ul>
+                <li><a href="?example=webgl_loader_obj"
+                    data-description="Load and display the upstream Wavefront model with its MTL materials and textures.">Wavefront OBJ loader</a></li>
+                <li><a href="?example=webgl_loader_xyz"
+                    data-description="Load colored point data from an XYZ file and view it as a rotating cloud.">XYZ point cloud</a></li>
+                <li><a href="?example=webgl_loader_imagebitmap"
+                    data-description="Compare textures decoded with ImageBitmap and a browser image element on rotating meshes.">ImageBitmap textures</a></li>
+                <li><a href="?example=webgl_loader_pcd"
+                    data-description="Load a PCD point cloud and adjust how large its points appear.">PCD point clouds</a></li>
+                <li><a href="?example=webgl_loader_texture_tga"
+                    data-description="Load TGA images as textures and inspect them on rotating cubes.">TGA textures</a></li>
+                <li><a href="?example=webgl_loader_stl"
+                    data-description="Load ASCII and binary STL models and display their geometry in a lit scene.">STL loader</a></li>
+                <li><a href="?example=misc_exporter_stl"
+                    data-description="Export the displayed geometry as either ASCII or binary STL.">STL exporter</a></li>
+                <li><a href="?example=misc_exporter_ply"
+                    data-description="Export the displayed geometry as ASCII or binary PLY.">PLY exporter</a></li>
+                <li><a href="?example=misc_exporter_obj"
+                    data-description="Choose a geometry or a group of objects and export the selection as Wavefront OBJ.">OBJ exporter</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Interaction</h2>
+            <ul>
+                <li><a href="?example=webgl_interactive_cubes"
+                    data-description="Move the pointer over the scene to highlight the cube hit by a ray from the perspective camera.">Perspective cube picking</a></li>
+                <li><a href="?example=webgl_interactive_cubes_ortho"
+                    data-description="Pick cubes with a ray from an orthographic camera, where rays are parallel across the viewport.">Orthographic cube picking</a></li>
+                <li><a href="?example=webgl_interactive_lines"
+                    data-description="Move the pointer to raycast against line segments and see where the closest segment is hit.">Line intersections</a></li>
+                <li><a href="?example=webgl_interactive_buffergeometry"
+                    data-description="Raycast against buffer geometry to highlight the vertices of the intersected triangle.">Triangle picking</a></li>
+                <li><a href="?example=webgl_interactive_points"
+                    data-description="Move the pointer over the cloud to identify points within the picking threshold.">Point picking</a></li>
+                <li><a href="?example=webgl_interactive_raycasting_points"
+                    data-description="Compare raycasting against indexed and non-indexed point clouds.">Point-cloud raycasting</a></li>
+                <li><a href="?example=webgl_interactive_voxelpainter"
+                    data-description="Click the grid or an existing voxel to add a block. Hold Shift while clicking to remove a block.">Voxel painter</a></li>
+                <li><a href="?example=webgl_raycaster_texture"
+                    data-description="Raycast against a textured surface and inspect how the hit follows changes to its UV transform.">Texture UV picking</a></li>
+                <li><a href="?example=webgl_math_orientation_transform"
+                    data-description="Watch a mesh turn toward changing targets. Switch between gradual quaternion rotation and an immediate look-at orientation.">Quaternion orientation</a></li>
+            </ul>
+        </section>
+    </nav>
+</aside>
+<main id="content">
+    <section id="welcome">
+        <h1>Threekt Examples</h1>
+        <p>Select an example from the menu to open its WebGL demo.</p>
+    </section>
+    <section id="example-view" hidden>
+        <header>
+            <h1 id="example-title"></h1>
+            <p id="example-description"></p>
+        </header>
+        <div id="example-stage">
+            <canvas id="example-canvas" aria-label="WebGL example view"></canvas>
+            <p id="example-error" role="alert" hidden></p>
+        </div>
+    </section>
+</main>
+<script type="module" src="/src/index.ts"></script>
+</body>
+</html>

@@ -8,6 +8,9 @@ abstract class Material {
     /** Unique number of this material, assigned in creation order. */
     val id: Int = nextId++
 
+    /** Converts fragment alpha to multisample coverage on a multisampled target. */
+    var alphaToCoverage = false
+
     /** Faces to render. Defaults to [Side.Front]. */
     var side = Side.Front
 
