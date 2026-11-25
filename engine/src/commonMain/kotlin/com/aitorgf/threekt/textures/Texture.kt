@@ -2,6 +2,7 @@ package com.aitorgf.threekt.textures
 
 import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Vector2
+import com.aitorgf.threekt.math.color.ColorSpace
 import kotlin.js.JsExport
 
 /**
@@ -27,6 +28,13 @@ abstract class Texture {
     fun markUpdated() {
         version++
     }
+
+    /**
+     * Color space of the source pixels. Threekt defaults to [ColorSpace.SRGB] for existing image
+     * textures, and [ColorSpace.None] matches the Three.js default for untagged data. Call
+     * [markUpdated] if the color space changes after the first draw.
+     */
+    var colorSpace = ColorSpace.SRGB
 
     /** Horizontal (U) wrapping mode. Renderers apply changes on the next draw. */
     var wrapS = Wrapping.ClampToEdge

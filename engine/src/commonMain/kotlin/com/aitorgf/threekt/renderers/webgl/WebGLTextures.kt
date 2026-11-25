@@ -1,5 +1,6 @@
 package com.aitorgf.threekt.renderers.webgl
 
+import com.aitorgf.threekt.math.color.ColorSpace
 import com.aitorgf.threekt.textures.Texture
 import com.aitorgf.threekt.textures.Wrapping
 
@@ -67,7 +68,8 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
 
     private fun upload(texture: Texture) {
         val image = requireNotNull(texture.image) { "The texture has no image to upload." }
-        gl.texImage2D(GL.TEXTURE_2D, 0, GL.SRGB8_ALPHA8, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = true)
+        val internalFormat = if (texture.colorSpace == ColorSpace.SRGB) GL.SRGB8_ALPHA8 else GL.RGBA8
+        gl.texImage2D(GL.TEXTURE_2D, 0, internalFormat, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = true)
         gl.generateMipmap(GL.TEXTURE_2D)
     }
 
