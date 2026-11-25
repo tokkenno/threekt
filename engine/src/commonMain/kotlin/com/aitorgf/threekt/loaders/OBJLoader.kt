@@ -19,11 +19,19 @@ private val continuation = Regex("\\\\\\r?\\n")
 
 /**
  * Parses Wavefront OBJ text into a [Group]. Supports polygon fans, polylines, points, normals, UVs,
- * vertex colors and relative indices. Threekt receives the text from the caller and uses default
- * materials for OBJ files, including those that reference an MTL library.
+ * vertex colors and relative indices. Threekt receives the text from the caller. Supply a parsed
+ * MTL library with [setMaterials] to resolve mesh materials named by `usemtl`.
  */
 @JsExport
 class OBJLoader {
+    private var materials: MaterialCreator? = null
+
+    /** Sets the library used by subsequent parses, or clears it when null. Returns this loader. */
+    fun setMaterials(materials: MaterialCreator?): OBJLoader {
+        this.materials = materials
+        return this
+    }
+
     /** Parses [text]. Malformed numeric data or out-of-range indices throw [IllegalArgumentException]. */
     fun parse(text: String): Group {
         val vertices = mutableListOf<Vector3>()
@@ -32,6 +40,7 @@ class OBJLoader {
         val colors = mutableListOf<Color?>()
         val result = Group()
         var name = ""
+        var materialName = ""
         var smooth = true
         val batches = linkedMapOf<String, Batch>()
         val ab = Vector3()
@@ -44,7 +53,13 @@ class OBJLoader {
                 if (batch.hasUvs) geometry.setAttribute("uv", Float32BufferAttribute(batch.uvs.toFloatArray(), 2))
                 if (batch.hasColors) geometry.setAttribute("color", Float32BufferAttribute(batch.colors.toFloatArray(), 3))
                 val child = when (primitive) {
-                    "f" -> Mesh(geometry, MeshPhongMaterial().apply { flatShading = !smooth; vertexColors = batch.hasColors })
+                    "f" -> {
+                        val material = materials?.create(materialName) ?: MeshPhongMaterial()
+                        material.flatShading = !smooth
+                        material.vertexColors = batch.hasColors
+                        if (!batch.hasUvs) material.map = null
+                        Mesh(geometry, material)
+                    }
                     "l" -> LineSegments(geometry, LineBasicMaterial().apply { vertexColors = batch.hasColors })
                     else -> Points(geometry, PointsMaterial().apply { vertexColors = batch.hasColors; sizeAttenuation = false })
                 }
@@ -103,7 +118,10 @@ class OBJLoader {
                     flush()
                     name = fields.drop(1).joinToString(" ")
                 }
-                "usemtl" -> flush()
+                "usemtl" -> {
+                    flush()
+                    materialName = fields.drop(1).joinToString(" ")
+                }
                 "s" -> {
                     val value = fields.getOrNull(1)?.lowercase()
                     val nextSmooth = value != "0" && value != "off"
