@@ -24,29 +24,33 @@ open class PolyhedronGeometry(
         val normals = FloatArray(count * 3)
         val uvs = FloatArray(count * 2)
         var vertex = 0
-        val direction = Vector3()
         val normal = Vector3()
         val edge = Vector3()
 
         fun vertexAt(index: Int): Vector3 = Vector3(vertices[index * 3], vertices[index * 3 + 1], vertices[index * 3 + 2])
 
         fun appendTriangle(a: Vector3, b: Vector3, c: Vector3) {
-            val triangle = arrayOf(a, b, c)
-            val centroid = a.copy().normalize().add(b.copy().normalize()).add(c.copy().normalize()).multiplyScalar(radius)
+            val triangle = arrayOf(
+                a.copy().normalize().multiplyScalar(radius),
+                b.copy().normalize().multiplyScalar(radius),
+                c.copy().normalize().multiplyScalar(radius),
+            )
+            val centroid = triangle[0].copy().add(triangle[1]).add(triangle[2])
             val azimuth = atan2(centroid.z, -centroid.x)
-            if (detail == 0) normal.subVectors(b, a).cross(edge.subVectors(c, a)).normalize()
+            if (detail == 0) {
+                normal.subVectors(triangle[1], triangle[0]).cross(edge.subVectors(triangle[2], triangle[0])).normalize()
+            }
             val start = vertex
             for (point in triangle) {
-                direction.copy(point).normalize().multiplyScalar(radius)
-                positions[vertex * 3] = direction.x.toFloat()
-                positions[vertex * 3 + 1] = direction.y.toFloat()
-                positions[vertex * 3 + 2] = direction.z.toFloat()
-                var u = atan2(direction.z, -direction.x) / (2 * PI) + 0.5
+                positions[vertex * 3] = point.x.toFloat()
+                positions[vertex * 3 + 1] = point.y.toFloat()
+                positions[vertex * 3 + 2] = point.z.toFloat()
+                var u = atan2(point.z, -point.x) / (2 * PI) + 0.5
                 if (azimuth < 0 && u == 1.0) u -= 1
-                if (direction.x == 0.0 && direction.z == 0.0) u = azimuth / (2 * PI) + 0.5
+                if (point.x == 0.0 && point.z == 0.0) u = azimuth / (2 * PI) + 0.5
                 uvs[vertex * 2] = u.toFloat()
-                uvs[vertex * 2 + 1] = (0.5 - atan2(-direction.y, hypot(direction.x, direction.z)) / PI).toFloat()
-                if (detail != 0) normal.copy(direction).normalize()
+                uvs[vertex * 2 + 1] = (0.5 - atan2(-point.y, hypot(point.x, point.z)) / PI).toFloat()
+                if (detail != 0) normal.copy(point).normalize()
                 normals[vertex * 3] = normal.x.toFloat()
                 normals[vertex * 3 + 1] = normal.y.toFloat()
                 normals[vertex * 3 + 2] = normal.z.toFloat()
