@@ -28,4 +28,4 @@ dependencyResolutionManagement {
 }
 
 include(":engine")
-include(":jvmApp")
+include(":jvmExamples")

@@ -2,7 +2,7 @@
 *.class
 /build
 **/build
-webApp/dist
+webExamples/dist
 
 # Log file
 *.log

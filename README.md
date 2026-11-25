@@ -26,7 +26,7 @@ Open the local URL printed by Vite. To build the examples for production, run `n
 The JVM app renders through OpenGL ES 3.0 with LWJGL and GLFW.
 
 ```sh
-./gradlew :jvmApp:run
+./gradlew :jvmExamples:run
 ```
 
-The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmApp:run --args="--example webgl_buffergeometry_rawshader"`. Add `--screenshot frame.png` to save a frame after two seconds and close the window.
+The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmExamples:run --args="--example webgl_buffergeometry_rawshader"`. Add `--screenshot frame.png` to save a frame after two seconds and close the window.
