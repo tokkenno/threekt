@@ -10,6 +10,7 @@ const examples = new Map([
     ['webgl_buffergeometry_drawrange', () => import('./examples/webgl_buffergeometry_drawrange')],
     ['webgl_buffergeometry', () => import('./examples/webgl_buffergeometry')],
     ['webgl_buffergeometry_uint', () => import('./examples/webgl_buffergeometry_uint')],
+    ['webgl_buffergeometry_points_interleaved', () => import('./examples/webgl_buffergeometry_points_interleaved')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

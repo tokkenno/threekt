@@ -3,7 +3,7 @@ package com.aitorgf.threekt.core
 import kotlin.js.JsExport
 
 /**
- * Vertex data stored as consecutive items of [itemSize] components in a typed array owned by a subclass.
+ * Vertex data exposed as items of [itemSize] components.
  * Renderers upload the data once and again after [markUpdated] is called, which replaces the Three.js
  * `needsUpdate = true` setter.
  */
@@ -22,31 +22,31 @@ abstract class BufferAttribute(
     }
 
     /** Expected update pattern, which renderers pass to the GPU as a hint. Change it before the first draw. */
-    var usage = Usage.StaticDraw
-        private set
+    open val usage: Usage get() = attributeUsage
+    private var attributeUsage = Usage.StaticDraw
 
     /** Sets [usage] and returns this attribute, as Three.js `setUsage()` does. */
-    fun setUsage(value: Usage): BufferAttribute {
-        usage = value
+    open fun setUsage(value: Usage): BufferAttribute {
+        attributeUsage = value
         return this
     }
 
     /** Optional name, used for example as the key of a morph target. */
     var name = ""
 
-    /** Number of components in the underlying array. */
+    /** Number of components exposed by this attribute. */
     abstract val size: Int
 
     /** Number of complete items. */
     val count: Int get() = size / itemSize
 
     /** Incremented by [markUpdated] so that renderers know to upload the data again. */
-    var version = 0
-        private set
+    open val version: Int get() = attributeVersion
+    private var attributeVersion = 0
 
     /** Marks the data as changed so that it is uploaded before the next draw. */
-    fun markUpdated() {
-        version++
+    open fun markUpdated() {
+        attributeVersion++
     }
 
     /** Returns component [component] of item [index], normalized when [normalized] is set. */

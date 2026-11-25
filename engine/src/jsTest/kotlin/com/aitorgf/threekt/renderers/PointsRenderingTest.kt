@@ -4,6 +4,8 @@ import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.cameras.PerspectiveCamera
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
+import com.aitorgf.threekt.core.InterleavedBuffer
+import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.PointsMaterial
 import com.aitorgf.threekt.math.Color
@@ -47,6 +49,34 @@ class PointsRenderingTest {
 
     private val red = listOf(255, 0, 0, 255)
     private val black = listOf(0, 0, 0, 255)
+
+    @Test
+    fun interleavedPositionsAndNormalizedColorsUseTheirOwnByteLayouts() = withRenderer { renderer, gl ->
+        val positions = InterleavedBuffer(floatArrayOf(9f, -0.5f, 0f, 0f, 9f, 0.5f, 0f, 0f), 4)
+        val colorBytes = byteArrayOf(9, -1, 0, 0, 9, 0, -1, 0)
+        val colors = InterleavedBuffer(colorBytes, 4)
+        val color = InterleavedBufferAttribute(colors, 3, 1, normalized = true)
+        val geometry = BufferGeometry()
+            .setAttribute("position", InterleavedBufferAttribute(positions, 3, 1))
+            .setAttribute("color", color)
+        geometry.computeBoundingSphere()
+        assertEquals(0.5, geometry.boundingSphere?.radius)
+        assertEquals(1.0, color.getY(1))
+
+        val material = PointsMaterial().apply { size = 8.0; vertexColors = true }
+        val scene = Scene()
+        scene.add(Points(geometry, material))
+        val camera = OrthographicCamera().apply { position.z = 1.0 }
+        renderer.render(scene, camera)
+        assertNear(red, read(gl, 8, 16))
+        assertNear(listOf(0, 255, 0, 255), read(gl, 24, 16))
+
+        colorBytes[1] = 0
+        colorBytes[3] = -1
+        color.markUpdated()
+        renderer.render(scene, camera)
+        assertNear(listOf(0, 0, 255, 255), read(gl, 8, 16))
+    }
 
     @Test
     fun pointsWithoutAttenuationKeepTheirPixelSize() = withRenderer { renderer, gl ->

@@ -4,6 +4,7 @@ import com.aitorgf.threekt.cameras.ArrayCamera
 import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.OrthographicCamera
+import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Blending
@@ -457,10 +458,14 @@ class WebGLRenderer(context: GLContext) {
         for ((name, location) in program.attributes) {
             val attribute = geometry.getAttribute(name) ?: continue
             require(attribute.itemSize in 1..4) { "Attribute '$name' must have one to four components." }
-            attributes.bind(attribute)
+            val interleaved = attribute as? InterleavedBufferAttribute
+            val storage = interleaved?.data?.storage ?: attribute
+            val bytesPerElement = interleaved?.data?.bytesPerElement ?: 0
+            attributes.bind(storage)
             gl.enableVertexAttribArray(location)
             gl.vertexAttribPointer(
-                location, attribute.itemSize, attributes.componentType(attribute), attribute.normalized, 0, 0,
+                location, attribute.itemSize, attributes.componentType(storage), attribute.normalized,
+                (interleaved?.data?.stride ?: 0) * bytesPerElement, (interleaved?.offset ?: 0) * bytesPerElement,
             )
             used.add(location)
         }
