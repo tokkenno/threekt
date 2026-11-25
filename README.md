@@ -31,40 +31,26 @@ To build the examples for production, run `npm run build`.
 
 ## Run the JVM examples
 
-The JVM app renders through OpenGL ES 3.0 with LWJGL and GLFW.
-
 ```sh
 ./gradlew :jvmApp:run
 ```
 
-The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmApp:run --args="--example webgl_buffergeometry_rawshader"`. Add `--screenshot frame.png` to save a frame after two seconds and close the window.
+The menu lists the available examples. To open one directly, pass its upstream ID, for example `./gradlew :jvmApp:run --args="--example webgl_buffergeometry_rawshader"`.
+
+### Parameters
+- `--headless` runs without a window.
+- `--software` use software rendering without a GPU.
+  - `--angle-dir <path>` on Windows points to the directory with the matching `libEGL.dll` and `libGLESv2.dll` for your JVM architecture. Include that directory in `PATH` so Windows can resolve any dependencies of the DLLs.
+- `--width <pixels>` framebuffer width.
+- `--height <pixels>` framebuffer height.
+- `--time <seconds>` passes a timestamp to the example's frame callback and defaults to zero.
+- `--screenshot <file>` saves a screenshot after two seconds and closes the app.
 
 ### Render without a window
 
-On Linux, install Mesa EGL and OpenGL ES, including a software driver for CI. On Debian or Ubuntu,
-the packages are `libegl1 libegl-mesa0 libgles2 libgl1-mesa-dri`.
+Can run the JVM app without a window to render offscreen and save a screenshot.
 
-```sh
-./gradlew :jvmApp:installDist
-env -u DISPLAY -u WAYLAND_DISPLAY jvmApp/build/install/jvmApp/bin/jvmApp \
-  --headless --software --example webgl_loader_obj --width 640 --height 480 --screenshot obj.png
-```
-
-On Windows, use an ANGLE build with D3D11 and OpenGL ES 3 support. Point `--angle-dir` to the
-directory with the matching `libEGL.dll` and `libGLESv2.dll` for your JVM architecture.
-Include that directory in `PATH` so Windows can resolve any dependencies of the DLLs.
-
-```powershell
-.\gradlew.bat :jvmApp:installDist
-$env:PATH = "C:\angle;$env:PATH"
-.\jvmApp\build\install\jvmApp\bin\jvmApp.bat --headless --software --angle-dir C:\angle --example webgl_loader_obj --width 640 --height 480 --screenshot obj.png
-```
-
-`--software` selects Mesa's software device on Linux or D3D11 WARP on Windows. Without it, the
-application requests a Mesa surfaceless display or an ANGLE hardware device. The JVM application
-prints the actual renderer. Width and height default to 960 × 640. `--time <seconds>` passes a
-timestamp to the example's frame callback and defaults to zero.
-
-JVM applications can use `EglHeadlessContext(width, height, software = true).use { … }`, pass its
-`context` to `WebGLRenderer` and call `readImage()` to obtain a `BufferedImage`. Use the session
-on its creating thread and dispose the renderer before closing the session.
+#### Dependencies
+- Linux: Mesa EGL and OpenGL ES
+   - Debian/Ubuntu: `libegl1 libegl-mesa0 libgles2 libgl1-mesa-dri`
+- Windows: ANGLE with D3D11 and OpenGL ES 3 support
