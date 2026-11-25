@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
-    "start": "vite --port 8080"
+    "start": "vite --host 0.0.0.0 --port 8080"
   },
   "dependencies": {
     "threekt": "0.0.0-unspecified"
