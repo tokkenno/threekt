@@ -1,14 +1,67 @@
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.gif filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.obj filter=lfs diff=lfs merge=lfs -text
-*.mtl filter=lfs diff=lfs merge=lfs -text
-*.JPG filter=lfs diff=lfs merge=lfs -text
-*.tga filter=lfs diff=lfs merge=lfs -text
-*.xyz filter=lfs diff=lfs merge=lfs -text
-*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.webm filter=lfs diff=lfs merge=lfs -text
-*.pcd filter=lfs diff=lfs merge=lfs -text
-*.stl filter=lfs diff=lfs merge=lfs -text
-webExamples/src/examples/assets/WaltHeadLo_buffergeometry.json filter=lfs diff=lfs merge=lfs -text
+# Binary and bulky example assets are stored with Git LFS.
+# Patterns use character classes so upper-case extensions such as .JPG match too.
+
+# Images and textures
+*.[jJ][pP][gG] filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][eE][gG] filter=lfs diff=lfs merge=lfs -text
+*.[pP][nN][gG] filter=lfs diff=lfs merge=lfs -text
+*.[gG][iI][fF] filter=lfs diff=lfs merge=lfs -text
+*.[wW][eE][bB][pP] filter=lfs diff=lfs merge=lfs -text
+*.[aA][vV][iI][fF] filter=lfs diff=lfs merge=lfs -text
+*.[bB][mM][pP] filter=lfs diff=lfs merge=lfs -text
+*.[tT][gG][aA] filter=lfs diff=lfs merge=lfs -text
+*.[tT][iI][fF] filter=lfs diff=lfs merge=lfs -text
+*.[tT][iI][fF][fF] filter=lfs diff=lfs merge=lfs -text
+*.[hH][dD][rR] filter=lfs diff=lfs merge=lfs -text
+*.[eE][xX][rR] filter=lfs diff=lfs merge=lfs -text
+*.[kK][tT][xX] filter=lfs diff=lfs merge=lfs -text
+*.[kK][tT][xX]2 filter=lfs diff=lfs merge=lfs -text
+*.[dD][dD][sS] filter=lfs diff=lfs merge=lfs -text
+*.[bB][aA][sS][iI][sS] filter=lfs diff=lfs merge=lfs -text
+*.[pP][vV][rR] filter=lfs diff=lfs merge=lfs -text
+*.[iI][cC][oO] filter=lfs diff=lfs merge=lfs -text
+
+# 3D models, point clouds and volumes
+*.[oO][bB][jJ] filter=lfs diff=lfs merge=lfs -text
+*.[mM][tT][lL] filter=lfs diff=lfs merge=lfs -text
+*.[sS][tT][lL] filter=lfs diff=lfs merge=lfs -text
+*.[pP][lL][yY] filter=lfs diff=lfs merge=lfs -text
+*.[pP][cC][dD] filter=lfs diff=lfs merge=lfs -text
+*.[xX][yY][zZ] filter=lfs diff=lfs merge=lfs -text
+*.[gG][lL][bB] filter=lfs diff=lfs merge=lfs -text
+*.[gG][lL][tT][fF] filter=lfs diff=lfs merge=lfs -text
+*.[bB][iI][nN] filter=lfs diff=lfs merge=lfs -text
+*.[fF][bB][xX] filter=lfs diff=lfs merge=lfs -text
+*.[dD][aA][eE] filter=lfs diff=lfs merge=lfs -text
+*.3[dD][sS] filter=lfs diff=lfs merge=lfs -text
+*.3[mM][fF] filter=lfs diff=lfs merge=lfs -text
+*.[aA][mM][fF] filter=lfs diff=lfs merge=lfs -text
+*.[dD][rR][cC] filter=lfs diff=lfs merge=lfs -text
+*.[uU][sS][dD][zZ] filter=lfs diff=lfs merge=lfs -text
+*.[vV][tT][kK] filter=lfs diff=lfs merge=lfs -text
+*.[vV][tT][pP] filter=lfs diff=lfs merge=lfs -text
+*.[vV][oO][xX] filter=lfs diff=lfs merge=lfs -text
+*.[lL][wW][oO] filter=lfs diff=lfs merge=lfs -text
+*.[mM][dD]2 filter=lfs diff=lfs merge=lfs -text
+*.[nN][rR][rR][dD] filter=lfs diff=lfs merge=lfs -text
+*.[bB][vV][hH] filter=lfs diff=lfs merge=lfs -text
+# JSON geometry and scene files under the example assets (not package or config JSON)
+webExamples/src/examples/assets/**/*.json filter=lfs diff=lfs merge=lfs -text
+
+# Video and audio
+*.[mM][pP]4 filter=lfs diff=lfs merge=lfs -text
+*.[wW][eE][bB][mM] filter=lfs diff=lfs merge=lfs -text
+*.[oO][gG][vV] filter=lfs diff=lfs merge=lfs -text
+*.[mM][oO][vV] filter=lfs diff=lfs merge=lfs -text
+*.[mM][kK][vV] filter=lfs diff=lfs merge=lfs -text
+*.[mM][pP]3 filter=lfs diff=lfs merge=lfs -text
+*.[oO][gG][gG] filter=lfs diff=lfs merge=lfs -text
+*.[wW][aA][vV] filter=lfs diff=lfs merge=lfs -text
+*.[fF][lL][aA][cC] filter=lfs diff=lfs merge=lfs -text
+*.[mM]4[aA] filter=lfs diff=lfs merge=lfs -text
+
+# Fonts
+*.[tT][tT][fF] filter=lfs diff=lfs merge=lfs -text
+*.[oO][tT][fF] filter=lfs diff=lfs merge=lfs -text
+*.[wW][oO][fF][fF] filter=lfs diff=lfs merge=lfs -text
+*.[wW][oO][fF][fF]2 filter=lfs diff=lfs merge=lfs -text
