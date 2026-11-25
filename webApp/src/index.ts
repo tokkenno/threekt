@@ -45,6 +45,9 @@ const examples = new Map([
     ['misc_exporter_stl', () => import('./examples/misc_exporter_stl')],
     ['misc_exporter_ply', () => import('./examples/misc_exporter_ply')],
     ['misc_exporter_obj', () => import('./examples/misc_exporter_obj')],
+    ['webgl_camera_array', () => import('./examples/webgl_camera_array')],
+    ['webgl_interactive_cubes', () => import('./examples/webgl_interactive_cubes')],
+    ['webgl_interactive_cubes_ortho', () => import('./examples/webgl_interactive_cubes_ortho')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
