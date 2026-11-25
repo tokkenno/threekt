@@ -1,6 +1,8 @@
 package com.aitorgf.threekt.cameras
+import kotlin.js.JsExport
 
 /** Camera that projects objects at a constant apparent size regardless of their distance. */
+@JsExport
 class OrthographicCamera(
     var left: Double = -1.0,
     var right: Double = 1.0,
