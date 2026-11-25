@@ -25,6 +25,9 @@ const examples = new Map([
     ['webgl_materials_texture_manualmipmap', () => import('./examples/webgl_materials_texture_manualmipmap')],
     ['webgl_materials_blending', () => import('./examples/webgl_materials_blending')],
     ['webgl_loader_obj', () => import('./examples/webgl_loader_obj')],
+    ['webgl_loader_xyz', () => import('./examples/webgl_loader_xyz')],
+    ['webgl_panorama_cube', () => import('./examples/webgl_panorama_cube')],
+    ['webgl_loader_imagebitmap', () => import('./examples/webgl_loader_imagebitmap')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
