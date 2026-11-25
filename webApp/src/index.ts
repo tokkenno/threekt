@@ -41,6 +41,10 @@ const examples = new Map([
     ['webgl_morphtargets', () => import('./examples/webgl_morphtargets')],
     ['webgl_video_kinect', () => import('./examples/webgl_video_kinect')],
     ['webgl_loader_texture_tga', () => import('./examples/webgl_loader_texture_tga')],
+    ['webgl_loader_stl', () => import('./examples/webgl_loader_stl')],
+    ['misc_exporter_stl', () => import('./examples/misc_exporter_stl')],
+    ['misc_exporter_ply', () => import('./examples/misc_exporter_ply')],
+    ['misc_exporter_obj', () => import('./examples/misc_exporter_obj')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');
