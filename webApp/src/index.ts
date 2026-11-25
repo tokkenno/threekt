@@ -23,6 +23,7 @@ const examples = new Map([
     ['webgl_materials_texture_anisotropy', () => import('./examples/webgl_materials_texture_anisotropy')],
     ['webgl_materials_texture_filters', () => import('./examples/webgl_materials_texture_filters')],
     ['webgl_materials_texture_manualmipmap', () => import('./examples/webgl_materials_texture_manualmipmap')],
+    ['webgl_materials_blending', () => import('./examples/webgl_materials_blending')],
 ]);
 
 const exampleId = new URLSearchParams(window.location.search).get('example');

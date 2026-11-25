@@ -5,12 +5,18 @@ import kotlin.js.JsExport
 /**
  * [GLContext] backed by the `webgl2` context of a browser [canvas]. Images can be any source accepted by
  * `texImage2D`, such as an `HTMLImageElement` or a canvas. Throws [IllegalStateException] if WebGL2 is
- * unavailable.
+ * unavailable. Set [alpha] to false when the browser should composite the canvas as opaque.
  */
 @JsExport
-class WebGL2Context(private val canvas: dynamic) : GLContext {
+class WebGL2Context(private val canvas: dynamic, alpha: Boolean = true) : GLContext {
     /** The underlying `WebGL2RenderingContext`. */
-    val gl: dynamic = canvas.getContext("webgl2") ?: error("WebGL2 is unavailable.")
+    val gl: dynamic
+
+    init {
+        val attributes: dynamic = js("({})")
+        attributes.alpha = alpha
+        gl = canvas.getContext("webgl2", attributes) ?: error("WebGL2 is unavailable.")
+    }
 
     override val drawingBufferWidth: Int get() = gl.drawingBufferWidth.unsafeCast<Int>()
     override val drawingBufferHeight: Int get() = gl.drawingBufferHeight.unsafeCast<Int>()
