@@ -20,7 +20,8 @@ class BoxTest {
         val positions = assertIs<Float32BufferAttribute>(geometry.getAttribute("position"))
         val normals = assertIs<Float32BufferAttribute>(geometry.getAttribute("normal"))
         val uvs = assertIs<Float32BufferAttribute>(geometry.getAttribute("uv"))
-        val indices = assertNotNull(geometry.index)
+        val index = assertNotNull(geometry.index)
+        val indices = IntArray(index.count) { index.getX(it).toInt() }
 
         assertEquals(24, positions.count)
         assertEquals(24, normals.count)

@@ -16,7 +16,7 @@ class BufferGeometryUtilsTest {
         val merged = BufferGeometryUtils.mergeGeometries(arrayOf(a, b))!!
         val count = a.getAttribute("position")!!.count
         assertEquals(count * 2, merged.getAttribute("position")!!.count)
-        assertEquals(a.index!![0] + count, merged.index!![a.index!!.size])
+        assertEquals(a.index!!.getX(0) + count, merged.index!!.getX(a.index!!.count))
         merged.computeBoundingBox()
         assertEquals(10.5, merged.boundingBox!!.max.x)
     }

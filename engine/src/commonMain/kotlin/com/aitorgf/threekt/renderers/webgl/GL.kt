@@ -39,9 +39,11 @@ object GL {
     const val BYTE = 0x1400
     const val UNSIGNED_BYTE = 0x1401
     const val SHORT = 0x1402
+    const val UNSIGNED_SHORT = 0x1403
     const val INT = 0x1404
     const val UNSIGNED_INT = 0x1405
     const val FLOAT = 0x1406
+    const val HALF_FLOAT = 0x140B
     const val RGBA = 0x1908
     const val NEAREST = 0x2600
     const val LINEAR = 0x2601

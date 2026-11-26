@@ -51,8 +51,8 @@ class OBJExporter {
                 }
             }
             val indices = geometry.index
-            val count = indices?.size ?: position.count
-            fun index(i: Int) = indices?.get(i) ?: i
+            val count = indices?.count ?: position.count
+            fun index(i: Int) = indices?.getX(i)?.toInt() ?: i
             when (node) {
                 is Mesh -> for (i in 0 until count - 2 step 3) {
                     append('f')

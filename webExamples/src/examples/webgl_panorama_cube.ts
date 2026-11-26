@@ -19,7 +19,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
         const tile = document.createElement('canvas');
         tile.width = tile.height = atlas.height;
         tile.getContext('2d')!.drawImage(atlas, face * tile.width, 0, tile.width, tile.height, 0, 0, tile.width, tile.height);
-        const geometry = new BufferGeometry().setIndex(new Int32Array([0, 2, 1, 2, 3, 1]))
+        const geometry = new BufferGeometry().setIndexArray(new Int32Array([0, 2, 1, 2, 3, 1]))
             .setAttribute('position', new Float32BufferAttribute(positions.slice(face * 12, face * 12 + 12), 3))
             .setAttribute('uv', new Float32BufferAttribute(uv.slice(face * 8, face * 8 + 8), 2));
         const material = new MeshBasicMaterial(Color.fromHex(0xffffff), new ImageTexture(tile));

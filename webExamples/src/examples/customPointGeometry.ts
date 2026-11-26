@@ -6,8 +6,8 @@ export function uniquePositions(geometry: BufferGeometry): number[] {
     const index = geometry.index;
     const seen = new Set<string>();
     const vertices: number[] = [];
-    for (let i = 0; i < (index?.length ?? position.count); i++) {
-        const vertex = index?.[i] ?? i;
+    for (let i = 0; i < (index?.count ?? position.count); i++) {
+        const vertex = index ? index.getX(i) : i;
         const x = position.getX(vertex), y = position.getY(vertex), z = position.getZ(vertex);
         const key = [x, y, z].map(value => Math.trunc(value * 10000 + 0.5)).join(',');
         if (seen.has(key)) continue;

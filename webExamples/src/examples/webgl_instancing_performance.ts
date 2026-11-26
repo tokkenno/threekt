@@ -17,7 +17,7 @@ async function loadBufferGeometry(url: string) {
         await (await fetch(url)).json();
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new Float32BufferAttribute(new Float32Array(model.data.attributes.position.array), 3));
-    if (model.data.index) geometry.setIndex(new Int32Array(model.data.index.array));
+    if (model.data.index) geometry.setIndexArray(new Int32Array(model.data.index.array));
     return geometry;
 }
 
@@ -36,9 +36,12 @@ function randomizeMatrix(matrix: Matrix4, position: Vector3, quaternion: Quatern
 }
 
 function geometryByteLength(geometry: BufferGeometry) {
-    // Index arrays are 32-bit in Threekt; Three.js keeps the file's 16-bit indices.
-    let total = (geometry.index?.length ?? 0) * 4;
-    for (const name of geometry.attributeNames) total += geometry.getAttribute(name)!.size * 4;
+    const index = geometry.index;
+    let total = index ? index.size * index.bytesPerElement : 0;
+    for (const name of geometry.attributeNames) {
+        const attribute = geometry.getAttribute(name)!;
+        total += attribute.size * attribute.bytesPerElement;
+    }
     return total;
 }
 

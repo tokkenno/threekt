@@ -7,6 +7,9 @@ import com.aitorgf.threekt.math.MutableVector
 import com.aitorgf.threekt.math.Sphere
 import com.aitorgf.threekt.math.Vector3
 import kotlin.js.JsExport
+import com.aitorgf.threekt.utils.arrayNeedsUint32
+import kotlin.js.JsName
+import kotlin.jvm.JvmName
 import kotlin.math.sqrt
 
 /**
@@ -60,18 +63,37 @@ open class BufferGeometry {
         drawGroups.clear()
     }
 
-    /** Indices of the vertices to draw, or null for sequential vertices. */
-    var index: IntArray? = null
+    /**
+     * Indices of the vertices to draw, with one component per item, or null for sequential vertices. On the
+     * JVM its getter is named `index()` to avoid clashing with [getIndex].
+     */
+    @get:JvmName("index")
+    var index: BufferAttribute? = null
         private set
 
+    /** Returns [index]. */
+    fun getIndex(): BufferAttribute? = index
+
     /**
-     * Sets the vertex indices or clears indexed drawing when [indices] is null. Retains the supplied array
-     * and returns this geometry.
+     * Sets the vertex indices, an attribute with one component per item such as a [Uint16BufferAttribute],
+     * or clears indexed drawing when [index] is null. Retains the attribute and returns this geometry.
      */
-    fun setIndex(indices: IntArray?): BufferGeometry {
-        index = indices
+    fun setIndex(index: BufferAttribute?): BufferGeometry {
+        this.index = index
         return this
     }
+
+    /**
+     * Sets the vertex indices from [indices], stored in a [Uint32BufferAttribute] when a value is 65535
+     * or more and in a [Uint16BufferAttribute] otherwise, as Three.js does for plain arrays. The values are
+     * copied. Three.js accepts the array in `setIndex()`; from JavaScript call `setIndexArray()`. Returns
+     * this geometry.
+     */
+    @JsName("setIndexArray")
+    fun setIndex(indices: IntArray): BufferGeometry = setIndex(
+        if (arrayNeedsUint32(indices)) Uint32BufferAttribute(indices.copyOf(), 1)
+        else Uint16BufferAttribute(ShortArray(indices.size) { indices[it].toShort() }, 1),
+    )
 
     /**
      * Associates [attribute] with [name], replacing an existing attribute with that name. Returns this
@@ -211,10 +233,10 @@ open class BufferGeometry {
         val ab = Vector3()
         val indices = index
         if (indices != null) {
-            for (i in 0 until indices.size - 2 step 3) {
-                val vA = indices[i]
-                val vB = indices[i + 1]
-                val vC = indices[i + 2]
+            for (i in 0 until indices.count - 2 step 3) {
+                val vA = indices.getX(i).toInt()
+                val vB = indices.getX(i + 1).toInt()
+                val vC = indices.getX(i + 2).toInt()
                 pA.fromBufferAttribute(position, vA)
                 pB.fromBufferAttribute(position, vB)
                 pC.fromBufferAttribute(position, vC)
@@ -300,7 +322,7 @@ open class BufferGeometry {
      */
     open fun clone(): BufferGeometry {
         val copy = BufferGeometry()
-        index?.let { copy.setIndex(it.copyOf()) }
+        index?.let { copy.setIndex(it.clone()) }
         for ((name, attribute) in attributes) copy.setAttribute(name, attribute.clone())
         for ((name, targets) in morphAttributes) copy.morphAttributes[name] = targets.map { it.clone() }
         copy.morphTargetsRelative = morphTargetsRelative

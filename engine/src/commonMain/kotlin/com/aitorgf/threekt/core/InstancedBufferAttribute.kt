@@ -15,6 +15,13 @@ open class InstancedBufferAttribute(
     /** Number of consecutive instances that read the same item. */
     var meshPerAttribute: Int = 1,
 ) : Float32BufferAttribute(array, itemSize, normalized) {
+    /** Copies [meshPerAttribute] as well when [source] is instanced. Returns this attribute. */
+    override fun copy(source: BufferAttribute): InstancedBufferAttribute {
+        super.copy(source)
+        if (source is InstancedBufferAttribute) meshPerAttribute = source.meshPerAttribute
+        return this
+    }
+
     override fun clone(): InstancedBufferAttribute =
-        InstancedBufferAttribute(array.copyOf(), itemSize, normalized, meshPerAttribute).also { it.copySettings(this) }
+        InstancedBufferAttribute(array, itemSize, normalized, meshPerAttribute).copy(this)
 }

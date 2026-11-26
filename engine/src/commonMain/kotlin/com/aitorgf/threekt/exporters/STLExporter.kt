@@ -23,7 +23,7 @@ class STLExporter {
         scene.traverse { object3d ->
             if (object3d is Mesh) {
                 val geometry = object3d.geometry
-                count += (geometry.index?.size ?: geometry.getAttribute("position")?.count ?: 0) / 3
+                count += (geometry.index?.count ?: geometry.getAttribute("position")?.count ?: 0) / 3
             }
         }
         val output = BinaryWriter(ByteArray(84 + count * 50), 80)
@@ -53,11 +53,11 @@ class STLExporter {
             val position = geometry.getAttribute("position") ?: return@traverse
             val indices = geometry.index
             val matrix = node.matrixWorld
-            val size = indices?.size ?: position.count
+            val size = indices?.count ?: position.count
             for (i in 0 until size - 2 step 3) {
-                a.fromBufferAttribute(position, indices?.get(i) ?: i).applyMatrix4(matrix)
-                b.fromBufferAttribute(position, indices?.get(i + 1) ?: i + 1).applyMatrix4(matrix)
-                c.fromBufferAttribute(position, indices?.get(i + 2) ?: i + 2).applyMatrix4(matrix)
+                a.fromBufferAttribute(position, indices?.getX(i)?.toInt() ?: i).applyMatrix4(matrix)
+                b.fromBufferAttribute(position, indices?.getX(i + 1)?.toInt() ?: i + 1).applyMatrix4(matrix)
+                c.fromBufferAttribute(position, indices?.getX(i + 2)?.toInt() ?: i + 2).applyMatrix4(matrix)
                 normal.subVectors(b, a).cross(edge.subVectors(c, a)).normalize()
                 action(a, b, c, normal)
             }

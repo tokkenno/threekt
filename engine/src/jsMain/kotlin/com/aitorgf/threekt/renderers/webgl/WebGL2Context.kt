@@ -65,12 +65,19 @@ class WebGL2Context(private val canvas: dynamic, alpha: Boolean = true) : GLCont
         gl.bufferData(target, js("new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.length)"), usage)
     }
     override fun bufferShortData(target: Int, data: ShortArray, usage: Int) { gl.bufferData(target, data, usage) }
-    override fun bufferShortSubData(target: Int, offset: Int, data: ShortArray) { gl.bufferSubData(target, offset, data) }
+    override fun bufferShortSubData(target: Int, offset: Int, data: ShortArray, srcOffset: Int, length: Int) {
+        gl.bufferSubData(target, offset, data, srcOffset, length)
+    }
+    override fun bufferIntSubData(target: Int, offset: Int, data: IntArray, srcOffset: Int, length: Int) {
+        gl.bufferSubData(target, offset, data, srcOffset, length)
+    }
     override fun bufferIntData(target: Int, data: IntArray, usage: Int) { gl.bufferData(target, data, usage) }
-    override fun bufferFloatSubData(target: Int, offset: Int, data: FloatArray) { gl.bufferSubData(target, offset, data) }
-    override fun bufferByteSubData(target: Int, offset: Int, data: ByteArray) {
+    override fun bufferFloatSubData(target: Int, offset: Int, data: FloatArray, srcOffset: Int, length: Int) {
+        gl.bufferSubData(target, offset, data, srcOffset, length)
+    }
+    override fun bufferByteSubData(target: Int, offset: Int, data: ByteArray, srcOffset: Int, length: Int) {
         val bytes: dynamic = data
-        gl.bufferSubData(target, offset, js("new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.length)"))
+        gl.bufferSubData(target, offset, js("new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.length)"), srcOffset, length)
     }
 
     override fun enableVertexAttribArray(index: Int) { gl.enableVertexAttribArray(index) }

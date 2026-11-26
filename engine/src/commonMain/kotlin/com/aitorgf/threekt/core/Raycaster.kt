@@ -112,8 +112,8 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
         val indices = geometry.index
         val range = geometry.drawRange
         val start = maxOf(0, range.start)
-        val end = minOf((indices?.size ?: position.count).toLong(), range.start.toLong() + range.count).toInt()
-        fun index(i: Int) = indices?.get(i) ?: i
+        val end = minOf((indices?.count ?: position.count).toLong(), range.start.toLong() + range.count).toInt()
+        fun index(i: Int) = indices?.getX(i)?.toInt() ?: i
         when (node) {
             is Mesh -> intersectMesh(node, node.matrixWorld, null, results)
             is Points -> {
@@ -149,7 +149,7 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
         val indices = geometry.index
         val range = geometry.drawRange
         val start = maxOf(0, range.start)
-        val end = minOf((indices?.size ?: position.count).toLong(), range.start.toLong() + range.count).toInt()
+        val end = minOf((indices?.count ?: position.count).toLong(), range.start.toLong() + range.count).toInt()
         if (matrixWorld.determinantAffine() == 0.0) return
         localRay.copy(ray).applyMatrix4(inverse.copy(matrixWorld).invertAffine())
         val bounds = geometry.boundingBox ?: run {
@@ -165,9 +165,9 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
             Triple(maxOf(start, group.start), minOf(end.toLong(), group.start.toLong() + group.count).toInt(), material)
         }
         for ((rangeStart, rangeEnd, material) in ranges) for (i in rangeStart until rangeEnd - 2 step 3) {
-            val ia = indices?.get(i) ?: i
-            val ib = indices?.get(i + 1) ?: (i + 1)
-            val ic = indices?.get(i + 2) ?: (i + 2)
+            val ia = indices?.getX(i)?.toInt() ?: i
+            val ib = indices?.getX(i + 1)?.toInt() ?: (i + 1)
+            val ic = indices?.getX(i + 2)?.toInt() ?: (i + 2)
             a.fromBufferAttribute(position, ia)
             b.fromBufferAttribute(position, ib)
             c.fromBufferAttribute(position, ic)

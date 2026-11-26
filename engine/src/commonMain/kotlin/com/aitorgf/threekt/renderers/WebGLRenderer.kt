@@ -77,12 +77,11 @@ class WebGLRenderer(context: GLContext) {
 
     private val textures = WebGLTextures(gl, capabilities)
     private val attributes = WebGLAttributes(gl)
-    private val geometries = WebGLGeometries()
+    private val geometries = WebGLGeometries(attributes)
     private val uniforms = WebGLUniforms(gl, textures)
     private val morphtargets = WebGLMorphtargets(gl, uniforms)
     private val lights = WebGLLights()
     private val programs = mutableMapOf<Pair<String, String>, WebGLProgram>()
-    private val indexBuffer = gl.createBuffer()
     private val enabledAttributes = mutableSetOf<Int>()
     private val renderList = WebGLRenderList()
 
@@ -351,7 +350,7 @@ class WebGLRenderer(context: GLContext) {
     ) {
         val position = geometry.getAttribute("position")
         val wireframe = obj is Mesh && material.wireframe
-        val index = if (wireframe) geometries.getWireframeIndices(geometry.index, position?.count ?: 0) else geometry.index
+        val index = if (wireframe) geometries.getWireframeAttribute(geometry) else geometry.index
         val rangeFactor = if (wireframe) 2 else 1
         // Clamp the draw range to the available indices or vertices, as Three.js does.
         val drawRange = geometry.drawRange
@@ -364,7 +363,7 @@ class WebGLRenderer(context: GLContext) {
         }
         if (index != null) {
             drawStart = maxOf(drawStart, 0)
-            drawEnd = minOf(drawEnd, index.size.toLong())
+            drawEnd = minOf(drawEnd, index.count.toLong())
         } else if (position != null) {
             drawStart = maxOf(drawStart, 0)
             drawEnd = minOf(drawEnd, position.count.toLong())
@@ -443,11 +442,11 @@ class WebGLRenderer(context: GLContext) {
             if (instanceCount < 0) gl.drawArrays(mode, drawStart.toInt(), drawCount.toInt())
             else gl.drawArraysInstanced(mode, drawStart.toInt(), drawCount.toInt(), instanceCount)
         } else {
-            gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer)
-            gl.bufferIntData(GL.ELEMENT_ARRAY_BUFFER, index, GL.STREAM_DRAW)
-            val offset = drawStart.toInt() * Int.SIZE_BYTES
-            if (instanceCount < 0) gl.drawElements(mode, drawCount.toInt(), GL.UNSIGNED_INT, offset)
-            else gl.drawElementsInstanced(mode, drawCount.toInt(), GL.UNSIGNED_INT, offset, instanceCount)
+            attributes.update(index, GL.ELEMENT_ARRAY_BUFFER)
+            val indexBuffer = attributes.get(index)!!
+            val offset = drawStart.toInt() * indexBuffer.bytesPerElement
+            if (instanceCount < 0) gl.drawElements(mode, drawCount.toInt(), indexBuffer.type, offset)
+            else gl.drawElementsInstanced(mode, drawCount.toInt(), indexBuffer.type, offset, instanceCount)
         }
     }
 
@@ -748,21 +747,17 @@ class WebGLRenderer(context: GLContext) {
             val locationSize = program.attributeLocationSizes[name] ?: 1
             val interleaved = attribute as? InterleavedBufferAttribute
             val storage = interleaved?.data?.storage ?: attribute
-            val bytesPerElement = interleaved?.data?.bytesPerElement ?: 4
-            val type = attributes.componentType(storage)
-            val elementSize = if (interleaved == null) when (type) {
-                GL.FLOAT -> 4
-                GL.SHORT -> 2
-                else -> 1
-            } else bytesPerElement
             val divisor = meshPerAttribute(attribute) ?: 0
-            attributes.bind(storage)
+            attributes.update(storage, GL.ARRAY_BUFFER)
+            val buffer = attributes.get(storage)!!
+            val type = buffer.type
+            val elementSize = buffer.bytesPerElement
             if (locationSize == 1) {
                 require(attribute.itemSize in 1..4) { "Attribute '$name' must have one to four components." }
                 val stride = (interleaved?.data?.stride ?: 0) * elementSize
                 val offset = (interleaved?.offset ?: 0) * elementSize
                 gl.enableVertexAttribArray(location)
-                if (type != GL.FLOAT && attribute.gpuType == GpuType.Int) {
+                if (type != GL.FLOAT && type != GL.HALF_FLOAT && attribute.gpuType == GpuType.Int) {
                     gl.vertexAttribIPointer(location, attribute.itemSize, type, stride, offset)
                 } else {
                     gl.vertexAttribPointer(location, attribute.itemSize, type, attribute.normalized, stride, offset)
@@ -800,7 +795,6 @@ class WebGLRenderer(context: GLContext) {
         gl.useProgram(null)
         textures.dispose()
         attributes.dispose()
-        gl.deleteBuffer(indexBuffer)
         morphtargets.dispose()
         for (program in programs.values) program.dispose()
         programs.clear()

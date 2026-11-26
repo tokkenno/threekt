@@ -32,8 +32,15 @@ class InterleavedBufferAttribute(
     /** Marks the entire shared buffer for upload. */
     override fun markUpdated() = data.markUpdated()
 
-    override fun read(offset: Int): Double =
-        data.read((offset / itemSize) * data.stride + this.offset + offset % itemSize, normalized)
+    override val bytesPerElement: Int get() = data.bytesPerElement
+
+    override val normalizationScale: Double? get() = data.storage.normalizationScale
+
+    private fun storageOffset(offset: Int): Int = (offset / itemSize) * data.stride + this.offset + offset % itemSize
+
+    override fun readRaw(offset: Int): Double = data.storage.readRaw(storageOffset(offset))
+
+    override fun writeRaw(offset: Int, value: Double) = data.storage.writeRaw(storageOffset(offset), value)
 
     /**
      * Returns the values as a separate, non-interleaved [Float32BufferAttribute], as Three.js does when
@@ -41,9 +48,10 @@ class InterleavedBufferAttribute(
      */
     override fun clone(): BufferAttribute {
         val values = FloatArray(count * itemSize) { read(it).toFloat() }
-        return Float32BufferAttribute(values, itemSize, false).also { it.copySettings(this) }
+        return Float32BufferAttribute(values, itemSize, false).also { copy ->
+            copy.name = name
+            copy.setUsage(usage)
+            copy.gpuType = gpuType
+        }
     }
-
-    override fun write(offset: Int, value: Double) =
-        data.write((offset / itemSize) * data.stride + this.offset + offset % itemSize, value, normalized)
 }

@@ -57,12 +57,17 @@ interface GLContext {
     fun bufferShortData(target: Int, data: ShortArray, usage: Int)
     /** Uploads 32-bit integers, as `bufferData` with an `Int32Array`. */
     fun bufferIntData(target: Int, data: IntArray, usage: Int)
-    /** Replaces the contents of the bound buffer from byte [offset] with 32-bit floats, as `bufferSubData`. */
-    fun bufferFloatSubData(target: Int, offset: Int, data: FloatArray)
-    /** Replaces the contents of the bound buffer from byte [offset] with 16-bit integers, as `bufferSubData`. */
-    fun bufferShortSubData(target: Int, offset: Int, data: ShortArray)
-    /** Replaces the contents of the bound buffer from byte [offset] with bytes, as `bufferSubData`. */
-    fun bufferByteSubData(target: Int, offset: Int, data: ByteArray)
+    /**
+     * Replaces the contents of the bound buffer from byte [offset] with [length] 32-bit floats of [data]
+     * starting at element [srcOffset], as the WebGL 2 `bufferSubData`.
+     */
+    fun bufferFloatSubData(target: Int, offset: Int, data: FloatArray, srcOffset: Int, length: Int)
+    /** Replaces the contents of the bound buffer with 16-bit integers, as [bufferFloatSubData] does with floats. */
+    fun bufferShortSubData(target: Int, offset: Int, data: ShortArray, srcOffset: Int, length: Int)
+    /** Replaces the contents of the bound buffer with 32-bit integers, as [bufferFloatSubData] does with floats. */
+    fun bufferIntSubData(target: Int, offset: Int, data: IntArray, srcOffset: Int, length: Int)
+    /** Replaces the contents of the bound buffer with bytes, as [bufferFloatSubData] does with floats. */
+    fun bufferByteSubData(target: Int, offset: Int, data: ByteArray, srcOffset: Int, length: Int)
 
     fun enableVertexAttribArray(index: Int)
     fun disableVertexAttribArray(index: Int)

@@ -28,7 +28,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
             const offset = i === 2 ? 1 : 0;
             const index = new Int32Array(intensity.length + offset);
             index.set(Int32Array.from({ length: intensity.length }, (_, j) => j), offset);
-            geometry.setIndex(index);
+            geometry.setIndexArray(index);
             if (offset) geometry.setDrawRange(offset, intensity.length);
         }
         const material = new PointsMaterial();

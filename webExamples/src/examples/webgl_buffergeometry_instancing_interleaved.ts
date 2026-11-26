@@ -36,7 +36,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     ]), 8);
     geometry.setAttribute('position', new InterleavedBufferAttribute(vertexBuffer, 3, 0));
     geometry.setAttribute('uv', new InterleavedBufferAttribute(vertexBuffer, 2, 4));
-    geometry.setIndex(new Int32Array([
+    geometry.setIndexArray(new Int32Array([
         0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9,
         12, 14, 13, 14, 15, 13, 16, 17, 18, 18, 17, 19, 20, 21, 22, 22, 21, 23,
     ]));

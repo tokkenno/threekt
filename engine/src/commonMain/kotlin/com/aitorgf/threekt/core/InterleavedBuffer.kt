@@ -43,29 +43,5 @@ open class InterleavedBuffer private constructor(internal val storage: BufferAtt
     /** Marks the shared array for upload, replacing the Three.js `needsUpdate` setter. */
     fun markUpdated() = storage.markUpdated()
 
-    internal val bytesPerElement: Int
-        get() = when (storage) {
-            is Float32BufferAttribute -> 4
-            is Int16BufferAttribute -> 2
-            else -> 1
-        }
-
-    internal fun write(index: Int, value: Double, normalized: Boolean) {
-        val stored = if (!normalized) value else when (storage) {
-            is Uint8BufferAttribute -> value * 255.0
-            is Int16BufferAttribute -> value * 32767.0
-            else -> value
-        }
-        storage.setX(index, stored)
-    }
-
-    internal fun read(index: Int, normalized: Boolean): Double {
-        val value = storage.getX(index)
-        if (!normalized) return value
-        return when (storage) {
-            is Uint8BufferAttribute -> value / 255.0
-            is Int16BufferAttribute -> (value / 32767.0).coerceAtLeast(-1.0)
-            else -> value
-        }
-    }
+    internal val bytesPerElement: Int get() = storage.bytesPerElement
 }

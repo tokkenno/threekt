@@ -1,6 +1,6 @@
 import { ColorSpace,
     Box, Color, Euler, Matrix4, PerspectiveCamera, Points, Scene, ShaderMaterial, SphereGeometry,
-    Uniform, Vector3, WebGL2Context, WebGLRenderer, Wrapping,
+    Uint32BufferAttribute, Uniform, Vector3, WebGL2Context, WebGLRenderer, Wrapping,
 } from 'threekt';
 import discUrl from './assets/disc.png?url';
 import { customPointGeometry, uniquePositions } from './customPointGeometry';
@@ -63,8 +63,9 @@ export async function createExample(canvas: HTMLCanvasElement) {
     scene.add(points);
     const camera = new PerspectiveCamera(45, 1, 1, 10000);
     camera.position.z = 300;
-    const indices = new Int32Array(sizes.length);
-    geometry.setIndex(indices);
+    const index = new Uint32BufferAttribute(new Int32Array(sizes.length), 1);
+    geometry.setIndex(index);
+    const indices = index.array;
     const order = Array.from(indices, (_, idx) => idx);
     const depths = new Float64Array(indices.length);
     const rotation = new Euler();
@@ -88,6 +89,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
             }
             order.sort((a, b) => depths[b] - depths[a]);
             indices.set(order);
+            index.markUpdated();
             renderer.render(scene, camera);
         },
         dispose() { renderer.dispose(); },

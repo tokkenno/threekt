@@ -78,9 +78,9 @@ class PLYExporter {
             }
             if (node is Mesh) {
                 val indices = geometry.index
-                val size = indices?.size ?: position.count
+                val size = indices?.count ?: position.count
                 for (i in 0 until size - 2 step 3) {
-                    data.faces.add(IntArray(3) { j -> offset + (indices?.get(i + j) ?: i + j) })
+                    data.faces.add(IntArray(3) { j -> offset + (indices?.getX(i + j)?.toInt() ?: i + j) })
                 }
             }
         }

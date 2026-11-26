@@ -132,7 +132,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
 
     //
 
-    geometry.setIndex(Int32Array.from(indices));
+    geometry.setIndexArray(Int32Array.from(indices));
     geometry.setAttribute('position', new Float32BufferAttribute(Float32Array.from(positions), 3));
     geometry.setAttribute('color', new Float32BufferAttribute(Float32Array.from(colors), 3));
     geometry.computeBoundingSphere();

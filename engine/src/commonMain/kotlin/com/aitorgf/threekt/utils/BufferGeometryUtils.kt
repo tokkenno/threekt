@@ -45,7 +45,8 @@ object BufferGeometryUtils {
             var indexOffset = 0
             val mergedIndex = mutableListOf<Int>()
             for (geometry in geometries) {
-                for (value in geometry.index!!) mergedIndex.add(value + indexOffset)
+                val index = geometry.index!!
+                for (i in 0 until index.count) mergedIndex.add(index.getX(i).toInt() + indexOffset)
                 indexOffset += geometry.getAttribute("position")?.count ?: 0
             }
             merged.setIndex(mergedIndex.toIntArray())

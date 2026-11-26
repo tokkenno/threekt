@@ -103,15 +103,17 @@ class GLES30Context(width: Int, height: Int) : GLContext {
         }
     }
     override fun bufferShortData(target: Int, data: ShortArray, usage: Int) = GLES20.glBufferData(target, data, usage)
-    override fun bufferShortSubData(target: Int, offset: Int, data: ShortArray) =
-        GLES20.glBufferSubData(target, offset.toLong(), data)
+    override fun bufferShortSubData(target: Int, offset: Int, data: ShortArray, srcOffset: Int, length: Int) =
+        GLES20.glBufferSubData(target, offset.toLong(), data.copyOfRange(srcOffset, srcOffset + length))
+    override fun bufferIntSubData(target: Int, offset: Int, data: IntArray, srcOffset: Int, length: Int) =
+        GLES20.glBufferSubData(target, offset.toLong(), data.copyOfRange(srcOffset, srcOffset + length))
     override fun bufferIntData(target: Int, data: IntArray, usage: Int) = GLES20.glBufferData(target, data, usage)
-    override fun bufferFloatSubData(target: Int, offset: Int, data: FloatArray) =
-        GLES20.glBufferSubData(target, offset.toLong(), data)
-    override fun bufferByteSubData(target: Int, offset: Int, data: ByteArray) {
-        val buffer = MemoryUtil.memAlloc(data.size)
+    override fun bufferFloatSubData(target: Int, offset: Int, data: FloatArray, srcOffset: Int, length: Int) =
+        GLES20.glBufferSubData(target, offset.toLong(), data.copyOfRange(srcOffset, srcOffset + length))
+    override fun bufferByteSubData(target: Int, offset: Int, data: ByteArray, srcOffset: Int, length: Int) {
+        val buffer = MemoryUtil.memAlloc(length)
         try {
-            buffer.put(data).flip()
+            buffer.put(data, srcOffset, length).flip()
             GLES20.glBufferSubData(target, offset.toLong(), buffer)
         } finally {
             MemoryUtil.memFree(buffer)

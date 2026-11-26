@@ -39,7 +39,7 @@ export function createExample(canvas: HTMLCanvasElement) {
         }
     }
     const geometry = new BufferGeometry()
-        .setIndex(Int32Array.from(indices))
+        .setIndexArray(Int32Array.from(indices))
         .setAttribute('position', new Float32BufferAttribute(Float32Array.from(positions), 3))
         .setAttribute('normal', new Float32BufferAttribute(Float32Array.from(normals), 3))
         .setAttribute('color', new Float32BufferAttribute(Float32Array.from(colors), 3));

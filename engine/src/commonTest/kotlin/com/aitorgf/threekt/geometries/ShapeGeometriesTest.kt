@@ -71,8 +71,8 @@ class ShapeGeometriesTest {
 
         val flat = ShapeGeometry(arrayOf(shape))
         assertEquals(count, flat.getAttribute("position")!!.count)
-        assertEquals(indexCount, flat.index!!.size)
-        assertEquals(indexSum, flat.index!!.sum())
+        assertEquals(indexCount, flat.index!!.count)
+        assertEquals(indexSum, (0 until flat.index!!.count).sumOf { flat.index!!.getX(it).toInt() })
         assertEquals(positionSum, sum(flat, "position"), 1e-2)
 
         val extruded = ExtrudeGeometry(arrayOf(shape), options)
