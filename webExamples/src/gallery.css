@@ -195,3 +195,26 @@ h1 { margin: 0; font-size: clamp(1.2rem, 3vw, 1.75rem); }
 .element-scenes figure { margin: 0; }
 .element-scenes figure div { aspect-ratio: 1; outline: 1px solid #d8e0e8; }
 .element-scenes figcaption { padding: 0.4rem 0; text-align: center; }
+
+.pressure-legend {
+    position: absolute;
+    top: 20%;
+    right: 1rem;
+    height: 60%;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    justify-items: center;
+    color: #171717;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.pressure-legend canvas { width: 1.25rem; height: 100%; }
+
+.atom-labels { position: absolute; inset: 0; pointer-events: none; }
+.atom-labels span {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font: 600 0.8rem system-ui, sans-serif;
+    text-shadow: 0 1px 2px #000, 0 0 3px #000;
+}

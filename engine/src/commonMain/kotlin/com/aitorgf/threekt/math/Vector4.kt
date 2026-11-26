@@ -1,5 +1,7 @@
 package com.aitorgf.threekt.math
 
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -7,6 +9,7 @@ import kotlin.random.Random
  * A mutable four-component vector. It can represent homogeneous coordinates, a viewport, or an axis and
  * angle.
  */
+@JsExport
 class Vector4(
     var x: Double = 0.0,
     var y: Double = 0.0,
@@ -52,6 +55,7 @@ class Vector4(
     override fun copy(): Vector4 = Vector4(x, y, z, w)
 
     /** Copies the supplied values into this instance and returns it. */
+    @JsName("copyFrom")
     fun copy(vector: Vector4): Vector4 = set(vector.x, vector.y, vector.z, vector.w)
 
     /** Adds the given vector to this instance. Returns this instance. */
@@ -160,6 +164,7 @@ class Vector4(
      * Sets each component to an independent sample in the interval `[0, 1)` using [random]. Returns this
      * vector.
      */
+    @JsExport.Ignore
     fun random(random: Random = Random.Default): Vector4 = set(random.nextDouble(), random.nextDouble(), random.nextDouble(), random.nextDouble())
 
     var width: Double

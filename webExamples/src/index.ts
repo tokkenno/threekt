@@ -94,6 +94,16 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_geometry_extrude_splines', () => import('./examples/webgl_geometry_extrude_splines')],
     ['webgl_geometry_text', () => import('./examples/webgl_geometry_text')],
     ['webgl_geometry_text_shapes', () => import('./examples/webgl_geometry_text_shapes')],
+    ['webgl_geometry_extrude_shapes', () => import('./examples/webgl_geometry_extrude_shapes')],
+    ['webgl_geometry_nurbs', () => import('./examples/webgl_geometry_nurbs')],
+    ['webgl_geometry_minecraft', () => import('./examples/webgl_geometry_minecraft')],
+    ['webgl_geometry_colors_lookuptable', () => import('./examples/webgl_geometry_colors_lookuptable')],
+    ['webgl_instancing_scatter', () => import('./examples/webgl_instancing_scatter')],
+    ['webgl_morphtargets_sphere', () => import('./examples/webgl_morphtargets_sphere')],
+    ['webgl_effects_ascii', () => import('./examples/webgl_effects_ascii')],
+    ['webgl_loader_gcode', () => import('./examples/webgl_loader_gcode')],
+    ['webgl_loader_pdb', () => import('./examples/webgl_loader_pdb')],
+    ['misc_raycaster_helper', () => import('./examples/misc_raycaster_helper')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;

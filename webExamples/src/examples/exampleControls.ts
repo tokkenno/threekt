@@ -51,3 +51,15 @@ export function addToggle(panel: HTMLElement, name: string, initial: boolean, up
     label.append(input);
     panel.append(label);
 }
+
+export function addSelect(panel: HTMLElement, name: string, options: Record<string, string>, initial: string, change: (value: string) => void) {
+    const label = document.createElement('label');
+    label.className = 'example-setting';
+    label.textContent = name;
+    const input = document.createElement('select');
+    for (const [value, text] of Object.entries(options)) input.add(new Option(text, value));
+    input.value = initial;
+    input.addEventListener('change', () => change(input.value));
+    label.append(input);
+    panel.append(label);
+}
