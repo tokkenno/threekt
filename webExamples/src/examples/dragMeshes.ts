@@ -37,7 +37,7 @@ export function dragMeshes(canvas: HTMLCanvasElement, camera: PerspectiveCamera,
         raycaster.setFromCamera(pointer, camera);
         const hit = raycaster.intersectObjects(meshes, false)[0];
         if (!hit) return;
-        const mesh = meshes.find(candidate => candidate === hit.object3d)!;
+        const mesh = meshes.find(candidate => candidate === hit.object)!;
         const targets = options.begin(mesh, event);
         if (!targets.length) return;
         camera.getWorldDirection(normal);

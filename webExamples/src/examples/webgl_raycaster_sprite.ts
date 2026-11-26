@@ -61,9 +61,9 @@ export function createExample(canvas: HTMLCanvasElement) {
         setPointer(canvas, event, pointer);
         raycaster.setFromCamera(pointer, camera);
         const intersects = raycaster.intersectObject(group, true);
-        const hit = intersects.find(result => result.object3d instanceof Sprite);
+        const hit = intersects.find(result => result.object instanceof Sprite);
         if (hit) {
-            selectedObject = hit.object3d as Sprite;
+            selectedObject = hit.object as Sprite;
             selectedObject.material.color.setStyle('#f00');
         }
     }, { signal: events.signal });

@@ -8,6 +8,8 @@ import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Sphere
 import com.aitorgf.threekt.core.Object3D
+import com.aitorgf.threekt.core.Intersection
+import com.aitorgf.threekt.core.Raycaster
 import kotlin.js.JsExport
 
 /**
@@ -128,4 +130,36 @@ class InstancedMesh(
 
     override fun clone(recursive: Boolean): InstancedMesh =
         InstancedMesh(geometry, material, instanceMatrix.count).copy(this, recursive)
+
+    /**
+     * Adds the hits of every instance, each tagged with its [Intersection.instanceId] and reported for this
+     * mesh, after rejecting meshes whose instance bounding sphere the ray misses.
+     */
+    override fun raycast(raycaster: Raycaster, intersects: MutableList<Intersection>): Boolean {
+        val matrixWorld = matrixWorld
+        raycastMesh.geometry = geometry
+        raycastMesh.material = material
+        raycastMesh.materials = materials
+        if (boundingSphere == null) computeBoundingSphere()
+        raycastSphere.copy(boundingSphere!!).applyMatrix4(matrixWorld)
+        if (!raycaster.ray.intersectsSphere(raycastSphere)) return true
+        for (instanceId in 0 until count) {
+            getMatrixAt(instanceId, instanceLocalMatrix)
+            raycastMesh.matrixWorld.multiplyMatrices(matrixWorld, instanceLocalMatrix)
+            raycastMesh.raycast(raycaster, instanceIntersects)
+            for (intersect in instanceIntersects) {
+                intersect.instanceId = instanceId
+                intersect.obj = this
+                intersects.add(intersect)
+            }
+            instanceIntersects.clear()
+        }
+        return true
+    }
+
+    private companion object {
+        val raycastMesh = Mesh()
+        val raycastSphere = Sphere()
+        val instanceIntersects = mutableListOf<Intersection>()
+    }
 }

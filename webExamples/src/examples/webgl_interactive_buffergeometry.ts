@@ -64,7 +64,8 @@ export async function createExample(canvas: HTMLCanvasElement) {
             const hit = raycaster.intersectObject(mesh, false)[0];
             line.visible = !!hit;
             if (hit) {
-                [hit.a, hit.b, hit.c, hit.a].forEach((i, j) => outline.set(positions.subarray(i * 3, i * 3 + 3), j * 3));
+                const face = hit.face!;
+                [face.a, face.b, face.c, face.a].forEach((i, j) => outline.set(positions.subarray(i * 3, i * 3 + 3), j * 3));
                 border.markUpdated();
             }
             renderer.render(scene, camera);

@@ -50,11 +50,12 @@ class InstancedMeshTest {
         }
         val camera = PerspectiveCamera().apply { position.x = 0.5 }
         camera.lookAt(sprite.position)
+        camera.updateMatrixWorld()
         sprite.updateMatrixWorld()
         val raycaster = Raycaster()
         raycaster.setFromCamera(Vector2(), camera)
         val hit = raycaster.intersectObject(sprite).single()
-        assertSame(sprite, hit.object3d)
+        assertSame(sprite, hit.obj)
         assertEquals(0.5, hit.uv!!.x, 1e-9)
         assertEquals(0.5, hit.uv!!.y, 1e-9)
         raycaster.setFromCamera(Vector2(0.9, 0.9), camera)

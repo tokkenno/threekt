@@ -36,7 +36,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     scene.add(parent);
     const input = raycastPointer(canvas);
     const raycaster = new Raycaster();
-    raycaster.lineThreshold = 3;
+    raycaster.params.Line.threshold = 3;
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
 
     return {

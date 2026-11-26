@@ -51,7 +51,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     let next = 0, lastHit = 0;
     const input = raycastPointer(canvas);
     const raycaster = new Raycaster();
-    raycaster.pointsThreshold = 0.1;
+    raycaster.params.Points.threshold = 0.1;
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
     return {
         render(seconds: number) {

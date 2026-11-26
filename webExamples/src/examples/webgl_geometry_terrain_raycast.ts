@@ -42,10 +42,11 @@ export function createExample(canvas: HTMLCanvasElement) {
                 camera.updateMatrixWorld();
                 raycaster.setFromCamera(pointer.pointer, camera);
                 const hit = raycaster.intersectObject(mesh, false)[0];
-                marker.visible = Boolean(hit?.normal);
-                if (hit?.normal) {
-                    marker.position.copyFrom(hit.point).addScaledVector(hit.normal, 57.5);
-                    marker.quaternion.setFromUnitVectors(up, hit.normal);
+                const normal = hit?.face?.normal;
+                marker.visible = Boolean(normal);
+                if (hit && normal) {
+                    marker.position.copyFrom(hit.point).addScaledVector(normal, 57.5);
+                    marker.quaternion.setFromUnitVectors(up, normal);
                 }
             }
             renderer.render(scene, camera);

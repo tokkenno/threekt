@@ -432,6 +432,13 @@ open class Object3D : EventDispatcher() {
     }
 
     /**
+     * Adds the hits of the ray of [raycaster] with this object to [intersects]. Does nothing by default;
+     * meshes, lines, points and sprites test their geometry. Returns whether [Raycaster] should go on to test
+     * the children, which Three.js signals by returning `false` to stop.
+     */
+    open fun raycast(raycaster: Raycaster, intersects: MutableList<Intersection>): Boolean = true
+
+    /**
      * Returns whether this object may be inside [frustum]. The renderer skips objects for which this returns
      * false when [frustumCulled] is set. Returns true by default; drawable objects test their bounds. Not
      * exported to JavaScript, because [Frustum] is not exported yet.

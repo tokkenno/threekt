@@ -45,7 +45,7 @@ export function createInteractiveCubes(canvas: HTMLCanvasElement, ortho: boolean
             camera.position.set(radius * Math.sin(theta), radius * Math.sin(theta), radius * Math.cos(theta));
             camera.lookAt(scene.position);
             raycaster.setFromCamera(input.pointer, camera);
-            const mesh = raycaster.intersectObjects(cubes, false)[0]?.object3d as Mesh | undefined;
+            const mesh = raycaster.intersectObjects(cubes, false)[0]?.object as Mesh | undefined;
             if (mesh !== highlighted) {
                 if (highlighted) (highlighted.material as MeshPhongMaterial).emissive.setHex(0);
                 if (mesh) (mesh.material as MeshPhongMaterial).emissive.setHex(0xff0000);

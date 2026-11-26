@@ -80,7 +80,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
             raycaster.setFromCamera(input.pointer, camera);
             const hit = raycaster.intersectObjects(meshes, false)[0];
             if (hit?.uv) {
-                const texture = maps[meshes.indexOf(hit.object3d as Mesh)];
+                const texture = maps[meshes.indexOf(hit.object as Mesh)];
                 const uv = texture.transformUv(hit.uv);
                 if (uv.x !== x || uv.y !== y) {
                     x = uv.x; y = uv.y;

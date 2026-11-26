@@ -44,9 +44,9 @@ export async function createExample(canvas: HTMLCanvasElement) {
         return raycaster.intersectObjects(objects, false)[0];
     };
     const snap = (hit: ReturnType<typeof intersect>) => point.set(
-        hit.point.x + (hit.normal?.x ?? 0),
-        hit.point.y + (hit.object3d === plane ? 1 : hit.normal?.y ?? 0),
-        hit.point.z + (hit.object3d === plane ? 0 : hit.normal?.z ?? 0),
+        hit.point.x + (hit.face?.normal.x ?? 0),
+        hit.point.y + (hit.object === plane ? 1 : hit.face?.normal.y ?? 0),
+        hit.point.z + (hit.object === plane ? 0 : hit.face?.normal.z ?? 0),
     ).divideScalar(50).floor().multiplyScalar(50).addScalar(25);
     const label = document.createElement('aside');
     label.className = 'example-panel';
@@ -66,9 +66,9 @@ export async function createExample(canvas: HTMLCanvasElement) {
         const hit = intersect(event);
         if (!hit) return;
         if (event.shiftKey) {
-            if (hit.object3d === plane) return;
-            scene.remove(hit.object3d);
-            const index = objects.indexOf(hit.object3d as Mesh);
+            if (hit.object === plane) return;
+            scene.remove(hit.object);
+            const index = objects.indexOf(hit.object as Mesh);
             if (index >= 0) objects.splice(index, 1);
         } else {
             const voxel = new Mesh(box, voxelMaterial);

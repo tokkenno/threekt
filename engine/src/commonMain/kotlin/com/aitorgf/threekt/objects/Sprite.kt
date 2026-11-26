@@ -7,6 +7,14 @@ import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.SpriteMaterial
 import com.aitorgf.threekt.math.Vector2
 import com.aitorgf.threekt.math.Frustum
+import com.aitorgf.threekt.cameras.PerspectiveCamera
+import com.aitorgf.threekt.core.Intersection
+import com.aitorgf.threekt.core.Raycaster
+import com.aitorgf.threekt.math.Matrix4
+import com.aitorgf.threekt.math.Triangle
+import com.aitorgf.threekt.math.Vector3
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.js.JsExport
 
 /**
@@ -58,4 +66,65 @@ class Sprite(var material: SpriteMaterial = SpriteMaterial()) : Object3D() {
     /** Tests the bounding sphere of this sprite against [frustum], as the renderer does for culling. */
     @JsExport.Ignore
     override fun intersectsFrustum(frustum: Frustum): Boolean = frustum.intersectsSprite(this)
+
+    /**
+     * Adds a hit when the ray crosses the camera-facing quad of this sprite, with the UV at the hit point.
+     * Requires [Raycaster.camera], which [Raycaster.setFromCamera] sets; throws [IllegalStateException]
+     * without it, where Three.js logs an error and then fails.
+     */
+    override fun raycast(raycaster: Raycaster, intersects: MutableList<Intersection>): Boolean {
+        val camera = checkNotNull(raycaster.camera) { "Raycaster.camera needs to be set in order to raycast against sprites." }
+        worldScale.setFromMatrixScale(matrixWorld)
+        viewWorldMatrix.copy(camera.matrixWorld)
+        modelViewMatrix.multiplyMatrices(camera.matrixWorldInverse, matrixWorld)
+        mvPosition.setFromMatrixPosition(modelViewMatrix)
+        if (camera is PerspectiveCamera && !material.sizeAttenuation) worldScale.multiplyScalar(-mvPosition.z)
+        val rotation = material.rotation
+        val rotated = rotation != 0.0
+        val sin = if (rotated) sin(rotation) else 0.0
+        val cos = if (rotated) cos(rotation) else 1.0
+        transformVertex(vA.set(-0.5, -0.5, 0.0), center, sin, cos)
+        transformVertex(vB.set(0.5, -0.5, 0.0), center, sin, cos)
+        transformVertex(vC.set(0.5, 0.5, 0.0), center, sin, cos)
+        uvA.set(0.0, 0.0)
+        uvB.set(1.0, 0.0)
+        uvC.set(1.0, 1.0)
+        var intersect = raycaster.ray.intersectTriangle(vA, vB, vC, false, intersectPoint)
+        if (intersect == null) {
+            transformVertex(vB.set(-0.5, 0.5, 0.0), center, sin, cos)
+            uvB.set(0.0, 1.0)
+            intersect = raycaster.ray.intersectTriangle(vA, vC, vB, false, intersectPoint)
+            if (intersect == null) return true
+        }
+        val distance = raycaster.ray.origin.distanceTo(intersectPoint)
+        if (distance < raycaster.near || distance > raycaster.far) return true
+        intersects.add(Intersection(distance, intersectPoint.copy(), this).also {
+            it.uv = Triangle.getInterpolation(intersectPoint, vA, vB, vC, uvA, uvB, uvC, Vector2())
+        })
+        return true
+    }
+
+    private fun transformVertex(vertexPosition: Vector3, center: Vector2, sin: Double, cos: Double) {
+        alignedPosition.set(vertexPosition.x - center.x + 0.5, vertexPosition.y - center.y + 0.5)
+        alignedPosition.x *= worldScale.x
+        alignedPosition.y *= worldScale.y
+        val x = cos * alignedPosition.x - sin * alignedPosition.y
+        val y = sin * alignedPosition.x + cos * alignedPosition.y
+        vertexPosition.copy(mvPosition)
+        vertexPosition.x += x
+        vertexPosition.y += y
+        vertexPosition.applyMatrix4(viewWorldMatrix)
+    }
+
+    private val worldScale = Vector3()
+    private val mvPosition = Vector3()
+    private val alignedPosition = Vector2()
+    private val viewWorldMatrix = Matrix4()
+    private val vA = Vector3()
+    private val vB = Vector3()
+    private val vC = Vector3()
+    private val uvA = Vector2()
+    private val uvB = Vector2()
+    private val uvC = Vector2()
+    private val intersectPoint = Vector3()
 }

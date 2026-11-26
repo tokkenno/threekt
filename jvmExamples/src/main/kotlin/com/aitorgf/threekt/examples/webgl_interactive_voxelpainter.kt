@@ -89,8 +89,8 @@ class webgl_interactive_voxelpainter(context: GLContext, private val input: Inpu
         if (input.button != 0) return
         val hit = intersect(input) ?: return
         if (input.shiftKey) {
-            if (hit.object3d === plane) return
-            val voxel = hit.object3d as Mesh
+            if (hit.obj === plane) return
+            val voxel = hit.obj as Mesh
             scene.remove(voxel)
             objects.remove(voxel)
         } else {
@@ -118,7 +118,7 @@ class webgl_interactive_voxelpainter(context: GLContext, private val input: Inpu
 
     private fun snap(hit: Intersection): Vector3 {
         snap.copy(hit.point)
-        val normal = if (hit.object3d === plane) up else hit.normal
+        val normal = if (hit.obj === plane) up else hit.face?.normal
         if (normal != null) snap.add(normal)
         return snap.divideScalar(50.0).floor().multiplyScalar(50.0).addScalar(25.0)
     }
