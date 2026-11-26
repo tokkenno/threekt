@@ -29,7 +29,8 @@ import kotlin.js.JsExport
  */
 @JsExport
 class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINITY) {
-    private val ray = Ray()
+    /** World-space ray used for the tests, set by [setFromCamera] or directly. */
+    val ray = Ray()
     var lineThreshold = 1.0
     var pointsThreshold = 1.0
 

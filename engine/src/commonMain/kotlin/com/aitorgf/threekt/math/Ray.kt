@@ -1,8 +1,11 @@
 package com.aitorgf.threekt.math
 
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.math.sqrt
 
 /** A ray whose direction is expected to have unit length. */
+@JsExport
 class Ray(val origin: Vector3 = Vector3(), val direction: Vector3 = Vector3(0.0, 0.0, -1.0)) {
 
     /** Sets the ray's components by copying the given values. Returns this instance. */
@@ -12,6 +15,7 @@ class Ray(val origin: Vector3 = Vector3(), val direction: Vector3 = Vector3(0.0,
     }
 
     /** Copies the supplied values into this instance and returns it. */
+    @JsName("copyFrom")
     fun copy(ray: Ray): Ray = set(ray.origin, ray.direction)
 
     /** Returns a new instance with the same values. */

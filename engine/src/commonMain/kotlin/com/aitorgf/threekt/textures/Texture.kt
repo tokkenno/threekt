@@ -48,6 +48,12 @@ abstract class Texture {
             field = value
         }
 
+    /**
+     * Whether the image is flipped vertically on upload so that its first row is at `v = 1`, as in
+     * Three.js. Call [markUpdated] after changing it.
+     */
+    var flipY = true
+
     /** Whether to generate mipmaps when [mipmaps] is empty. Call [markUpdated] after changing it. */
     var generateMipmaps = true
 

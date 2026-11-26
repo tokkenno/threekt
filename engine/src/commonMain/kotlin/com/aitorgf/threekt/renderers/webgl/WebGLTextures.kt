@@ -80,14 +80,14 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
         val mipmaps = texture.mipmaps
         if (mipmaps.isNotEmpty()) {
             for ((level, image) in mipmaps.withIndex()) {
-                gl.texImage2D(GL.TEXTURE_2D, level, internalFormat, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = true)
+                gl.texImage2D(GL.TEXTURE_2D, level, internalFormat, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = texture.flipY)
             }
             gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAX_LEVEL, mipmaps.lastIndex)
             return
         }
 
         val image = requireNotNull(texture.image) { "The texture has no image to upload." }
-        gl.texImage2D(GL.TEXTURE_2D, 0, internalFormat, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = true)
+        gl.texImage2D(GL.TEXTURE_2D, 0, internalFormat, GL.RGBA, GL.UNSIGNED_BYTE, image, flipY = texture.flipY)
         gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAX_LEVEL, if (texture.generateMipmaps) 1000 else 0)
         if (texture.generateMipmaps) gl.generateMipmap(GL.TEXTURE_2D)
     }
