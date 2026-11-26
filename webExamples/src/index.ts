@@ -80,6 +80,16 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['misc_controls_drag', () => import('./examples/misc_controls_drag')],
     ['webgl_geometry_terrain_raycast', () => import('./examples/webgl_geometry_terrain_raycast')],
     ['webgl_geometry_spline_editor', () => import('./examples/webgl_geometry_spline_editor')],
+    ['webgl_buffergeometry_instancing', () => import('./examples/webgl_buffergeometry_instancing')],
+    ['webgl_buffergeometry_instancing_billboards', () => import('./examples/webgl_buffergeometry_instancing_billboards')],
+    ['webgl_buffergeometry_instancing_interleaved', () => import('./examples/webgl_buffergeometry_instancing_interleaved')],
+    ['webgl_instancing_performance', () => import('./examples/webgl_instancing_performance')],
+    ['webgl_instancing_raycast', () => import('./examples/webgl_instancing_raycast')],
+    ['misc_controls_trackball', () => import('./examples/misc_controls_trackball')],
+    ['webgl_geometries', () => import('./examples/webgl_geometries')],
+    ['webgl_sprites', () => import('./examples/webgl_sprites')],
+    ['webgl_raycaster_sprite', () => import('./examples/webgl_raycaster_sprite')],
+    ['webgl_math_obb', () => import('./examples/webgl_math_obb')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;

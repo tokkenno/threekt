@@ -51,10 +51,27 @@
                     data-description="Three polyhedra use different vertex color gradients, with wireframe overlays that show how the faces are constructed.">Vertex colors on polyhedra</a></li>
                 <li><a href="?example=webgl_morphtargets"
                     data-description="Blend the cube into alternate shapes using the morph target sliders.">Mesh morph targets</a></li>
-                <li><a href="?example=webgl_geometry_terrain" data-new
+                <li><a href="?example=webgl_geometry_terrain"
                     data-description="Fly over a procedural landscape built from layers of Perlin noise.">Terrain flight</a></li>
-                <li><a href="?example=webgl_lod" data-new
+                <li><a href="?example=webgl_lod"
                     data-description="Fly through wireframe icosahedra that switch geometry as their distance from the camera changes.">Levels of detail</a></li>
+                <li><a href="?example=webgl_geometries" data-new
+                    data-description="Compare the built-in primitives and parametric surfaces, all mapped with the same UV grid and lit by a light that follows the camera.">Primitive geometries</a></li>
+            </ul>
+        </section>
+        <section>
+            <h2>Instancing</h2>
+            <ul>
+                <li><a href="?example=webgl_buffergeometry_instancing" data-new
+                    data-description="Fifty thousand triangles share one geometry while per-instance offsets, colors and orientations animate them in the vertex shader.">Instanced triangles</a></li>
+                <li><a href="?example=webgl_buffergeometry_instancing_billboards" data-new
+                    data-description="Seventy-five thousand textured billboards pulse in size and hue from one instanced draw call.">Instanced billboards</a></li>
+                <li><a href="?example=webgl_buffergeometry_instancing_interleaved" data-new
+                    data-description="Five thousand crates read positions and UVs from one interleaved buffer and tumble through per-instance matrices.">Interleaved instancing</a></li>
+                <li><a href="?example=webgl_instancing_performance" data-new
+                    data-description="Draw a thousand monkey heads as one instanced mesh, one merged geometry or separate meshes and compare draw calls and memory.">Instancing performance</a></li>
+                <li><a href="?example=webgl_instancing_raycast" data-new
+                    data-description="Hover a grid of instanced spheres to paint the instance under the pointer.">Instance picking</a></li>
             </ul>
         </section>
         <section>
@@ -106,8 +123,10 @@
                     data-description="Orbit two copies of the same head mesh to compare standard wireframe lines with shader-based edges. The slider adjusts the shader’s edge thickness.">Shader wireframe</a></li>
                 <li><a href="?example=webgl_materials_blending_custom"
                     data-description="Compare compositing results by changing the blend equation and inspecting the grid of source and destination factors.">Custom blending equations</a></li>
-                <li><a href="?example=webgl_materials_video" data-new
+                <li><a href="?example=webgl_materials_video"
                     data-description="Watch tiles play different parts of the same video as the mosaic breaks apart and reassembles.">Video texture mosaic</a></li>
+                <li><a href="?example=webgl_sprites" data-new
+                    data-description="Camera-facing sprites spin and pulse in a rotating sphere, with a pixel-sized overlay drawn on top in screen space.">Sprites and overlay</a></li>
             </ul>
         </section>
         <section>
@@ -145,9 +164,9 @@
                     data-description="Three cameras render the same scene from different viewpoints into one canvas.">Multiple viewports</a></li>
                 <li><a href="?example=webgl_camera_array"
                     data-description="An array camera renders a grid of 36 views of a rotating cylinder into one canvas.">Array camera</a></li>
-                <li><a href="?example=webgl_multiple_elements" data-new
+                <li><a href="?example=webgl_multiple_elements"
                     data-description="Orbit independent scenes embedded in a scrollable grid rendered by one WebGL canvas.">Multiple elements</a></li>
-                <li><a href="?example=webgl_multiple_scenes_comparison" data-new
+                <li><a href="?example=webgl_multiple_scenes_comparison"
                     data-description="Move a divider to compare shaded and wireframe scenes viewed through the same camera.">Split scene comparison</a></li>
             </ul>
         </section>
@@ -195,16 +214,22 @@
                     data-description="Raycast against a textured surface and inspect how the hit follows changes to its UV transform.">Texture UV picking</a></li>
                 <li><a href="?example=webgl_math_orientation_transform"
                     data-description="Watch a mesh turn toward changing targets. Switch between gradual quaternion rotation and an immediate look-at orientation.">Quaternion orientation</a></li>
-                <li><a href="?example=misc_controls_orbit" data-new
+                <li><a href="?example=misc_controls_orbit"
                     data-description="Orbit and pan around a field of cones with damped camera controls.">Orbit controls</a></li>
-                <li><a href="?example=misc_controls_map" data-new
+                <li><a href="?example=misc_controls_map"
                     data-description="Pan across buildings and change the zoom-to-cursor and screen-space panning settings.">Map controls</a></li>
-                <li><a href="?example=misc_controls_drag" data-new
+                <li><a href="?example=misc_controls_drag"
                     data-description="Move and rotate individual cubes or Shift-click to select a group to move together.">Drag controls</a></li>
-                <li><a href="?example=webgl_geometry_terrain_raycast" data-new
+                <li><a href="?example=webgl_geometry_terrain_raycast"
                     data-description="Move the pointer to place a marker on the terrain and align it with the hit surface.">Terrain picking</a></li>
-                <li><a href="?example=webgl_geometry_spline_editor" data-new
+                <li><a href="?example=webgl_geometry_spline_editor"
                     data-description="Drag control points and compare uniform, centripetal and chordal Catmull–Rom curves.">Spline editor</a></li>
+                <li><a href="?example=webgl_raycaster_sprite" data-new
+                    data-description="Hover sprites with different centers, rotations and size attenuation to highlight the one under the pointer.">Sprite picking</a></li>
+                <li><a href="?example=webgl_math_obb" data-new
+                    data-description="Oriented bounding boxes turn red where boxes collide. Click a box to outline it.">Oriented bounding boxes</a></li>
+                <li><a href="?example=misc_controls_trackball" data-new
+                    data-description="Rotate freely over the poles, zoom and pan around a field of instanced cones, with an orthographic option.">Trackball controls</a></li>
             </ul>
         </section>
     </nav>
