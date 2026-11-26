@@ -3,6 +3,7 @@ package com.aitorgf.threekt.core
 import com.aitorgf.threekt.math.Box3
 import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Matrix4
+import com.aitorgf.threekt.math.MutableVector
 import com.aitorgf.threekt.math.Sphere
 import com.aitorgf.threekt.math.Vector3
 import kotlin.js.JsExport
@@ -145,6 +146,21 @@ open class BufferGeometry {
             }
         }
         sphere.radius = sqrt(maxRadiusSq)
+    }
+
+    /**
+     * Sets the `position` attribute from [points], using zero for the Z of 2D points, as Three.js
+     * `setFromPoints`. Replaces an existing position attribute. Returns this geometry.
+     */
+    fun setFromPoints(points: List<MutableVector<*>>): BufferGeometry {
+        val positions = FloatArray(points.size * 3)
+        for ((i, point) in points.withIndex()) {
+            positions[i * 3] = point[0].toFloat()
+            positions[i * 3 + 1] = point[1].toFloat()
+            positions[i * 3 + 2] = if (point.dimension > 2) point[2].toFloat() else 0f
+        }
+        setAttribute("position", Float32BufferAttribute(positions, 3))
+        return this
     }
 
     /**
