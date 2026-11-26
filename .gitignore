@@ -15,6 +15,8 @@ webExamples/dist
 
 # Package Files #
 *.jar
+# The Gradle wrapper must be committed so that ./gradlew works in fresh clones and CI.
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
