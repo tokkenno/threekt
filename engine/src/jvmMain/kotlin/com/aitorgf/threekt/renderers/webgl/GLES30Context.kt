@@ -180,6 +180,9 @@ class GLES30Context(width: Int, height: Int) : GLContext {
     override fun uniform4f(location: Any?, x: Double, y: Double, z: Double, w: Double) {
         name(location)?.let { GLES20.glUniform4f(it, x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat()) }
     }
+    override fun uniform4fv(location: Any?, value: FloatArray) {
+        name(location)?.let { GLES20.glUniform4fv(it, value) }
+    }
     override fun uniformMatrix3fv(location: Any?, transpose: Boolean, value: FloatArray) {
         name(location)?.let { GLES20.glUniformMatrix3fv(it, transpose, value) }
     }

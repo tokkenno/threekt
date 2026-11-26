@@ -27,6 +27,7 @@ import com.aitorgf.threekt.materials.RawShaderMaterial
 import com.aitorgf.threekt.materials.ShaderMaterial
 import com.aitorgf.threekt.materials.Side
 import com.aitorgf.threekt.math.Color
+import com.aitorgf.threekt.math.Plane
 import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Frustum
 import com.aitorgf.threekt.math.Matrix4
@@ -45,6 +46,7 @@ import com.aitorgf.threekt.renderers.webgl.WebGLRenderTargets
 import com.aitorgf.threekt.textures.DataTexture
 import com.aitorgf.threekt.textures.FramebufferTexture
 import com.aitorgf.threekt.renderers.webgl.WebGLAttributes
+import com.aitorgf.threekt.renderers.webgl.WebGLClipping
 import com.aitorgf.threekt.renderers.webgl.WebGLCapabilities
 import com.aitorgf.threekt.renderers.webgl.WebGLGeometries
 import com.aitorgf.threekt.renderers.webgl.WebGLLights
@@ -86,6 +88,13 @@ class WebGLRenderer(context: GLContext) {
     private val uniforms = WebGLUniforms(gl, textures)
     private val morphtargets = WebGLMorphtargets(gl, uniforms)
     private val lights = WebGLLights()
+    private val clipping = WebGLClipping(gl)
+
+    /** World-space clipping planes applied to built-in materials. */
+    var clippingPlanes: Array<Plane> = emptyArray()
+
+    /** Enables the additional clipping planes assigned to individual built-in materials. */
+    var localClippingEnabled: Boolean = false
     private val programs = mutableMapOf<Pair<String, String>, WebGLProgram>()
     private val programUsers = mutableMapOf<Pair<String, String>, Int>()
     private val materialPrograms = mutableMapOf<Material, MutableSet<Pair<String, String>>>()
@@ -468,6 +477,11 @@ class WebGLRenderer(context: GLContext) {
 
         uniforms.reset()
         setBuiltInUniforms(program, obj, camera)
+        if (material !is ShaderMaterial) {
+            program.uniforms["clippingPlanes"]?.let {
+                clipping.setState(it.location, clippingPlanes, material.clippingPlanes.takeIf { localClippingEnabled }, camera)
+            }
+        }
         when (material) {
             is MeshBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
             is LineBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
@@ -641,6 +655,14 @@ class WebGLRenderer(context: GLContext) {
         val defines = buildList {
             addAll(extraDefines)
             if (renderTarget != null) add("#define LINEAR_OUTPUT")
+            val localCount = if (localClippingEnabled) material.clippingPlanes?.size ?: 0 else 0
+            val planeCount = clippingPlanes.size + localCount
+            val unionCount = if (material.clipIntersection) clippingPlanes.size else planeCount
+            if (planeCount > 0) {
+                add("#define USE_CLIPPING")
+                add("#define NUM_CLIPPING_PLANES $planeCount")
+                add("#define UNION_CLIPPING_PLANES $unionCount")
+            }
             if (material.transparent == false && material.blending == Blending.Normal) add("#define OPAQUE")
             if (fog != null) add("#define USE_FOG")
             if (fog is FogExp2) add("#define FOG_EXP2")

@@ -32,11 +32,11 @@
                     data-description="Start the webcam to map its live video onto rotating cubes. This example requires camera permission and a secure context.">Webcam textures</a></li>
                 <li><a href="?example=webgl_video_kinect"
                     data-description="A shader reconstructs a point cloud from a prerecorded Kinect depth video. Adjust point size and the near and far depth limits.">Kinect depth video</a></li>
-                <li><a href="?example=webgl_depth_texture" data-new
+                <li><a href="?example=webgl_depth_texture"
                        data-description="Orbit a cluster of torus knots and view their linearized depth from a texture attachment.">Depth texture</a></li>
-                <li><a href="?example=webgl_framebuffer_texture" data-new
+                <li><a href="?example=webgl_framebuffer_texture"
                        data-description="Copy the center of a colorful curve into a live inset.">Framebuffer texture</a></li>
-                <li><a href="?example=webgl_materials_texture_partialupdate" data-new
+                <li><a href="?example=webgl_materials_texture_partialupdate"
                        data-description="Upload colored tiles into a checkerboard texture one rectangle at a time.">Partial texture updates</a></li>
             </ul>
         </section>
@@ -79,11 +79,17 @@
                        data-description="Fly across a textured voxel landscape generated from Perlin noise.">Block terrain</a></li>
                 <li><a href="?example=webgl_geometry_colors_lookuptable"
                        data-description="Change the lookup table used to color a mesh from its pressure measurements.">Pressure color maps</a></li>
-                <li><a href="?example=webgl_geometry_convex" data-new
+                <li><a href="?example=webgl_geometry_convex"
                        data-description="Orbit a translucent hull built from the unique vertices of a dodecahedron.">Convex hull</a></li>
-                <li><a href="?example=webgl_helpers" data-new
+                <li><a href="?example=webgl_clipping" data-new
+                       data-description="Move two clipping planes through a spinning torus knot and its ground.">Local and global clipping</a></li>
+                <li><a href="?example=webgl_clipping_advanced" data-new
+                       data-description="Clip an instanced lattice to a moving tetrahedron and toggle a global clipping volume.">Clipping volumes</a></li>
+                <li><a href="?example=webgl_clipping_intersection" data-new
+                       data-description="Switch how three planes combine to reveal cross sections of nested spheres.">Clipping intersections</a></li>
+                <li><a href="?example=webgl_helpers"
                        data-description="Inspect a head mesh through vertex normals, tangents, bounding boxes, wireframes, edge lines and grids.">Geometry and light helpers</a></li>
-                <li><a href="?example=misc_uv_tests" data-new
+                <li><a href="?example=misc_uv_tests"
                        data-description="Compare the numbered UV triangles and vertices of nine built-in geometries.">UV layout diagrams</a></li>
             </ul>
         </section>
@@ -98,6 +104,8 @@
                     data-description="Five thousand crates read positions and UVs from one interleaved buffer and tumble through per-instance matrices.">Interleaved instancing</a></li>
                 <li><a href="?example=webgl_instancing_performance"
                     data-description="Draw a thousand monkey heads as one instanced mesh, one merged geometry or separate meshes and compare draw calls and memory.">Instancing performance</a></li>
+                <li><a href="?example=webgl_instancing_dynamic" data-new
+                       data-description="Watch 10,000 textured boxes rise and fall as color spreads in waves.">Dynamic instancing</a></li>
                 <li><a href="?example=webgl_instancing_raycast"
                     data-description="Hover a grid of instanced spheres to paint the instance under the pointer.">Instance picking</a></li>
                 <li><a href="?example=webgl_instancing_scatter"
@@ -153,6 +161,8 @@
                     data-description="Five image rows compare no blending, normal, additive, subtractive, and multiply blending over a moving checkerboard.">Blending modes</a></li>
                 <li><a href="?example=webgl_materials_wireframe"
                     data-description="Orbit two copies of the same head mesh to compare standard wireframe lines with shader-based edges. The slider adjusts the shader’s edge thickness.">Shader wireframe</a></li>
+                <li><a href="?example=webgl_materials_toon" data-new
+                       data-description="Orbit a grid of outlined spheres with stepped lighting and an animated light source.">Toon shading and outlines</a></li>
                 <li><a href="?example=webgl_materials_blending_custom"
                     data-description="Compare compositing results by changing the blend equation and inspecting the grid of source and destination factors.">Custom blending equations</a></li>
                 <li><a href="?example=webgl_materials_video"
@@ -161,6 +171,12 @@
                     data-description="Camera-facing sprites spin and pulse in a rotating sphere, with a pixel-sized overlay drawn on top in screen space.">Sprites and overlay</a></li>
                 <li><a href="?example=webgl_effects_ascii"
                        data-description="Orbit a bouncing sphere rendered as characters whose density follows WebGL pixel brightness.">ASCII rendering</a></li>
+                <li><a href="?example=webgl_effects_stereo" data-new
+                       data-description="Move the pointer to steer two views of refractive spheres.">Side-by-side stereo</a></li>
+                <li><a href="?example=webgl_effects_anaglyph" data-new
+                       data-description="See reflective spheres from two viewpoints combined for red–cyan glasses.">Red–cyan anaglyph</a></li>
+                <li><a href="?example=webgl_effects_parallaxbarrier" data-new
+                       data-description="Display alternating scanlines from the left and right views of reflective spheres.">Parallax barrier</a></li>
             </ul>
         </section>
         <section>
@@ -172,19 +188,39 @@
                     data-description="The Monjori fragment shader uses elapsed time to animate a full-screen procedural pattern.">Monjori shader</a></li>
                 <li><a href="?example=webgl_custom_attributes"
                     data-description="A custom attribute displaces the vertices of a rotating, water-textured sphere along their normals.">Vertex displacement</a></li>
-                <li><a href="?example=webgl_postprocessing_procedural" data-new
+                <li><a href="?example=webgl_custom_attributes_lines" data-new
+                       data-description="Custom vertex attributes bend and color the lines of rotating 3D text.">Displaced text lines</a></li>
+                <li><a href="?example=webgl_shader_lava" data-new
+                       data-description="Two scrolling textures animate lava on a rotating torus with a glow pass.">Lava shader</a></li>
+                <li><a href="?example=webgl_shaders_sky" data-new
+                       data-description="Adjust the sun, atmospheric scattering and clouds over a reflective sphere.">Atmospheric sky</a></li>
+                <li><a href="?example=webgl_postprocessing_procedural"
                        data-description="Switch between three random shader patterns on a fullscreen pass.">Procedural noise</a></li>
-                <li><a href="?example=webgl_postprocessing_afterimage" data-new
+                <li><a href="?example=webgl_postprocessing_afterimage"
                        data-description="Adjust decay as a rotating cube leaves a fading trail.">Afterimage</a></li>
-                <li><a href="?example=webgl_postprocessing_sobel" data-new
+                <li><a href="?example=webgl_postprocessing_sobel"
                        data-description="Orbit a torus knot and compare edge detection with the shaded view.">Sobel edges</a></li>
-                <li><a href="?example=webgl_rtt" data-new
+                <li><a href="?example=webgl_postprocessing" data-new
+                       data-description="Combine a rotating scene with a dot-screen pattern and offset color channels.">Dot screen and RGB shift</a></li>
+                <li><a href="?example=webgl_postprocessing_backgrounds" data-new
+                       data-description="Toggle a color clear, wood texture, cubemap and lit sphere while adjusting layer opacity.">Composited backgrounds</a></li>
+                <li><a href="?example=webgl_postprocessing_transition" data-new
+                       data-description="Blend two fields of shapes with six selectable transition masks.">Scene transitions</a></li>
+                <li><a href="?example=webgl_postprocessing_fxaa" data-new
+                       data-description="Orbit a field of tetrahedra and compare its edges across the split view.">FXAA comparison</a></li>
+                <li><a href="?example=webgl_postprocessing_glitch" data-new
+                       data-description="Watch intermittent color-channel and displacement glitches or switch to a continuous effect.">Digital glitch</a></li>
+                <li><a href="?example=webgl_postprocessing_rgb_halftone" data-new
+                       data-description="Print the rotating cubes as patterned RGB dots, lines or squares.">RGB halftone</a></li>
+                <li><a href="?example=webgl_postprocessing_pixel" data-new
+                       data-description="Adjust pixel size and depth and normal edges around a floating crystal.">Pixelated rendering</a></li>
+                <li><a href="?example=webgl_rtt"
                        data-description="Render two revolving rings once, then reuse the image on the background and a grid of spheres.">Render to texture</a></li>
-                <li><a href="?example=webgl_read_float_buffer" data-new
+                <li><a href="?example=webgl_read_float_buffer"
                        data-description="Point at the render target preview to read the underlying linear RGB values.">Float framebuffer readback</a></li>
-                <li><a href="?example=webgl_test_memory" data-new
+                <li><a href="?example=webgl_test_memory"
                        data-description="Create, draw and release a new textured wireframe each frame.">Geometry and texture disposal</a></li>
-                <li><a href="?example=webgl_test_memory2" data-new
+                <li><a href="?example=webgl_test_memory2"
                        data-description="Build and release distinct programs for one hundred meshes and watch the cache count.">Shader program disposal</a></li>
             </ul>
         </section>
@@ -216,9 +252,9 @@
                     data-description="Orbit independent scenes embedded in a scrollable grid rendered by one WebGL canvas.">Multiple elements</a></li>
                 <li><a href="?example=webgl_multiple_scenes_comparison"
                     data-description="Move a divider to compare shaded and wireframe scenes viewed through the same camera.">Split scene comparison</a></li>
-                <li><a href="?example=misc_animation_keys" data-new
+                <li><a href="?example=misc_animation_keys"
                        data-description="Interpolate a cube’s position, scale, rotation and opacity while stepping its color.">Animation keyframes</a></li>
-                <li><a href="?example=misc_animation_groups" data-new
+                <li><a href="?example=misc_animation_groups"
                        data-description="Animate a grid of cubes with a shared clock and keyframes.">Grouped animation</a></li>
             </ul>
         </section>
@@ -247,13 +283,13 @@
                        data-description="View extrusion and travel paths for three prints, including absolute and relative extrusion.">G-code toolpaths</a></li>
                 <li><a href="?example=webgl_loader_pdb"
                        data-description="Choose a molecule and inspect its rotating, labeled atoms and explicit bonds.">PDB molecules</a></li>
-                <li><a href="?example=webgl_loader_ply" data-new
+                <li><a href="?example=webgl_loader_ply"
                        data-description="Compare ASCII dolphins and the binary Lucy sculpture under the same lighting.">PLY meshes</a></li>
-                <li><a href="?example=webgl_loader_amf" data-new
+                <li><a href="?example=webgl_loader_amf"
                        data-description="Orbit a printable rook in the original Z-up orientation.">AMF rook</a></li>
-                <li><a href="?example=webgl_loader_vox" data-new
+                <li><a href="?example=webgl_loader_vox"
                        data-description="Orbit a voxel monument rendered as merged surface faces.">MagicaVoxel monument</a></li>
-                <li><a href="?example=webgl_loader_mdd" data-new
+                <li><a href="?example=webgl_loader_mdd"
                        data-description="Interpolate the vertex animation of a cube from an MDD file.">MDD point cache</a></li>
             </ul>
         </section>
@@ -296,8 +332,12 @@
                     data-description="Rotate freely over the poles, zoom and pan around a field of instanced cones, with an orthographic option.">Trackball controls</a></li>
                 <li><a href="?example=misc_raycaster_helper"
                        data-description="Follow the active ray interval and its live intersections with three moving capsules.">Raycaster helper</a></li>
-                <li><a href="?example=misc_controls_pointerlock" data-new
+                <li><a href="?example=misc_controls_pointerlock"
                        data-description="Use the mouse to look, keys to move, and Space to jump among colored blocks.">Pointer-lock controls</a></li>
+                <li><a href="?example=misc_controls_fly" data-new
+                       data-description="Fly and roll past the Earth, clouds, Moon and star field.">Flight controls</a></li>
+                <li><a href="?example=misc_boxselection" data-new
+                       data-description="Drag a rectangle over the cubes to highlight those whose centers fall inside it.">Box selection</a></li>
             </ul>
         </section>
     </nav>

@@ -126,6 +126,7 @@ class WebGL2Context(private val canvas: dynamic, alpha: Boolean = true) : GLCont
     override fun uniform2i(location: Any?, x: Int, y: Int) { gl.uniform2i(location, x, y) }
     override fun uniform3f(location: Any?, x: Double, y: Double, z: Double) { gl.uniform3f(location, x, y, z) }
     override fun uniform4f(location: Any?, x: Double, y: Double, z: Double, w: Double) { gl.uniform4f(location, x, y, z, w) }
+    override fun uniform4fv(location: Any?, value: FloatArray) { gl.uniform4fv(location, value) }
     override fun uniformMatrix3fv(location: Any?, transpose: Boolean, value: FloatArray) { gl.uniformMatrix3fv(location, transpose, value) }
     override fun uniformMatrix4fv(location: Any?, transpose: Boolean, value: FloatArray) { gl.uniformMatrix4fv(location, transpose, value) }
 

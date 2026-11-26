@@ -50,6 +50,7 @@ export function addToggle(panel: HTMLElement, name: string, initial: boolean, up
     input.addEventListener('change', () => update(input.checked));
     label.append(input);
     panel.append(label);
+    return input;
 }
 
 export function addSelect(panel: HTMLElement, name: string, options: Record<string, string>, initial: string, change: (value: string) => void) {

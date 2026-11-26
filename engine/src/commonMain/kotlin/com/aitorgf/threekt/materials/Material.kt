@@ -1,6 +1,7 @@
 package com.aitorgf.threekt.materials
 
 import com.aitorgf.threekt.core.EventDispatcher
+import com.aitorgf.threekt.math.Plane
 import kotlin.js.JsExport
 
 /** Settings shared by all materials that control face culling, blending, and depth testing. */
@@ -8,6 +9,12 @@ import kotlin.js.JsExport
 abstract class Material : EventDispatcher() {
     /** Releases renderer resources. Using this object again recreates them. */
     fun dispose() = dispatchEvent("dispose")
+
+    /** World-space clipping planes. The renderer clips their negative half-spaces. */
+    var clippingPlanes: Array<Plane>? = null
+
+    /** Clips only where all local planes exclude a fragment. Global planes still clip independently. */
+    var clipIntersection: Boolean = false
 
     /** Unique number of this material, assigned in creation order. */
     val id: Int = nextId++

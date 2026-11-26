@@ -16,6 +16,10 @@ internal object ShaderLib {
 
         in vec3 position;
 
+        #ifdef USE_CLIPPING
+        out vec3 vClipPosition;
+        #endif
+
         bool isPerspectiveMatrix( mat4 m ) {
             return m[ 2 ][ 3 ] == - 1.0;
         }
@@ -112,6 +116,37 @@ internal object ShaderLib {
     private val fogParsVertex = """
         #ifdef USE_FOG
         out float vFogDepth;
+        #endif
+    """.trimIndent()
+
+    private val clippingPlanesParsFragment = """
+        #ifdef USE_CLIPPING
+        in vec3 vClipPosition;
+        uniform vec4 clippingPlanes[ NUM_CLIPPING_PLANES ];
+        #endif
+    """.trimIndent()
+
+    private val clippingPlanesFragment = """
+        #ifdef USE_CLIPPING
+        for ( int i = 0; i < UNION_CLIPPING_PLANES; i ++ ) {
+            vec4 plane = clippingPlanes[ i ];
+            if ( dot( vClipPosition, plane.xyz ) > plane.w ) discard;
+        }
+
+        #if UNION_CLIPPING_PLANES < NUM_CLIPPING_PLANES
+        bool clipped = true;
+        for ( int i = UNION_CLIPPING_PLANES; i < NUM_CLIPPING_PLANES; i ++ ) {
+            vec4 plane = clippingPlanes[ i ];
+            clipped = ( dot( vClipPosition, plane.xyz ) > plane.w ) && clipped;
+        }
+        if ( clipped ) discard;
+        #endif
+        #endif
+    """.trimIndent()
+
+    private val clippingPlanesVertex = """
+        #ifdef USE_CLIPPING
+        vClipPosition = - mvPosition.xyz;
         #endif
     """.trimIndent()
 
@@ -304,6 +339,7 @@ internal object ShaderLib {
         |    $colorVertex
         |    $beginMorphtargetVertex
         |    $projectVertex
+        |    $clippingPlanesVertex
         |    $fogVertex
         |}
     """.trimMargin()
@@ -328,7 +364,9 @@ internal object ShaderLib {
         |uniform float totalSize;
         |in float vLineDistance;
         |#endif
+        |$clippingPlanesParsFragment
         |void main() {
+        |    $clippingPlanesFragment
         |    #ifdef USE_DASH
         |    if (totalSize > 0.0 && mod(vLineDistance, totalSize) > dashSize) discard;
         |    #endif
@@ -371,6 +409,7 @@ internal object ShaderLib {
         |    if ( isPerspective ) gl_PointSize *= ( scale / - mvPosition.z );
         |    #endif
         |
+        |    $clippingPlanesVertex
         |    $fogVertex
         |}
     """.trimMargin()
@@ -390,7 +429,9 @@ internal object ShaderLib {
         |uniform float alphaTest;
         |#endif
         |
+        |$clippingPlanesParsFragment
         |void main() {
+        |    $clippingPlanesFragment
         |    vec4 diffuseColor = vec4( diffuse, opacity );
         |
         |    #ifdef USE_MAP
@@ -447,6 +488,7 @@ internal object ShaderLib {
         |    $beginMorphtargetVertex
         |    $projectVertex
         |    vViewPosition = - mvPosition.xyz;
+        |    $clippingPlanesVertex
         |    $fogVertex
         |}
     """.trimMargin()
@@ -548,7 +590,9 @@ internal object ShaderLib {
         |$bsdfs
         |$lightsParsBegin
         |
+        |$clippingPlanesParsFragment
         |void main() {
+        |    $clippingPlanesFragment
         |    vec4 diffuseColor = vec4( diffuse, opacity );
         |    vec3 totalEmissiveRadiance = emissive;
         |
@@ -579,7 +623,9 @@ internal object ShaderLib {
         |#endif
         |out vec4 pc_fragColor;
         |
+        |$clippingPlanesParsFragment
         |void main() {
+        |    $clippingPlanesFragment
         |    vec4 diffuseColor = vec4( 0.0, 0.0, 0.0, opacity );
         |    $normalFragmentBegin
         |    pc_fragColor = vec4( normalize( normal ) * 0.5 + 0.5, diffuseColor.a );
@@ -629,6 +675,7 @@ internal object ShaderLib {
         |    mvPosition.xy += rotatedPosition;
         |
         |    gl_Position = projectionMatrix * mvPosition;
+        |    $clippingPlanesVertex
         |    $fogVertex
         |}
     """.trimMargin()

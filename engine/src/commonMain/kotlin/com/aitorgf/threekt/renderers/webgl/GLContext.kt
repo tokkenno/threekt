@@ -109,6 +109,7 @@ interface GLContext {
     fun uniform2i(location: Any?, x: Int, y: Int)
     fun uniform3f(location: Any?, x: Double, y: Double, z: Double)
     fun uniform4f(location: Any?, x: Double, y: Double, z: Double, w: Double)
+    fun uniform4fv(location: Any?, value: FloatArray)
     fun uniformMatrix3fv(location: Any?, transpose: Boolean, value: FloatArray)
     fun uniformMatrix4fv(location: Any?, transpose: Boolean, value: FloatArray)
 

@@ -26,6 +26,9 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_points_waves', () => import('./examples/webgl_points_waves')],
     ['webgl_shader', () => import('./examples/webgl_shader')],
     ['webgl_custom_attributes', () => import('./examples/webgl_custom_attributes')],
+    ['webgl_custom_attributes_lines', () => import('./examples/webgl_custom_attributes_lines')],
+    ['webgl_shader_lava', () => import('./examples/webgl_shader_lava')],
+    ['webgl_shaders_sky', () => import('./examples/webgl_shaders_sky')],
     ['webgl_custom_attributes_points', () => import('./examples/webgl_custom_attributes_points')],
     ['webgl_points_billboards', () => import('./examples/webgl_points_billboards')],
     ['webgl_points_sprites', () => import('./examples/webgl_points_sprites')],
@@ -39,6 +42,7 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_custom_attributes_points3', () => import('./examples/webgl_custom_attributes_points3')],
     ['webgl_materials_blending', () => import('./examples/webgl_materials_blending')],
     ['webgl_materials_wireframe', () => import('./examples/webgl_materials_wireframe')],
+    ['webgl_materials_toon', () => import('./examples/webgl_materials_toon')],
     ['webgl_panorama_equirectangular', () => import('./examples/webgl_panorama_equirectangular')],
     ['webgl_loader_obj', () => import('./examples/webgl_loader_obj')],
     ['webgl_loader_xyz', () => import('./examples/webgl_loader_xyz')],
@@ -84,6 +88,7 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_buffergeometry_instancing_billboards', () => import('./examples/webgl_buffergeometry_instancing_billboards')],
     ['webgl_buffergeometry_instancing_interleaved', () => import('./examples/webgl_buffergeometry_instancing_interleaved')],
     ['webgl_instancing_performance', () => import('./examples/webgl_instancing_performance')],
+    ['webgl_instancing_dynamic', () => import('./examples/webgl_instancing_dynamic')],
     ['webgl_instancing_raycast', () => import('./examples/webgl_instancing_raycast')],
     ['misc_controls_trackball', () => import('./examples/misc_controls_trackball')],
     ['webgl_geometries', () => import('./examples/webgl_geometries')],
@@ -101,10 +106,16 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_instancing_scatter', () => import('./examples/webgl_instancing_scatter')],
     ['webgl_morphtargets_sphere', () => import('./examples/webgl_morphtargets_sphere')],
     ['webgl_effects_ascii', () => import('./examples/webgl_effects_ascii')],
+    ['webgl_effects_stereo', () => import('./examples/webgl_effects_stereo')],
+    ['webgl_effects_anaglyph', () => import('./examples/webgl_effects_anaglyph')],
+    ['webgl_effects_parallaxbarrier', () => import('./examples/webgl_effects_parallaxbarrier')],
     ['webgl_loader_gcode', () => import('./examples/webgl_loader_gcode')],
     ['webgl_loader_pdb', () => import('./examples/webgl_loader_pdb')],
     ['misc_raycaster_helper', () => import('./examples/misc_raycaster_helper')],
     ['webgl_geometry_convex', () => import('./examples/webgl_geometry_convex')],
+    ['webgl_clipping', () => import('./examples/webgl_clipping')],
+    ['webgl_clipping_advanced', () => import('./examples/webgl_clipping_advanced')],
+    ['webgl_clipping_intersection', () => import('./examples/webgl_clipping_intersection')],
     ['webgl_helpers', () => import('./examples/webgl_helpers')],
     ['misc_uv_tests', () => import('./examples/misc_uv_tests')],
     ['webgl_depth_texture', () => import('./examples/webgl_depth_texture')],
@@ -113,11 +124,20 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_postprocessing_procedural', () => import('./examples/webgl_postprocessing_procedural')],
     ['webgl_postprocessing_afterimage', () => import('./examples/webgl_postprocessing_afterimage')],
     ['webgl_postprocessing_sobel', () => import('./examples/webgl_postprocessing_sobel')],
+    ['webgl_postprocessing', () => import('./examples/webgl_postprocessing')],
+    ['webgl_postprocessing_backgrounds', () => import('./examples/webgl_postprocessing_backgrounds')],
+    ['webgl_postprocessing_transition', () => import('./examples/webgl_postprocessing_transition')],
+    ['webgl_postprocessing_fxaa', () => import('./examples/webgl_postprocessing_fxaa')],
+    ['webgl_postprocessing_glitch', () => import('./examples/webgl_postprocessing_glitch')],
+    ['webgl_postprocessing_rgb_halftone', () => import('./examples/webgl_postprocessing_rgb_halftone')],
+    ['webgl_postprocessing_pixel', () => import('./examples/webgl_postprocessing_pixel')],
     ['webgl_rtt', () => import('./examples/webgl_rtt')],
     ['webgl_read_float_buffer', () => import('./examples/webgl_read_float_buffer')],
     ['webgl_test_memory', () => import('./examples/webgl_test_memory')],
     ['webgl_test_memory2', () => import('./examples/webgl_test_memory2')],
     ['misc_controls_pointerlock', () => import('./examples/misc_controls_pointerlock')],
+    ['misc_controls_fly', () => import('./examples/misc_controls_fly')],
+    ['misc_boxselection', () => import('./examples/misc_boxselection')],
     ['webgl_loader_ply', () => import('./examples/webgl_loader_ply')],
     ['webgl_loader_amf', () => import('./examples/webgl_loader_amf')],
     ['webgl_loader_vox', () => import('./examples/webgl_loader_vox')],
@@ -214,7 +234,7 @@ if (load && selected) {
 
         const draw = (now: number) => {
             try {
-                example.render((now - startedAt) / 1000);
+                example.render(Math.max(0, now - startedAt) / 1000);
                 frame = requestAnimationFrame(draw);
             } catch (error) {
                 stop();
