@@ -6,7 +6,11 @@ config.set({
     customLaunchers: {
         ChromeHeadlessWebGL: {
             base: 'ChromeHeadless',
-            flags: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
+            flags: [
+                '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist',
+                // AppArmor on Ubuntu 24.04 runners can block Chrome's sandbox; CI machines are disposable.
+                ...(process.env.CI ? ['--no-sandbox'] : []),
+            ],
         },
     },
 });
