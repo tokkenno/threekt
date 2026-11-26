@@ -14,4 +14,13 @@ open class InstancedBufferGeometry : BufferGeometry() {
      * attributes can supply. Defaults to [Int.MAX_VALUE], which stands for the Three.js `Infinity`.
      */
     var instanceCount = Int.MAX_VALUE
+
+    /** Copies [instanceCount] as well when [source] is instanced. Returns this geometry. */
+    override fun copy(source: BufferGeometry): InstancedBufferGeometry {
+        super.copy(source)
+        if (source is InstancedBufferGeometry) instanceCount = source.instanceCount
+        return this
+    }
+
+    override fun clone(): InstancedBufferGeometry = InstancedBufferGeometry().copy(this)
 }

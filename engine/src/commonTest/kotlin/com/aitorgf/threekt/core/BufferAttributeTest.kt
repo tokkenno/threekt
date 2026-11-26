@@ -3,6 +3,7 @@ package com.aitorgf.threekt.core
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.extras.DataUtils
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -120,5 +121,32 @@ class BufferAttributeTest {
         assertEquals(65534.0, small.index!!.getX(2))
         val large = BufferGeometry().setIndex(intArrayOf(65535, 0, 1))
         assertIs<Uint32BufferAttribute>(large.index)
+    }
+
+    @Test
+    fun interleavedBuffersSupportEveryArrayTypeAndKeepItWhenCloned() {
+        val buffer = InterleavedBuffer.fromUint16Array(shortArrayOf(1, -1, 2, 3), 2)
+        val attribute = InterleavedBufferAttribute(buffer, 1, 1, normalized = true)
+        assertEquals(1.0, attribute.getX(0))
+        assertEquals(3.0 / 65535.0, attribute.getX(1), 1e-12)
+        val flat = assertIs<Uint16BufferAttribute>(attribute.clone())
+        assertTrue(flat.normalized)
+        assertEquals(listOf(65535.0, 3.0), List(2) { flat.readRaw(it) })
+
+        val copy = buffer.clone()
+        copy.copyAt(0, buffer, 1)
+        assertEquals(2.0, copy.storage.readRaw(0))
+        assertEquals(1.0, buffer.storage.readRaw(0))
+        assertFailsWith<IllegalArgumentException> { buffer.copy(InterleavedBuffer(FloatArray(4), 2)) }
+    }
+
+    @Test
+    fun instancedBuffersAndGeometriesCopyTheirInstancingSettings() {
+        val buffer = InstancedInterleavedBuffer(FloatArray(6), 3, meshPerAttribute = 2)
+        assertEquals(2, buffer.clone().meshPerAttribute)
+        val geometry = InstancedBufferGeometry().apply { instanceCount = 5 }
+        val copy = geometry.clone()
+        assertIs<InstancedBufferGeometry>(copy)
+        assertEquals(5, copy.instanceCount)
     }
 }
