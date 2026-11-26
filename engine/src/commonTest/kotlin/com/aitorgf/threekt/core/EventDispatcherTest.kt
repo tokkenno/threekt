@@ -45,4 +45,15 @@ class EventDispatcherTest {
         dispatcher.dispatchEvent("change")
         assertEquals(listOf(1, 2, 1), calls)
     }
+
+    @Test
+    fun eventTargetIsSetOnlyDuringDispatch() {
+        val dispatcher = EventDispatcher()
+        val event = DispatchedEvent("change")
+        var seen: EventDispatcher? = null
+        dispatcher.addEventListener("change") { seen = it.target }
+        dispatcher.dispatchEvent(event)
+        assertSame(dispatcher, seen)
+        assertEquals(null, event.target)
+    }
 }

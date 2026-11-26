@@ -23,12 +23,18 @@ open class EventDispatcher {
     }
 
     /**
-     * Notifies every listener for [type] in registration order. Listeners added or removed while the event
+     * Notifies every listener for the type of [event] in registration order. [DispatchedEvent.target] is
+     * this dispatcher during the dispatch and null afterwards. Listeners added or removed while the event
      * is being dispatched take effect on the next dispatch.
      */
-    fun dispatchEvent(type: String) {
-        val typeListeners = listeners[type]?.toList() ?: return
-        val event = DispatchedEvent(type, this)
+    fun dispatchEvent(event: DispatchedEvent) {
+        val typeListeners = listeners[event.type]?.toList() ?: return
+        event.target = this
         for (listener in typeListeners) listener(event)
+        event.target = null
     }
+
+    /** Dispatches a [DispatchedEvent] of [type] without extra data. */
+    @JsExport.Ignore
+    fun dispatchEvent(type: String) = dispatchEvent(DispatchedEvent(type))
 }
