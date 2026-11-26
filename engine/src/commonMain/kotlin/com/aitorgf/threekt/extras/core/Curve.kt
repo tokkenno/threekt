@@ -1,6 +1,8 @@
 package com.aitorgf.threekt.extras.core
 
+import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.MutableVector
+import com.aitorgf.threekt.math.Vector3
 import kotlin.js.JsExport
 import kotlin.math.floor
 import kotlin.math.sqrt
@@ -13,7 +15,7 @@ import kotlin.math.sqrt
  *
  * Three.js returns arrays of points. Threekt returns [List]s, because arrays of a generic point type cannot
  * be created on every platform; from JavaScript call `asJsReadonlyArrayView()` on the result.
- * `computeFrenetFrames()`, cloning and JSON serialization are not supported yet.
+ * Cloning and JSON serialization are not supported yet.
  */
 @JsExport
 abstract class Curve<T : MutableVector<T>> {
@@ -123,7 +125,71 @@ abstract class Curve<T : MutableVector<T>> {
     /** Returns the unit tangent at the arc-length fraction [u]. */
     open fun getTangentAt(u: Double, optionalTarget: T? = null): T = getTangent(getUtoTmapping(u), optionalTarget)
 
+    /** Tangent, normal and binormal of each sample of a 3D curve, as returned by [computeFrenetFrames]. */
+    class FrenetFrames(val tangents: Array<Vector3>, val normals: Array<Vector3>, val binormals: Array<Vector3>)
+
+    /**
+     * Computes [segments] + 1 parallel-transport frames along a 3D curve at equal arc-length steps, as
+     * Three.js does for tubes and path extrusion. The first normal is perpendicular to the tangent's smallest
+     * axis; later normals rotate with the tangent. When [closed] is set, the twist is spread so the last frame
+     * matches the first. Throws [IllegalArgumentException] for 2D curves.
+     */
+    fun computeFrenetFrames(segments: Int, closed: Boolean = false): FrenetFrames {
+        require(createPoint() is Vector3) { "Frenet frames require a 3D curve." }
+        val normal = Vector3()
+        val vec = Vector3()
+        val mat = Matrix4()
+        // Expected tangents of the curve at equal arc-length steps.
+        val tangents = Array(segments + 1) { i -> getTangentAt(i.toDouble() / segments) as Vector3 }
+        val normals = Array(segments + 1) { Vector3() }
+        val binormals = Array(segments + 1) { Vector3() }
+        // Select an initial normal vector perpendicular to the first tangent vector, in the direction of the
+        // smallest tangent xyz component.
+        var min = Double.MAX_VALUE
+        val tx = kotlin.math.abs(tangents[0].x)
+        val ty = kotlin.math.abs(tangents[0].y)
+        val tz = kotlin.math.abs(tangents[0].z)
+        if (tx <= min) {
+            min = tx
+            normal.set(1.0, 0.0, 0.0)
+        }
+        if (ty <= min) {
+            min = ty
+            normal.set(0.0, 1.0, 0.0)
+        }
+        if (tz <= min) normal.set(0.0, 0.0, 1.0)
+        vec.crossVectors(tangents[0], normal).normalize()
+        normals[0].crossVectors(tangents[0], vec)
+        binormals[0].crossVectors(tangents[0], normals[0])
+        // Compute the slowly varying normal and binormal vectors for each segment on the curve.
+        for (i in 1..segments) {
+            normals[i].copy(normals[i - 1])
+            binormals[i].copy(binormals[i - 1])
+            vec.crossVectors(tangents[i - 1], tangents[i])
+            if (vec.length() > EPSILON) {
+                vec.normalize()
+                val theta = kotlin.math.acos(tangents[i - 1].dot(tangents[i]).coerceIn(-1.0, 1.0))
+                normals[i].applyMatrix4(mat.makeRotationAxis(vec, theta))
+            }
+            binormals[i].crossVectors(tangents[i], normals[i])
+        }
+        // When the curve is closed, distribute the twist so the last frame matches the first.
+        if (closed) {
+            var theta = kotlin.math.acos(normals[0].dot(normals[segments]).coerceIn(-1.0, 1.0))
+            theta /= segments
+            if (tangents[0].dot(vec.crossVectors(normals[0], normals[segments])) > 0) theta = -theta
+            for (i in 1..segments) {
+                normals[i].applyMatrix4(mat.makeRotationAxis(tangents[i], theta * i))
+                binormals[i].crossVectors(tangents[i], normals[i])
+            }
+        }
+        return FrenetFrames(tangents, normals, binormals)
+    }
+
     internal companion object {
+        /** JavaScript `Number.EPSILON`. */
+        const val EPSILON = 2.220446049250313e-16
+
         fun <T : MutableVector<T>> distance(a: T, b: T): Double {
             var sum = 0.0
             for (i in 0 until a.dimension) {

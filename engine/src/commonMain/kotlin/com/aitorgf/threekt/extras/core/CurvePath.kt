@@ -2,15 +2,16 @@ package com.aitorgf.threekt.extras.core
 
 import com.aitorgf.threekt.extras.curves.EllipseCurve
 import com.aitorgf.threekt.extras.curves.LineCurve
+import com.aitorgf.threekt.extras.curves.LineCurve3
 import com.aitorgf.threekt.extras.curves.SplineCurve
 import com.aitorgf.threekt.math.MutableVector
 import com.aitorgf.threekt.math.Vector2
+import com.aitorgf.threekt.math.Vector3
 import kotlin.js.JsExport
 
 /**
  * A sequence of connected [curves] treated as one curve, as Three.js `CurvePath`. With [autoClose], the
- * sampled points end at the first point. [closePath] supports 2D paths only, because the 3D line curve is
- * not ported yet. Where Three.js returns null for a parameter beyond the total length, Threekt returns
+ * sampled points end at the first point. Where Three.js returns null for a parameter beyond the total length, Threekt returns
  * the end of the last curve.
  */
 @JsExport
@@ -39,8 +40,9 @@ open class CurvePath<T : MutableVector<T>> : Curve<T>() {
         val startPoint = curves[0].getPoint(0.0)
         val endPoint = curves[curves.size - 1].getPoint(1.0)
         if (startPoint != endPoint) {
-            require(startPoint is Vector2) { "Closing 3D curve paths is not supported yet." }
-            curves.add(LineCurve(endPoint as Vector2, startPoint) as Curve<T>)
+            val line: Curve<*> = if (startPoint is Vector2) LineCurve(endPoint as Vector2, startPoint)
+            else LineCurve3(endPoint as Vector3, startPoint as Vector3)
+            curves.add(line as Curve<T>)
         }
         return this
     }
@@ -100,7 +102,7 @@ open class CurvePath<T : MutableVector<T>> : Curve<T>() {
         for (curve in curves) {
             val resolution = when (curve) {
                 is EllipseCurve -> divisions * 2
-                is LineCurve -> 1
+                is LineCurve, is LineCurve3 -> 1
                 is SplineCurve -> divisions * curve.points.size
                 else -> divisions
             }

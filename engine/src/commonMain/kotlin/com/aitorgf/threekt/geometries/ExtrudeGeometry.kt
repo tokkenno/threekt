@@ -3,7 +3,10 @@ package com.aitorgf.threekt.geometries
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
 import com.aitorgf.threekt.extras.ShapeUtils
+import com.aitorgf.threekt.extras.core.Curve
 import com.aitorgf.threekt.extras.core.Shape
+import com.aitorgf.threekt.extras.curves.CatmullRomCurve3
+import com.aitorgf.threekt.math.Vector3
 import com.aitorgf.threekt.math.Vector2
 import kotlin.js.JsExport
 import kotlin.math.PI
@@ -15,10 +18,10 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 /**
- * Extrudes [shapes] along +Z by [Options.depth], with optional bevels, as Three.js `ExtrudeGeometry`.
- * The geometry is non-indexed and its normals come from [computeVertexNormals]. Three.js takes a
- * parameters object and also accepts a single shape; Threekt takes an array and an [Options] instance.
- * Extrusion along a 3D path (`extrudePath`) and draw groups are not supported yet.
+ * Extrudes [shapes] along +Z by [Options.depth], or along [Options.extrudePath], with optional bevels, as
+ * Three.js `ExtrudeGeometry`. The geometry is non-indexed and its normals come from [computeVertexNormals].
+ * Three.js takes a parameters object and also accepts a single shape; Threekt takes an array and an
+ * [Options] instance. Draw groups are not supported yet.
  */
 @JsExport
 class ExtrudeGeometry(
@@ -45,6 +48,11 @@ class ExtrudeGeometry(
         var bevelOffset = 0.0
         /** Number of bevel layers. */
         var bevelSegments = 3
+        /**
+         * 3D curve to extrude along instead of +Z, or null. The shape's X follows the curve's normals and
+         * its Y the binormals; bevels are disabled. A closed [CatmullRomCurve3] gives closed frames.
+         */
+        var extrudePath: Curve<Vector3>? = null
         /** Generates the UVs of the caps and side walls. */
         var uvGenerator: UVGenerator = WorldUVGenerator
     }
@@ -94,12 +102,25 @@ class ExtrudeGeometry(
         val curveSegments = options.curveSegments
         val steps = options.steps
         val depth = options.depth
-        val bevelEnabled = options.bevelEnabled
+        var bevelEnabled = options.bevelEnabled
         var bevelThickness = options.bevelThickness
         var bevelSize = options.bevelSize ?: (bevelThickness - 0.1)
         var bevelOffset = options.bevelOffset
         var bevelSegments = options.bevelSegments
         val uvgen = options.uvGenerator
+        val extrudePath = options.extrudePath
+
+        var extrudePts: List<Vector3> = emptyList()
+        var splineTube: Curve.FrenetFrames? = null
+        val binormal = Vector3()
+        val normal = Vector3()
+        val position2 = Vector3()
+        if (extrudePath != null) {
+            extrudePts = extrudePath.getSpacedPoints(steps)
+            bevelEnabled = false // Bevels are not supported for path extrusion.
+            val isClosed = (extrudePath as? CatmullRomCurve3)?.closed ?: false
+            splineTube = extrudePath.computeFrenetFrames(steps, isClosed)
+        }
 
         // Safeguards if bevels are not enabled.
         if (!bevelEnabled) {
@@ -252,16 +273,23 @@ class ExtrudeGeometry(
         }
 
         val bs = bevelSize + bevelOffset
+        // Places a shape point on the path frame of step [s].
+        fun vOnPath(vert: Vector2, s: Int, tube: Curve.FrenetFrames) {
+            normal.copy(tube.normals[s]).multiplyScalar(vert.x)
+            binormal.copy(tube.binormals[s]).multiplyScalar(vert.y)
+            position2.copy(extrudePts[s]).add(normal).add(binormal)
+            v(position2.x, position2.y, position2.z)
+        }
         // Back-facing vertices.
         for (i in 0 until vlen) {
             val vert = if (bevelEnabled) scalePt2(vertices[i], verticesMovements[i], bs) else vertices[i]
-            v(vert.x, vert.y, 0.0)
+            if (splineTube == null) v(vert.x, vert.y, 0.0) else vOnPath(vert, 0, splineTube)
         }
         // Stepped vertices, including the front-facing ones.
         for (s in 1..steps) {
             for (i in 0 until vlen) {
                 val vert = if (bevelEnabled) scalePt2(vertices[i], verticesMovements[i], bs) else vertices[i]
-                v(vert.x, vert.y, depth / steps * s)
+                if (splineTube == null) v(vert.x, vert.y, depth / steps * s) else vOnPath(vert, s, splineTube)
             }
         }
         // Bevel segment planes.
