@@ -21,17 +21,17 @@ import kotlin.math.sqrt
  * Extrudes [shapes] along +Z by [Options.depth], or along [Options.extrudePath], with optional bevels, as
  * Three.js `ExtrudeGeometry`. The geometry is non-indexed and its normals come from [computeVertexNormals].
  * Three.js takes a parameters object and also accepts a single shape; Threekt takes an array and an
- * [Options] instance. Draw groups are not supported yet.
+ * [Options] instance. The caps form draw group 0 and the side walls group 1.
  */
 @JsExport
-class ExtrudeGeometry(
+open class ExtrudeGeometry(
     shapes: Array<Shape> = arrayOf(
         Shape(arrayOf(Vector2(0.5, 0.5), Vector2(-0.5, 0.5), Vector2(-0.5, -0.5), Vector2(0.5, -0.5))),
     ),
     options: Options = Options(),
 ) : BufferGeometry() {
     /** Extrusion settings with the Three.js defaults. */
-    class Options {
+    open class Options {
         /** Number of points sampled on each curve of the shapes. */
         var curveSegments = 12
         /** Number of segments along the depth. */
@@ -350,6 +350,7 @@ class ExtrudeGeometry(
         }
 
         // Top and bottom faces.
+        val lidStart = verticesArray.size / 3
         if (bevelEnabled) {
             var offset = 0
             for (face in faces) f3(face[2] + offset, face[1] + offset, face[0] + offset) // Bottom.
@@ -359,6 +360,8 @@ class ExtrudeGeometry(
             for (face in faces) f3(face[2], face[1], face[0]) // Bottom.
             for (face in faces) f3(face[0] + vlen * steps, face[1] + vlen * steps, face[2] + vlen * steps) // Top.
         }
+
+        addGroup(lidStart, verticesArray.size / 3 - lidStart, 0)
 
         // Side faces along the outline and each hole.
         fun sidewalls(points: List<Vector2>, layeroffset: Int) {
@@ -374,6 +377,7 @@ class ExtrudeGeometry(
                 }
             }
         }
+        val sideStart = verticesArray.size / 3
         var layeroffset = 0
         sidewalls(contour, layeroffset)
         layeroffset += contour.size
@@ -381,6 +385,7 @@ class ExtrudeGeometry(
             sidewalls(hole, layeroffset)
             layeroffset += hole.size
         }
+        addGroup(sideStart, verticesArray.size / 3 - sideStart, 1)
     }
 
     private companion object {

@@ -158,14 +158,20 @@ class Raycaster(var near: Double = 0.0, var far: Double = Double.POSITIVE_INFINI
         }
         if (bounds != null && !localRay.intersectsBox(bounds)) return
         val uv = geometry.getAttribute("uv")
-        for (i in start until end - 2 step 3) {
+        // With several materials, each draw group is tested with its own material's side, as in Three.js.
+        val materials = node.materials
+        val ranges = if (materials == null) listOf(Triple(start, end, node.material)) else geometry.groups.mapNotNull { group ->
+            val material = materials.getOrNull(group.materialIndex) ?: return@mapNotNull null
+            Triple(maxOf(start, group.start), minOf(end.toLong(), group.start.toLong() + group.count).toInt(), material)
+        }
+        for ((rangeStart, rangeEnd, material) in ranges) for (i in rangeStart until rangeEnd - 2 step 3) {
             val ia = indices?.get(i) ?: i
             val ib = indices?.get(i + 1) ?: (i + 1)
             val ic = indices?.get(i + 2) ?: (i + 2)
             a.fromBufferAttribute(position, ia)
             b.fromBufferAttribute(position, ib)
             c.fromBufferAttribute(position, ic)
-            val side = node.material.side
+            val side = material.side
             val intersection = if (side == Side.Back) localRay.intersectTriangle(c, b, a, true, hit)
             else localRay.intersectTriangle(a, b, c, side == Side.Front, hit)
             if (intersection == null) continue

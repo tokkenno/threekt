@@ -22,7 +22,13 @@ import com.aitorgf.threekt.objects.Sprite
  */
 internal class WebGLRenderList {
     /** An object with its geometry, material, and the clip-space depth of its origin. */
-    class RenderItem(val `object`: Object3D, val geometry: BufferGeometry, val material: Material, val z: Double)
+    class RenderItem(
+        val `object`: Object3D,
+        val geometry: BufferGeometry,
+        val material: Material,
+        val z: Double,
+        val group: BufferGeometry.Group? = null,
+    )
 
     /** Opaque objects in drawing order. */
     val opaque = mutableListOf<RenderItem>()
@@ -45,8 +51,8 @@ internal class WebGLRenderList {
     }
 
     /** Adds [object] with clip-space depth [z] to the list that matches [material]. */
-    fun push(`object`: Object3D, geometry: BufferGeometry, material: Material, z: Double) {
-        val item = RenderItem(`object`, geometry, material, z)
+    fun push(`object`: Object3D, geometry: BufferGeometry, material: Material, z: Double, group: BufferGeometry.Group? = null) {
+        val item = RenderItem(`object`, geometry, material, z, group)
         if (material.transparent) transparent.add(item) else opaque.add(item)
     }
 
@@ -66,7 +72,19 @@ internal class WebGLRenderList {
         root.traverseVisible { node ->
             val z = { vector.setFromMatrixPosition(node.matrixWorld).applyMatrix4(projScreenMatrix).z }
             when (node) {
-                is Mesh -> push(node, node.geometry, node.material, z())
+                is Mesh -> {
+                    val materials = node.materials
+                    if (materials == null) {
+                        push(node, node.geometry, node.material, z())
+                    } else {
+                        // One item per draw group with its own material, as Three.js does for material arrays.
+                        val depth = z()
+                        for (group in node.geometry.groups) {
+                            val groupMaterial = materials.getOrNull(group.materialIndex) ?: continue
+                            push(node, node.geometry, groupMaterial, depth, group)
+                        }
+                    }
+                }
                 is Line -> push(node, node.geometry, node.material, z())
                 is Points -> push(node, node.geometry, node.material, z())
                 is Sprite -> push(node, node.geometry, node.material, z())

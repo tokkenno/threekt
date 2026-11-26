@@ -9,8 +9,9 @@ import kotlin.js.JsExport
 
 /**
  * Flat triangulation of [shapes] in the XY plane with a +Z normal and world-space UVs, as Three.js
- * `ShapeGeometry`. Curves are sampled with [curveSegments] segments. Three.js also accepts a single shape
- * and adds one draw group per shape; Threekt always takes an array and has no draw groups yet.
+ * `ShapeGeometry`. Curves are sampled with [curveSegments] segments, and each shape gets a draw group
+ * with its index as material index. Three.js also accepts a single shape, without groups; Threekt always
+ * takes an array.
  */
 @JsExport
 class ShapeGeometry(
@@ -23,8 +24,10 @@ class ShapeGeometry(
         val normals = mutableListOf<Float>()
         val uvs = mutableListOf<Float>()
 
-        for (shape in shapes) {
+        var groupStart = 0
+        for ((shapeIndex, shape) in shapes.withIndex()) {
             val indexOffset = vertices.size / 3
+            val groupCount = indices.size
             val points = shape.extractPoints(curveSegments)
             var shapeVertices = points.shape.toMutableList()
             val shapeHoles = points.holes.map { it.toMutableList() }.toMutableList()
@@ -46,6 +49,9 @@ class ShapeGeometry(
                 indices.add(face[1] + indexOffset)
                 indices.add(face[2] + indexOffset)
             }
+            // One group per shape enables a material per shape.
+            addGroup(groupStart, indices.size - groupCount, shapeIndex)
+            groupStart = indices.size
         }
 
         setIndex(indices.toIntArray())

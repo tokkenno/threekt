@@ -36,6 +36,30 @@ open class BufferGeometry {
         drawRange.count = count
     }
 
+    /**
+     * Range of indices, or of vertices for non-indexed geometry, drawn with the material at
+     * [materialIndex] when a mesh has several materials.
+     */
+    class Group(var start: Int, var count: Int, var materialIndex: Int = 0)
+
+    private val drawGroups = mutableListOf<Group>()
+
+    /**
+     * Draw groups for multi-material meshes, a snapshot in insertion order. Meshes with a single material
+     * ignore them.
+     */
+    val groups: Array<Group> get() = drawGroups.toTypedArray()
+
+    /** Adds a draw group of [count] elements from [start] that uses material [materialIndex]. */
+    fun addGroup(start: Int, count: Int, materialIndex: Int = 0) {
+        drawGroups.add(Group(start, count, materialIndex))
+    }
+
+    /** Removes all draw groups. */
+    fun clearGroups() {
+        drawGroups.clear()
+    }
+
     /** Indices of the vertices to draw, or null for sequential vertices. */
     var index: IntArray? = null
         private set
@@ -270,7 +294,7 @@ open class BufferGeometry {
     }
 
     /**
-     * Returns an independent copy with cloned attributes, morph attributes, indices and draw range.
+     * Returns an independent copy with cloned attributes, morph attributes, indices, groups and draw range.
      * Interleaved attributes become separate float attributes. Subclass parameters are not kept: the copy
      * is a plain [BufferGeometry], whereas Three.js preserves the subclass.
      */
@@ -281,6 +305,7 @@ open class BufferGeometry {
         for ((name, targets) in morphAttributes) copy.morphAttributes[name] = targets.map { it.clone() }
         copy.morphTargetsRelative = morphTargetsRelative
         copy.setDrawRange(drawRange.start, drawRange.count)
+        for (group in drawGroups) copy.addGroup(group.start, group.count, group.materialIndex)
         boundingBox?.let { copy.boundingBox = it.copy() }
         boundingSphere?.let { copy.boundingSphere = it.copy() }
         return copy

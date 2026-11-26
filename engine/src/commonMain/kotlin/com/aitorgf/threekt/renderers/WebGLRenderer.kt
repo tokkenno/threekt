@@ -318,15 +318,18 @@ class WebGLRenderer(context: GLContext) {
         renderList.build(scene, viewProjection)
         lights.setup(renderList.lights)
         lights.setupView(renderList.lights, camera.matrixWorldInverse)
-        for (item in renderList.opaque) renderObject(item.`object`, item.geometry, item.material, scene, camera)
-        for (item in renderList.transparent) renderObject(item.`object`, item.geometry, item.material, scene, camera)
+        for (item in renderList.opaque) renderObject(item.`object`, item.geometry, item.material, scene, camera, item.group)
+        for (item in renderList.transparent) renderObject(item.`object`, item.geometry, item.material, scene, camera, item.group)
         gl.disable(GL.BLEND)
         gl.disable(GL.SAMPLE_ALPHA_TO_COVERAGE)
         gl.depthMask(true)
     }
 
     /** Draws one object, as `renderBufferDirect` does in Three.js. */
-    private fun renderObject(`object`: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera) {
+    private fun renderObject(
+        `object`: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera,
+        group: BufferGeometry.Group? = null,
+    ) {
         val position = geometry.getAttribute("position")
         val wireframe = `object` is Mesh && material.wireframe
         val index = if (wireframe) geometries.getWireframeIndices(geometry.index, position?.count ?: 0) else geometry.index
@@ -335,6 +338,11 @@ class WebGLRenderer(context: GLContext) {
         val drawRange = geometry.drawRange
         var drawStart = drawRange.start.toLong() * rangeFactor
         var drawEnd = drawStart + drawRange.count.toLong() * rangeFactor
+        if (group != null) {
+            // Intersect the draw range with the group, as Three.js does for multi-material meshes.
+            drawStart = maxOf(drawStart, group.start.toLong() * rangeFactor)
+            drawEnd = minOf(drawEnd, (group.start.toLong() + group.count) * rangeFactor)
+        }
         if (index != null) {
             drawStart = maxOf(drawStart, 0)
             drawEnd = minOf(drawEnd, index.size.toLong())
