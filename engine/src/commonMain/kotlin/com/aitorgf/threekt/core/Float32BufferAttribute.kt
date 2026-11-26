@@ -26,6 +26,9 @@ open class Float32BufferAttribute(
 
     override val normalizationScale: Double? get() = null
 
+    override fun createEmpty(size: Int, itemSize: Int, normalized: Boolean): BufferAttribute =
+        Float32BufferAttribute(FloatArray(size), itemSize, normalized)
+
     override fun readRaw(offset: Int): Double = array[offset].toDouble()
 
     override fun writeRaw(offset: Int, value: Double) {

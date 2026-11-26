@@ -26,6 +26,9 @@ open class Int8BufferAttribute(
 
     override val normalizationScale: Double? get() = 127.0
 
+    override fun createEmpty(size: Int, itemSize: Int, normalized: Boolean): BufferAttribute =
+        Int8BufferAttribute(ByteArray(size), itemSize, normalized)
+
     override fun readRaw(offset: Int): Double = array[offset].toDouble()
 
     override fun writeRaw(offset: Int, value: Double) {

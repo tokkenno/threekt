@@ -2,15 +2,35 @@ package com.aitorgf.threekt.renderers.webgl
 
 import com.aitorgf.threekt.core.BufferAttribute
 import com.aitorgf.threekt.core.BufferGeometry
+import com.aitorgf.threekt.core.DispatchedEvent
 import com.aitorgf.threekt.core.Uint16BufferAttribute
 import com.aitorgf.threekt.core.Uint32BufferAttribute
 
 /**
- * Per-geometry renderer state, as Three.js `WebGLGeometries`. For now it builds the line indices used to
- * draw meshes as wireframes.
+ * Per-geometry renderer state, as Three.js `WebGLGeometries`. It tracks the geometries in use, so that
+ * [BufferGeometry.dispose] releases their GPU buffers, and builds the line indices that draw meshes as
+ * wireframes.
  */
 internal class WebGLGeometries(private val attributes: WebGLAttributes) {
+    private val geometries = mutableSetOf<BufferGeometry>()
     private val wireframeAttributes = mutableMapOf<BufferGeometry, BufferAttribute>()
+
+    private val onGeometryDispose: (DispatchedEvent) -> Unit = { event ->
+        val geometry = event.target as BufferGeometry
+        geometry.index?.let { attributes.remove(it) }
+        for (name in geometry.attributeNames) attributes.remove(geometry.getAttribute(name)!!)
+        for (targets in geometry.morphAttributes.values) for (target in targets) attributes.remove(target)
+        geometry.removeEventListener(BufferGeometry.DISPOSE, onGeometryDisposeListener)
+        geometries.remove(geometry)
+        wireframeAttributes.remove(geometry)?.let { attributes.remove(it) }
+    }
+    private val onGeometryDisposeListener: (DispatchedEvent) -> Unit get() = onGeometryDispose
+
+    /** Starts tracking [geometry] so that its `dispose` event releases its buffers. Returns [geometry]. */
+    fun get(geometry: BufferGeometry): BufferGeometry {
+        if (geometries.add(geometry)) geometry.addEventListener(BufferGeometry.DISPOSE, onGeometryDispose)
+        return geometry
+    }
 
     private fun updateWireframeAttribute(geometry: BufferGeometry) {
         val geometryIndex = geometry.index
@@ -57,5 +77,12 @@ internal class WebGLGeometries(private val attributes: WebGLAttributes) {
             updateWireframeAttribute(geometry)
         }
         return wireframeAttributes[geometry]
+    }
+
+    /** Stops tracking every geometry. Their buffers are released by [WebGLAttributes.dispose]. */
+    fun dispose() {
+        for (geometry in geometries) geometry.removeEventListener(BufferGeometry.DISPOSE, onGeometryDispose)
+        geometries.clear()
+        wireframeAttributes.clear()
     }
 }

@@ -5,7 +5,8 @@ import kotlin.js.JsExport
 /**
  * Views [itemSize] consecutive components at [offset] within each stride of [data], without copying.
  * Extends [BufferAttribute] in Kotlin so both attribute types can be passed to [BufferGeometry].
- * Unlike Three.js, the typed array is accessed through the original array passed to [data].
+ * Unlike Three.js, the typed array is accessed through the original array passed to [data], and
+ * `toJSON()` is not available yet.
  */
 @JsExport
 class InterleavedBufferAttribute(
@@ -38,20 +39,21 @@ class InterleavedBufferAttribute(
 
     private fun storageOffset(offset: Int): Int = (offset / itemSize) * data.stride + this.offset + offset % itemSize
 
+    override fun createEmpty(size: Int, itemSize: Int, normalized: Boolean): BufferAttribute =
+        data.storage.createEmpty(size, itemSize, normalized)
+
     override fun readRaw(offset: Int): Double = data.storage.readRaw(storageOffset(offset))
 
     override fun writeRaw(offset: Int, value: Double) = data.storage.writeRaw(storageOffset(offset), value)
 
     /**
-     * Returns the values as a separate, non-interleaved [Float32BufferAttribute], as Three.js does when
-     * cloning without the shared buffer.
+     * Returns the values as a separate, non-interleaved attribute with the same array type and
+     * [normalized] setting, as Three.js does when cloning without sharing the buffer.
      */
     override fun clone(): BufferAttribute {
-        val values = FloatArray(count * itemSize) { read(it).toFloat() }
-        return Float32BufferAttribute(values, itemSize, false).also { copy ->
-            copy.name = name
-            copy.setUsage(usage)
-            copy.gpuType = gpuType
-        }
+        val result = createEmpty(count * itemSize, itemSize, normalized)
+        for (i in 0 until count * itemSize) result.writeRaw(i, readRaw(i))
+        result.name = name
+        return result
     }
 }

@@ -27,6 +27,9 @@ open class Uint16BufferAttribute(
 
     override val normalizationScale: Double? get() = 65535.0
 
+    override fun createEmpty(size: Int, itemSize: Int, normalized: Boolean): BufferAttribute =
+        Uint16BufferAttribute(ShortArray(size), itemSize, normalized)
+
     override fun readRaw(offset: Int): Double = (array[offset].toInt() and 0xffff).toDouble()
 
     override fun writeRaw(offset: Int, value: Double) {

@@ -348,6 +348,7 @@ class WebGLRenderer(context: GLContext) {
         obj: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera,
         group: BufferGeometry.Group? = null,
     ) {
+        geometries.get(geometry)
         val position = geometry.getAttribute("position")
         val wireframe = obj is Mesh && material.wireframe
         val index = if (wireframe) geometries.getWireframeAttribute(geometry) else geometry.index
@@ -794,6 +795,7 @@ class WebGLRenderer(context: GLContext) {
         enabledAttributes.clear()
         gl.useProgram(null)
         textures.dispose()
+        geometries.dispose()
         attributes.dispose()
         morphtargets.dispose()
         for (program in programs.values) program.dispose()

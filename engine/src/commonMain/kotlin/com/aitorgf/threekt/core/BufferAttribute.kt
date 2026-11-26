@@ -111,6 +111,9 @@ abstract class BufferAttribute(
      */
     internal abstract val normalizationScale: Double?
 
+    /** Returns a new attribute with the same array type, holding [size] zeroed elements. */
+    internal abstract fun createEmpty(size: Int, itemSize: Int, normalized: Boolean): BufferAttribute
+
     /** Reads array element [offset] without normalization. */
     internal abstract fun readRaw(offset: Int): Double
 
