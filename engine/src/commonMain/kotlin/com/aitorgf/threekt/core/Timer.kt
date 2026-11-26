@@ -3,9 +3,10 @@ package com.aitorgf.threekt.core
 import kotlin.js.JsExport
 
 /**
- * Measures the time between frames. Unlike [Clock], it reads the time once per frame in [update], so
- * every [getDelta] and [getElapsed] call in a frame returns the same value. Times are in seconds and are
- * scaled by the [timescale][setTimescale].
+ * Measures the time between frames. It reads the time once per frame in [update], so every [getDelta]
+ * and [getElapsed] call in a frame returns the same value. Times are in seconds and are scaled by the
+ * [timescale][setTimescale]. Three.js deprecated its `Clock` in favor of this class in r183, so Threekt
+ * does not port `Clock`.
  *
  * Three.js `connect()` takes a DOM `document`; Threekt takes a [PageVisibility], which
  * `DocumentPageVisibility` implements in the browser.

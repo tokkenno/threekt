@@ -46,15 +46,4 @@ class TimerTest {
         timer.dispose()
         assertTrue(visibility.listeners.isEmpty())
     }
-
-    @Suppress("DEPRECATION")
-    @Test
-    fun clockStartsOnFirstDelta() {
-        val clock = Clock()
-        assertEquals(0.0, clock.getDelta())
-        assertTrue(clock.running)
-        assertTrue(clock.getElapsedTime() >= 0.0)
-        clock.stop()
-        assertEquals(0.0, clock.getDelta())
-    }
 }
