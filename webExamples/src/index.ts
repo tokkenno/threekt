@@ -90,6 +90,7 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_sprites', () => import('./examples/webgl_sprites')],
     ['webgl_raycaster_sprite', () => import('./examples/webgl_raycaster_sprite')],
     ['webgl_math_obb', () => import('./examples/webgl_math_obb')],
+    ['webgl_geometry_shapes', () => import('./examples/webgl_geometry_shapes')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;
