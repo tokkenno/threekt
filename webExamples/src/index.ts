@@ -92,6 +92,8 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_math_obb', () => import('./examples/webgl_math_obb')],
     ['webgl_geometry_shapes', () => import('./examples/webgl_geometry_shapes')],
     ['webgl_geometry_extrude_splines', () => import('./examples/webgl_geometry_extrude_splines')],
+    ['webgl_geometry_text', () => import('./examples/webgl_geometry_text')],
+    ['webgl_geometry_text_shapes', () => import('./examples/webgl_geometry_text_shapes')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;
