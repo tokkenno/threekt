@@ -130,6 +130,11 @@ interface GLContext {
         target: Int, level: Int, internalformat: Int, width: Int, height: Int, depth: Int, border: Int,
         format: Int, type: Int, data: FloatArray,
     )
+    /** Uploads or replaces tightly packed RGBA8 pixels. */
+    fun texImage2DBytes(internalformat: Int, width: Int, height: Int, data: ByteArray)
+    fun texSubImage2DBytes(x: Int, y: Int, width: Int, height: Int, data: ByteArray)
+    fun copyTexSubImage2D(x: Int, y: Int, width: Int, height: Int)
+    fun readPixelsFloat(x: Int, y: Int, width: Int, height: Int, target: FloatArray)
     fun generateMipmap(target: Int)
 
     fun createFramebuffer(): Any

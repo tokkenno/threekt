@@ -3,7 +3,11 @@ package com.aitorgf.threekt.math.interpolants
 import com.aitorgf.threekt.math.Interpolant
 import com.aitorgf.threekt.math.Quaternion
 
+import kotlin.js.JsExport
+
 /** Interpolates each group of four components as a quaternion using spherical linear interpolation. */
+
+@JsExport
 class QuaternionLinearInterpolant(
     parameterPositions: DoubleArray, sampleValues: DoubleArray, sampleSize: Int,
     resultBuffer: DoubleArray = DoubleArray(sampleSize),

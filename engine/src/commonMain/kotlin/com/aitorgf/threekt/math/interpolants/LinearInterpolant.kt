@@ -2,7 +2,11 @@ package com.aitorgf.threekt.math.interpolants
 
 import com.aitorgf.threekt.math.Interpolant
 
+import kotlin.js.JsExport
+
 /** Interpolates each component linearly between successive keyframes. */
+
+@JsExport
 class LinearInterpolant(
     parameterPositions: DoubleArray, sampleValues: DoubleArray, sampleSize: Int,
     resultBuffer: DoubleArray = DoubleArray(sampleSize),

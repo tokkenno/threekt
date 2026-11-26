@@ -218,3 +218,18 @@ h1 { margin: 0; font-size: clamp(1.2rem, 3vw, 1.75rem); }
     font: 600 0.8rem system-ui, sans-serif;
     text-shadow: 0 1px 2px #000, 0 0 3px #000;
 }
+
+.uv-grid {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+}
+
+.uv-grid figure { margin: 0; }
+.uv-grid figcaption { margin-bottom: 0.35rem; }
+.uv-grid canvas { display: block; width: 100%; max-width: 512px; }

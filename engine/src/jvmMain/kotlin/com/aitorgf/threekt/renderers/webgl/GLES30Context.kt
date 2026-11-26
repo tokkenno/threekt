@@ -229,6 +229,28 @@ class GLES30Context(width: Int, height: Int) : GLContext {
             MemoryUtil.memFree(buffer)
         }
     }
+    override fun texImage2DBytes(internalformat: Int, width: Int, height: Int, data: ByteArray) {
+        val pixels = MemoryUtil.memAlloc(data.size)
+        try {
+            pixels.put(data).flip()
+            GLES20.glTexImage2D(GL.TEXTURE_2D, 0, internalformat, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, pixels)
+        } finally {
+            MemoryUtil.memFree(pixels)
+        }
+    }
+    override fun texSubImage2DBytes(x: Int, y: Int, width: Int, height: Int, data: ByteArray) {
+        val pixels = MemoryUtil.memAlloc(data.size)
+        try {
+            pixels.put(data).flip()
+            GLES20.glTexSubImage2D(GL.TEXTURE_2D, 0, x, y, width, height, GL.RGBA, GL.UNSIGNED_BYTE, pixels)
+        } finally {
+            MemoryUtil.memFree(pixels)
+        }
+    }
+    override fun copyTexSubImage2D(x: Int, y: Int, width: Int, height: Int) =
+        GLES20.glCopyTexSubImage2D(GL.TEXTURE_2D, 0, 0, 0, x, y, width, height)
+    override fun readPixelsFloat(x: Int, y: Int, width: Int, height: Int, target: FloatArray) =
+        GLES20.glReadPixels(x, y, width, height, GL.RGBA, GL.FLOAT, target)
     override fun generateMipmap(target: Int) = GLES20.glGenerateMipmap(target)
 
     override fun createFramebuffer(): Any = GLES20.glGenFramebuffers()

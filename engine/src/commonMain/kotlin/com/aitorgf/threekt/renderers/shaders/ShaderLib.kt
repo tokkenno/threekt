@@ -172,7 +172,11 @@ internal object ShaderLib {
         diffuseColor.a = 1.0;
         #endif
 
-        pc_fragColor = sRGBTransferOETF( vec4( outgoingLight, diffuseColor.a ) );
+        #ifdef LINEAR_OUTPUT
+            pc_fragColor = vec4( outgoingLight, diffuseColor.a );
+        #else
+            pc_fragColor = sRGBTransferOETF( vec4( outgoingLight, diffuseColor.a ) );
+        #endif
 
         #ifdef USE_FOG
         #ifdef FOG_EXP2

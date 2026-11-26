@@ -3,6 +3,7 @@ package com.aitorgf.threekt.textures
 import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Vector2
 import com.aitorgf.threekt.math.color.ColorSpace
+import com.aitorgf.threekt.core.EventDispatcher
 import kotlin.js.JsExport
 import kotlin.math.abs
 import kotlin.math.floor
@@ -12,7 +13,10 @@ import kotlin.math.floor
  * UV-transform settings that renderers apply when the texture is drawn.
  */
 @JsExport
-abstract class Texture {
+abstract class Texture : EventDispatcher() {
+    /** Releases renderer resources. Using this object again recreates them. */
+    fun dispose() = dispatchEvent("dispose")
+
     /**
      * Platform image that holds the pixels, such as an `HTMLImageElement` or canvas in the browser, or
      * null when the texture has no source yet.

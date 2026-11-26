@@ -2,7 +2,11 @@ package com.aitorgf.threekt.math.interpolants
 
 import com.aitorgf.threekt.math.Interpolant
 
+import kotlin.js.JsExport
+
 /** Samples a step function that keeps the previous keyframe value until the next keyframe is reached. */
+
+@JsExport
 class DiscreteInterpolant(
     parameterPositions: DoubleArray, sampleValues: DoubleArray, sampleSize: Int,
     resultBuffer: DoubleArray = DoubleArray(sampleSize),

@@ -153,6 +153,22 @@ class WebGL2Context(private val canvas: dynamic, alpha: Boolean = true) : GLCont
     ) {
         gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, data)
     }
+    override fun texImage2DBytes(internalformat: Int, width: Int, height: Int, data: ByteArray) {
+        gl.texImage2D(GL.TEXTURE_2D, 0, internalformat, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, unsignedBytes(data))
+    }
+    override fun texSubImage2DBytes(x: Int, y: Int, width: Int, height: Int, data: ByteArray) {
+        gl.texSubImage2D(GL.TEXTURE_2D, 0, x, y, width, height, GL.RGBA, GL.UNSIGNED_BYTE, unsignedBytes(data))
+    }
+    private fun unsignedBytes(data: ByteArray): dynamic {
+        val bytes = data.asDynamic()
+        return js("new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)")
+    }
+    override fun copyTexSubImage2D(x: Int, y: Int, width: Int, height: Int) {
+        gl.copyTexSubImage2D(GL.TEXTURE_2D, 0, 0, 0, x, y, width, height)
+    }
+    override fun readPixelsFloat(x: Int, y: Int, width: Int, height: Int, target: FloatArray) {
+        gl.readPixels(x, y, width, height, GL.RGBA, GL.FLOAT, target)
+    }
     override fun generateMipmap(target: Int) { gl.generateMipmap(target) }
 
     override fun createFramebuffer(): Any = gl.createFramebuffer() ?: error("Could not create a WebGL framebuffer.")

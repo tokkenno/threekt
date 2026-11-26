@@ -1,9 +1,13 @@
 package com.aitorgf.threekt.math
 
+import kotlin.js.JsExport
+
 /**
  * Base class for sampling keyframes. Times must be finite and sorted, and each sample contains [valueSize]
  * consecutive values.
  */
+
+@JsExport
 abstract class Interpolant(
     val parameterPositions: DoubleArray,
     val sampleValues: DoubleArray,

@@ -1,6 +1,9 @@
 package com.aitorgf.threekt.renderers.webgl
 
+import com.aitorgf.threekt.core.DispatchedEvent
 import com.aitorgf.threekt.math.color.ColorSpace
+import com.aitorgf.threekt.renderers.RenderTargetTexture
+import com.aitorgf.threekt.textures.DataTexture
 import com.aitorgf.threekt.textures.Texture
 import com.aitorgf.threekt.textures.TextureFilter
 import com.aitorgf.threekt.textures.Wrapping
@@ -9,8 +12,10 @@ import com.aitorgf.threekt.textures.Wrapping
  * GPU textures for [Texture]s with an [Texture.image]. Pixels are uploaded on first use and again after
  * [Texture.markUpdated]; filtering, wrapping and anisotropy are applied whenever they change.
  */
-internal class WebGLTextures(private val gl: GLContext, private val capabilities: WebGLCapabilities) {
-    private class Binding(val handle: Any, var version: Int) {
+internal class WebGLTextures(
+    private val gl: GLContext, private val capabilities: WebGLCapabilities, private val targets: WebGLRenderTargets,
+) {
+    private class Binding(val handle: Any, var version: Int, val onDispose: ((DispatchedEvent) -> Unit)? = null) {
         var minFilter: TextureFilter? = null
         var magFilter: TextureFilter? = null
         var wrapS: Wrapping? = null
@@ -23,6 +28,13 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
     /** Binds [texture] to texture [unit], uploading pixels and sampling settings when needed. */
     fun bind(texture: Texture, unit: Int) {
         gl.activeTexture(GL.TEXTURE0 + unit)
+        if (texture is RenderTargetTexture) {
+            val target = targets.get(texture.target)
+            val handle = if (texture.depth) requireNotNull(target.depthTexture) else target.color
+            gl.bindTexture(GL.TEXTURE_2D, handle)
+            applySampling(texture, Binding(handle, texture.version))
+            return
+        }
         val binding = bindings[texture] ?: create(texture)
         gl.bindTexture(GL.TEXTURE_2D, binding.handle)
         if (binding.version != texture.version) {
@@ -41,7 +53,9 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
             gl.deleteTexture(handle)
             throw error
         }
-        return Binding(handle, texture.version).also { bindings[texture] = it }
+        val onDispose: (DispatchedEvent) -> Unit = { release(texture) }
+        texture.addEventListener("dispose", onDispose)
+        return Binding(handle, texture.version, onDispose).also { bindings[texture] = it }
     }
 
     private fun applySampling(texture: Texture, binding: Binding) {
@@ -77,6 +91,11 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
 
     private fun upload(texture: Texture) {
         val internalFormat = if (texture.colorSpace == ColorSpace.SRGB) GL.SRGB8_ALPHA8 else GL.RGBA8
+        if (texture is DataTexture) {
+            gl.texImage2DBytes(internalFormat, texture.width, texture.height, texture.data)
+            if (texture.generateMipmaps) gl.generateMipmap(GL.TEXTURE_2D)
+            return
+        }
         val mipmaps = texture.mipmaps
         if (mipmaps.isNotEmpty()) {
             for ((level, image) in mipmaps.withIndex()) {
@@ -92,9 +111,12 @@ internal class WebGLTextures(private val gl: GLContext, private val capabilities
         if (texture.generateMipmaps) gl.generateMipmap(GL.TEXTURE_2D)
     }
 
-    /** Deletes every texture. */
-    fun dispose() {
-        for (binding in bindings.values) gl.deleteTexture(binding.handle)
-        bindings.clear()
+    private fun release(texture: Texture) {
+        val binding = bindings.remove(texture) ?: return
+        binding.onDispose?.let { texture.removeEventListener("dispose", it) }
+        gl.deleteTexture(binding.handle)
     }
+
+    /** Deletes every uploaded texture. */
+    fun dispose() = bindings.keys.toList().forEach(::release)
 }

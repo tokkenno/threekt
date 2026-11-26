@@ -4,6 +4,7 @@ import com.aitorgf.threekt.cameras.ArrayCamera
 import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.OrthographicCamera
+import com.aitorgf.threekt.core.DispatchedEvent
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.GpuType
 import com.aitorgf.threekt.core.BufferAttribute
@@ -40,6 +41,9 @@ import com.aitorgf.threekt.objects.Points
 import com.aitorgf.threekt.renderers.shaders.ShaderLib
 import com.aitorgf.threekt.renderers.webgl.GL
 import com.aitorgf.threekt.renderers.webgl.GLContext
+import com.aitorgf.threekt.renderers.webgl.WebGLRenderTargets
+import com.aitorgf.threekt.textures.DataTexture
+import com.aitorgf.threekt.textures.FramebufferTexture
 import com.aitorgf.threekt.renderers.webgl.WebGLAttributes
 import com.aitorgf.threekt.renderers.webgl.WebGLCapabilities
 import com.aitorgf.threekt.renderers.webgl.WebGLGeometries
@@ -75,13 +79,69 @@ class WebGLRenderer(context: GLContext) {
     /** Limits and optional features of this renderer's WebGL2 context. */
     val capabilities = WebGLCapabilities(gl)
 
-    private val textures = WebGLTextures(gl, capabilities)
+    private val renderTargets = WebGLRenderTargets(gl)
+    private val textures = WebGLTextures(gl, capabilities, renderTargets)
     private val attributes = WebGLAttributes(gl)
     private val geometries = WebGLGeometries(attributes)
     private val uniforms = WebGLUniforms(gl, textures)
     private val morphtargets = WebGLMorphtargets(gl, uniforms)
     private val lights = WebGLLights()
     private val programs = mutableMapOf<Pair<String, String>, WebGLProgram>()
+    private val programUsers = mutableMapOf<Pair<String, String>, Int>()
+    private val materialPrograms = mutableMapOf<Material, MutableSet<Pair<String, String>>>()
+    private val materialListeners = mutableMapOf<Material, (DispatchedEvent) -> Unit>()
+
+    /** Number of cached linked shader programs. */
+    val programCount: Int get() = programs.size
+
+    private var renderTarget: WebGLRenderTarget? = null
+
+    /** Selects the destination for subsequent draws. Null selects the canvas drawing buffer. */
+    fun setRenderTarget(target: WebGLRenderTarget?) {
+        val binding = target?.let(renderTargets::get)
+        gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, binding?.framebuffer)
+        renderTarget = target
+        updateScissor()
+    }
+
+    fun getRenderTarget(): WebGLRenderTarget? = renderTarget
+
+    /** Reads a bottom-left-origin RGBA rectangle from a floating-point color attachment. */
+    fun readRenderTargetPixels(target: WebGLRenderTarget, x: Int, y: Int, width: Int, height: Int, buffer: FloatArray) {
+        require(target.type == RenderTargetType.Float)
+        require(width > 0 && height > 0 && x in 0..target.width - width && y in 0..target.height - height)
+        require(width.toLong() * height * 4 <= buffer.size)
+        val previous = gl.getParameterHandle(GL.READ_FRAMEBUFFER_BINDING)
+        try {
+            gl.bindFramebuffer(GL.READ_FRAMEBUFFER, renderTargets.get(target).framebuffer)
+            gl.readPixelsFloat(x, y, width, height, buffer)
+        } finally {
+            gl.bindFramebuffer(GL.READ_FRAMEBUFFER, previous)
+        }
+    }
+
+    /** Copies a rectangle from the active drawing framebuffer into [texture]. */
+    fun copyFramebufferToTexture(texture: FramebufferTexture, x: Int, y: Int) {
+        val target = renderTarget
+        require(x in 0..(target?.width ?: gl.drawingBufferWidth) - texture.width)
+        require(y in 0..(target?.height ?: gl.drawingBufferHeight) - texture.height)
+        val previous = gl.getParameterHandle(GL.READ_FRAMEBUFFER_BINDING)
+        try {
+            gl.bindFramebuffer(GL.READ_FRAMEBUFFER, target?.let(renderTargets::get)?.framebuffer)
+            textures.bind(texture, 0)
+            gl.copyTexSubImage2D(x, y, texture.width, texture.height)
+        } finally {
+            gl.bindFramebuffer(GL.READ_FRAMEBUFFER, previous)
+        }
+    }
+
+    /** Uploads the pixels of [source] into level zero of [destination] at a bottom-left offset. */
+    fun copyTextureToTexture(source: DataTexture, destination: Texture, x: Int, y: Int) {
+        require(x >= 0 && y >= 0 && destination !is RenderTargetTexture)
+        textures.bind(destination, 0)
+        gl.texSubImage2DBytes(x, y, source.width, source.height, source.data)
+        if (destination.generateMipmaps) gl.generateMipmap(GL.TEXTURE_2D)
+    }
     private val enabledAttributes = mutableSetOf<Int>()
     private val renderList = WebGLRenderList()
 
@@ -160,6 +220,11 @@ class WebGLRenderer(context: GLContext) {
     }
 
     private fun updateScissor() {
+        val target = renderTarget
+        if (target != null) {
+            gl.scissor(0, 0, target.width, target.height)
+            return
+        }
         val bounds = scissor
         if (bounds == null) {
             if (!scissorTest) return
@@ -196,7 +261,12 @@ class WebGLRenderer(context: GLContext) {
         // Update the scene graph, and the camera when it is not part of it, as Three.js does.
         if (scene.matrixWorldAutoUpdate) scene.updateMatrixWorld()
         if (camera.parent == null && camera.matrixWorldAutoUpdate) camera.updateMatrixWorld()
-        if (camera is ArrayCamera) {
+        val target = renderTarget
+        if (target != null) {
+            gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, renderTargets.get(target).framebuffer)
+            updateScissor()
+            renderView(scene, camera, 0, 0, target.width, target.height)
+        } else if (camera is ArrayCamera) {
             renderArray(scene, camera)
         } else {
             val bounds = viewport
@@ -259,9 +329,13 @@ class WebGLRenderer(context: GLContext) {
      * of one.
      */
     fun clear(color: Boolean = true, depth: Boolean = true) {
+        renderTarget?.let {
+            gl.bindFramebuffer(GL.DRAW_FRAMEBUFFER, renderTargets.get(it).framebuffer)
+            updateScissor()
+        }
         var mask = 0
         if (color) {
-            outputColor.copyLinearToSRGB(clearColor)
+            if (renderTarget == null) outputColor.copyLinearToSRGB(clearColor) else outputColor.copy(clearColor)
             gl.clearColor(outputColor.r, outputColor.g, outputColor.b, clearAlpha)
             mask = mask or GL.COLOR_BUFFER_BIT
         }
@@ -281,10 +355,10 @@ class WebGLRenderer(context: GLContext) {
         val background = scene.background
         // Colors are stored in linear working space, while the drawing buffer holds sRGB values.
         if (background != null) {
-            outputColor.copyLinearToSRGB(background)
+            if (renderTarget == null) outputColor.copyLinearToSRGB(background) else outputColor.copy(background)
             gl.clearColor(outputColor.r, outputColor.g, outputColor.b, 1.0)
         } else {
-            outputColor.copyLinearToSRGB(clearColor)
+            if (renderTarget == null) outputColor.copyLinearToSRGB(clearColor) else outputColor.copy(clearColor)
             gl.clearColor(outputColor.r, outputColor.g, outputColor.b, clearAlpha)
         }
         if (colorOnly) {
@@ -415,8 +489,7 @@ class WebGLRenderer(context: GLContext) {
         if (material !is ShaderMaterial) program.uniforms["alphaTest"]?.let { gl.uniform1f(it.location, material.alphaTest) }
         if (fog != null) {
             program.uniforms["fogColor"]?.let {
-                // Fog is blended after the sRGB encoding, so its color is converted to sRGB here.
-                outputColor.copyLinearToSRGB(fog.color)
+                if (renderTarget == null) outputColor.copyLinearToSRGB(fog.color) else outputColor.copy(fog.color)
                 gl.uniform3f(it.location, outputColor.r, outputColor.g, outputColor.b)
             }
             when (fog) {
@@ -537,7 +610,27 @@ class WebGLRenderer(context: GLContext) {
             is ShaderMaterial -> WebGLProgram.shaderMaterialSource(material, instancing, instancingColor)
             else -> throw IllegalArgumentException("WebGLRenderer cannot draw ${material::class.simpleName}.")
         }
-        return programs.getOrPut(vertexGlsl to fragmentGlsl) { WebGLProgram(gl, vertexGlsl, fragmentGlsl) }
+        val key = vertexGlsl to fragmentGlsl
+        val program = programs.getOrPut(key) { WebGLProgram(gl, vertexGlsl, fragmentGlsl) }
+        val materialKeys = materialPrograms.getOrPut(material) {
+            val listener: (DispatchedEvent) -> Unit = { releaseMaterial(material) }
+            materialListeners[material] = listener
+            material.addEventListener("dispose", listener)
+            mutableSetOf()
+        }
+        if (materialKeys.add(key)) programUsers[key] = (programUsers[key] ?: 0) + 1
+        return program
+    }
+
+    private fun releaseMaterial(material: Material) {
+        materialListeners.remove(material)?.let { material.removeEventListener("dispose", it) }
+        for (key in materialPrograms.remove(material).orEmpty()) {
+            val remaining = programUsers.getValue(key) - 1
+            if (remaining == 0) {
+                programUsers.remove(key)
+                programs.remove(key)?.dispose()
+            } else programUsers[key] = remaining
+        }
     }
 
     /** Prepends `#version 300 es` and the defines of the material's features, as Three.js `WebGLProgram` does. */
@@ -547,6 +640,7 @@ class WebGLRenderer(context: GLContext) {
     ): Pair<String, String> {
         val defines = buildList {
             addAll(extraDefines)
+            if (renderTarget != null) add("#define LINEAR_OUTPUT")
             if (material.transparent == false && material.blending == Blending.Normal) add("#define OPAQUE")
             if (fog != null) add("#define USE_FOG")
             if (fog is FogExp2) add("#define FOG_EXP2")
@@ -799,7 +893,8 @@ class WebGLRenderer(context: GLContext) {
         geometries.dispose()
         attributes.dispose()
         morphtargets.dispose()
-        for (program in programs.values) program.dispose()
-        programs.clear()
+        materialPrograms.keys.toList().forEach(::releaseMaterial)
+        setRenderTarget(null)
+        renderTargets.dispose()
     }
 }

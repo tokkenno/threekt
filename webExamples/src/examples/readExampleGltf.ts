@@ -1,11 +1,11 @@
 import { BufferGeometry, Float32BufferAttribute, Uint16BufferAttribute } from 'threekt';
 
-// The two bundled assets use tightly packed float attributes and 16-bit indices in one buffer.
+// The bundled assets use tightly packed float attributes and 16-bit indices in one buffer.
 export type ExampleGltf = {
     accessors: { bufferView: number; byteOffset?: number; count: number; componentType: number; type: string }[];
     bufferViews: { byteOffset?: number }[];
     meshes: { name: string; primitives: {
-        attributes: { POSITION: number; NORMAL?: number };
+        attributes: { POSITION: number; NORMAL?: number; TEXCOORD_0?: number };
         indices: number;
         targets?: { POSITION: number; NORMAL: number }[];
     }[] }[];
@@ -17,10 +17,10 @@ export function readExampleGltfGeometry(document: ExampleGltf, binary: ArrayBuff
     const primitive = document.meshes[meshIndex].primitives[0];
     const offset = (accessor: ExampleGltf['accessors'][number]) =>
         start + (document.bufferViews[accessor.bufferView].byteOffset ?? 0) + (accessor.byteOffset ?? 0);
-    const readVector = (index: number) => {
+    const readVector = (index: number, size = 3) => {
         const accessor = document.accessors[index];
-        if (accessor.type !== 'VEC3' || accessor.componentType !== 5126) throw new Error('Expected a glTF float VEC3.');
-        return new Float32BufferAttribute(new Float32Array(binary, offset(accessor), accessor.count * 3), 3);
+        if (accessor.type !== `VEC${size}` || accessor.componentType !== 5126) throw new Error(`Expected a glTF float VEC${size}.`);
+        return new Float32BufferAttribute(new Float32Array(binary, offset(accessor), accessor.count * size), size);
     };
     const geometry = new BufferGeometry().setAttribute('position', readVector(primitive.attributes.POSITION));
     const index = document.accessors[primitive.indices];
@@ -28,6 +28,7 @@ export function readExampleGltfGeometry(document: ExampleGltf, binary: ArrayBuff
     geometry.setIndex(new Uint16BufferAttribute(new Int16Array(binary, offset(index), index.count), 1));
     if (primitive.attributes.NORMAL !== undefined) geometry.setAttribute('normal', readVector(primitive.attributes.NORMAL));
     else geometry.computeVertexNormals();
+    if (primitive.attributes.TEXCOORD_0 !== undefined) geometry.setAttribute('uv', readVector(primitive.attributes.TEXCOORD_0, 2));
     if (primitive.targets) {
         geometry.morphTargetsRelative = true;
         geometry.setMorphAttribute('position', primitive.targets.map(target => readVector(target.POSITION)));

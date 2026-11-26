@@ -1,10 +1,14 @@
 package com.aitorgf.threekt.materials
 
+import com.aitorgf.threekt.core.EventDispatcher
 import kotlin.js.JsExport
 
 /** Settings shared by all materials that control face culling, blending, and depth testing. */
 @JsExport
-abstract class Material {
+abstract class Material : EventDispatcher() {
+    /** Releases renderer resources. Using this object again recreates them. */
+    fun dispose() = dispatchEvent("dispose")
+
     /** Unique number of this material, assigned in creation order. */
     val id: Int = nextId++
 
