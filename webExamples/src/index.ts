@@ -91,6 +91,7 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_raycaster_sprite', () => import('./examples/webgl_raycaster_sprite')],
     ['webgl_math_obb', () => import('./examples/webgl_math_obb')],
     ['webgl_geometry_shapes', () => import('./examples/webgl_geometry_shapes')],
+    ['webgl_geometry_extrude_splines', () => import('./examples/webgl_geometry_extrude_splines')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;
