@@ -1,7 +1,11 @@
 package com.aitorgf.threekt.math
 
 import com.aitorgf.threekt.core.Object3D
+import com.aitorgf.threekt.objects.InstancedMesh
+import com.aitorgf.threekt.objects.Line
 import com.aitorgf.threekt.objects.Mesh
+import com.aitorgf.threekt.objects.Points
+import com.aitorgf.threekt.objects.Sprite
 import com.aitorgf.threekt.renderers.CoordinateSystem
 import kotlin.math.sqrt
 
@@ -66,26 +70,42 @@ class Frustum(
     }
 
     /**
-     * Tests whether the world-space bounding sphere of a mesh intersects this frustum. Reads the mesh's
-     * current world transform.
+     * Tests whether the world-space bounding sphere of [object3D] intersects this frustum, using its current
+     * world transform. Instanced meshes use their own bounding sphere, which covers every instance; meshes,
+     * lines and points use the bounding sphere of their geometry. Missing spheres are computed first.
+     * Returns false for other objects, which Three.js cannot test either.
      */
     fun intersectsObject(object3D: Object3D): Boolean {
-        val positions = (object3D as? Mesh)?.geometry?.getAttribute("position") ?: return false
-        val sphere = Box3().setFromBufferAttribute(positions).getBoundingSphere(Sphere())
-        if (sphere.isEmpty()) return false
-        val point = Vector3()
-        var radiusSq = 0.0
-        repeat(positions.count) {
-            point.fromBufferAttribute(positions, it)
-            radiusSq = maxOf(radiusSq, point.distanceToSquared(sphere.center))
+        if (object3D is InstancedMesh) {
+            if (object3D.boundingSphere == null) object3D.computeBoundingSphere()
+            sphere.copy(object3D.boundingSphere!!).applyMatrix4(object3D.matrixWorld)
+        } else {
+            val geometry = when (object3D) {
+                is Mesh -> object3D.geometry
+                is Line -> object3D.geometry
+                is Points -> object3D.geometry
+                is Sprite -> object3D.geometry
+                else -> return false
+            }
+            if (geometry.boundingSphere == null) geometry.computeBoundingSphere()
+            sphere.copy(geometry.boundingSphere!!).applyMatrix4(object3D.matrixWorld)
         }
-        sphere.radius = sqrt(radiusSq)
-        return intersectsSphere(sphere.applyMatrix4(object3D.matrixWorld))
+        return intersectsSphere(sphere)
     }
 
-    /** Tests the sprite's bounding sphere using its current world transform. */
-    fun intersectsSprite(sprite: Object3D): Boolean =
-        intersectsSphere(Sphere(Vector3(), sqrt(0.5)).applyMatrix4(sprite.matrixWorld))
+    /**
+     * Tests the bounding sphere of [sprite] using its current world transform. The sphere grows with the
+     * distance of the sprite's center from the middle of the quad.
+     */
+    fun intersectsSprite(sprite: Sprite): Boolean {
+        sphere.center.set(0.0, 0.0, 0.0)
+        val offset = defaultSpriteCenter.distanceTo(sprite.center)
+        sphere.radius = 0.7071067811865476 + offset
+        sphere.applyMatrix4(sprite.matrixWorld)
+        return intersectsSphere(sphere)
+    }
+
+    private val sphere = Sphere()
 
     /**
      * Returns `true` if the given bounding sphere is intersecting this frustum. This is a fast,
@@ -114,5 +134,9 @@ class Frustum(
             )
             plane.distanceToPoint(corner) >= 0.0
         }
+    }
+
+    private companion object {
+        val defaultSpriteCenter = Vector2(0.5, 0.5)
     }
 }

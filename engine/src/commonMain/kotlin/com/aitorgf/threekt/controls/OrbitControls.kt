@@ -169,7 +169,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
     fun getAzimuthalAngle(): Double = spherical.theta
 
     /** Returns the distance from the camera to [target]. */
-    fun getDistance(): Double = `object`.position.distanceTo(target)
+    fun getDistance(): Double = obj.position.distanceTo(target)
 
     /**
      * Handles arrow keys from [source], which in the browser is usually `new DomInputSource(window)`.
@@ -200,16 +200,16 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
     /** Stores the current target, camera position, and zoom for [reset]. */
     fun saveState() {
         target0.copy(target)
-        position0.copy(`object`.position)
-        zoom0 = `object`.zoom
+        position0.copy(obj.position)
+        zoom0 = obj.zoom
     }
 
     /** Restores the state stored by [saveState] or at construction and dispatches `change`. */
     fun reset() {
         target.copy(target0)
-        `object`.position.copy(position0)
-        `object`.zoom = zoom0
-        `object`.updateProjectionMatrix()
+        obj.position.copy(position0)
+        obj.zoom = zoom0
+        obj.updateProjectionMatrix()
         dispatchEvent(CHANGE)
         update()
         state = State.None
@@ -251,7 +251,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
      * `change` and returns true when the camera or target moved.
      */
     override fun update(deltaTime: Double?): Boolean {
-        val camera = `object`
+        val camera = obj
         val position = camera.position
         offset.copy(position).sub(target).applyQuaternion(quat)
         spherical.setFromVector3(offset)
@@ -386,7 +386,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
     private fun clampDistance(distance: Double): Double = maxOf(minDistance, minOf(maxDistance, distance))
 
     private fun canDolly(): Boolean {
-        val camera = `object`
+        val camera = obj
         if (camera is PerspectiveCamera || camera is CalibratedPerspectiveCamera || camera is OrthographicCamera) return true
         enableZoom = false
         return false
@@ -401,16 +401,16 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
     }
 
     private fun panLeft(distance: Double) {
-        offset.setFromMatrixColumn(`object`.matrix, 0).multiplyScalar(-distance)
+        offset.setFromMatrixColumn(obj.matrix, 0).multiplyScalar(-distance)
         panOffset.add(offset)
     }
 
     private fun panUp(distance: Double) {
         if (screenSpacePanning) {
-            offset.setFromMatrixColumn(`object`.matrix, 1)
+            offset.setFromMatrixColumn(obj.matrix, 1)
         } else {
-            offset.setFromMatrixColumn(`object`.matrix, 0)
-            offset.crossVectors(`object`.up, offset)
+            offset.setFromMatrixColumn(obj.matrix, 0)
+            offset.crossVectors(obj.up, offset)
         }
         panOffset.add(offset.multiplyScalar(distance))
     }
@@ -418,7 +418,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
     /** Converts a pixel movement into a pan offset; right and down are positive. */
     private fun panPixels(deltaX: Double, deltaY: Double) {
         val height = surface?.height ?: 1.0
-        when (val camera = `object`) {
+        when (val camera = obj) {
             is PerspectiveCamera -> {
                 // Half the vertical field of view spans from the center to the top of the view.
                 val targetDistance = offset.copy(camera.position).sub(target).length() *
@@ -451,7 +451,7 @@ class OrbitControls(camera: Camera, surface: InputSurface? = null) : Controls<Ca
     }
 
     private fun updateDollyDirection() {
-        dollyDirection.set(mouse.x, mouse.y, 1.0).unproject(`object`).sub(`object`.position).normalize()
+        dollyDirection.set(mouse.x, mouse.y, 1.0).unproject(obj).sub(obj.position).normalize()
     }
 
     private val surfaceHeight: Double get() = surface?.height ?: 1.0

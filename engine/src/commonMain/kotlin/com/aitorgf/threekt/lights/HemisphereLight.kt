@@ -1,6 +1,7 @@
 package com.aitorgf.threekt.lights
 
 import com.aitorgf.threekt.math.Color
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 
 /**
@@ -20,4 +21,13 @@ class HemisphereLight(
         position.copy(DEFAULT_UP)
         updateMatrix()
     }
+
+    /** Copies the light settings and [groundColor] of [source] when it is a hemisphere light. */
+    override fun copy(source: Object3D, recursive: Boolean): HemisphereLight {
+        super.copy(source, recursive)
+        if (source is HemisphereLight) groundColor.copy(source.groundColor)
+        return this
+    }
+
+    override fun clone(recursive: Boolean): HemisphereLight = HemisphereLight().copy(this, recursive)
 }

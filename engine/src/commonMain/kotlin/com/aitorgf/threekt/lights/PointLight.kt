@@ -1,6 +1,7 @@
 package com.aitorgf.threekt.lights
 
 import com.aitorgf.threekt.math.Color
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 import kotlin.math.PI
 
@@ -24,4 +25,16 @@ class PointLight(
         set(value) {
             intensity = value / (4 * PI)
         }
+
+    /** Copies the light settings, [distance] and [decay] of [source] when it is a point light. */
+    override fun copy(source: Object3D, recursive: Boolean): PointLight {
+        super.copy(source, recursive)
+        if (source is PointLight) {
+            distance = source.distance
+            decay = source.decay
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): PointLight = PointLight().copy(this, recursive)
 }

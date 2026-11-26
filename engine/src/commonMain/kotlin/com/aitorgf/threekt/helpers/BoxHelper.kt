@@ -7,17 +7,19 @@ import com.aitorgf.threekt.materials.LineBasicMaterial
 import com.aitorgf.threekt.math.Box3
 import com.aitorgf.threekt.objects.LineSegments
 import kotlin.js.JsExport
+import kotlin.js.JsName
 
 /**
- * Draws the edges of the world-space bounding box of [object] as line segments. The box is measured on
+ * Draws the edges of the world-space bounding box of an object as line segments. The box is measured on
  * construction and by [update]; call it after the object moves. The helper's own transform is not
  * updated automatically, so add it to the scene root or to an untransformed parent.
  */
 @JsExport
-class BoxHelper(`object`: Object3D? = null, color: Int = 0xffff00) :
+class BoxHelper(obj: Object3D? = null, color: Int = 0xffff00) :
     LineSegments(createGeometry(), LineBasicMaterial(color)) {
-    /** Object whose bounds are drawn, or null for none. */
-    var `object`: Object3D? = `object`
+    /** Object whose bounds are drawn, or null for none. Named `object` in JavaScript, as in Three.js. */
+    @JsName("object")
+    var obj: Object3D? = obj
         private set
 
     private val box = Box3()
@@ -27,9 +29,9 @@ class BoxHelper(`object`: Object3D? = null, color: Int = 0xffff00) :
         update()
     }
 
-    /** Measures [object] again and moves the box corners. Has no effect when the bounds are empty. */
+    /** Measures object again and moves the box corners. Has no effect when the bounds are empty. */
     fun update() {
-        `object`?.let { box.setFromObject(it) }
+        obj?.let { box.setFromObject(it) }
         if (box.isEmpty()) return
         val min = box.min
         val max = box.max
@@ -43,9 +45,18 @@ class BoxHelper(`object`: Object3D? = null, color: Int = 0xffff00) :
         geometry.computeBoundingSphere()
     }
 
-    /** Draws the bounds of [object] instead and returns this helper. */
-    fun setFromObject(`object`: Object3D): BoxHelper {
-        this.`object` = `object`
+    /** Shares the geometry, material and tracked object of [source] when it is a box helper. */
+    override fun copy(source: Object3D, recursive: Boolean): BoxHelper {
+        super.copy(source, recursive)
+        if (source is BoxHelper) obj = source.obj
+        return this
+    }
+
+    override fun clone(recursive: Boolean): BoxHelper = BoxHelper().copy(this, recursive)
+
+    /** Draws the bounds of [obj] instead and returns this helper. */
+    fun setFromObject(obj: Object3D): BoxHelper {
+        this.obj = obj
         update()
         return this
     }

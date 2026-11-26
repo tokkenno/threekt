@@ -55,6 +55,6 @@ class StereoCamera {
             parent.updateWorldMatrix(updateParents = true, updateChildren = false)
             eye.matrix.premultiply(eyeOffset.copy(parent.matrixWorld).invert())
         }
-        eye.updateMatrixWorld()
+        eye.updateMatrixWorld(force = true)
     }
 }

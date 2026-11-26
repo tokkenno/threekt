@@ -27,6 +27,7 @@ import com.aitorgf.threekt.materials.ShaderMaterial
 import com.aitorgf.threekt.materials.Side
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Matrix3
+import com.aitorgf.threekt.math.Frustum
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Vector3
 import com.aitorgf.threekt.objects.InstancedMesh
@@ -105,8 +106,8 @@ class WebGLRenderer(context: GLContext) {
     private var height: Int? = null
     private val viewProjection = Matrix4()
     private val projection = Matrix4()
-    private val modelView = Matrix4()
-    private val normalMatrix = Matrix3()
+    private val projScreenMatrix = Matrix4()
+    private val frustum = Frustum()
     private val cameraPosition = Vector3()
 
     /** Sets the drawing-buffer dimensions from CSS pixels and the supplied [pixelRatio]. */
@@ -193,11 +194,12 @@ class WebGLRenderer(context: GLContext) {
      * An [ArrayCamera] draws each subcamera in its own viewport.
      */
     fun render(scene: Scene, camera: Camera) {
-        scene.updateMatrixWorld()
+        // Update the scene graph, and the camera when it is not part of it, as Three.js does.
+        if (scene.matrixWorldAutoUpdate) scene.updateMatrixWorld()
+        if (camera.parent == null && camera.matrixWorldAutoUpdate) camera.updateMatrixWorld()
         if (camera is ArrayCamera) {
             renderArray(scene, camera)
         } else {
-            camera.updateWorldMatrix(updateParents = true, updateChildren = false)
             val bounds = viewport
             if (bounds == null) {
                 renderView(scene, camera, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
@@ -215,7 +217,7 @@ class WebGLRenderer(context: GLContext) {
         require(target.gl === gl) { "The cube render target belongs to a different WebGL context." }
         val framebuffer = gl.getParameterHandle(GL.DRAW_FRAMEBUFFER_BINDING)
         val viewport = gl.getParameterInts(GL.VIEWPORT, IntArray(4))
-        scene.updateMatrixWorld()
+        if (scene.matrixWorldAutoUpdate) scene.updateMatrixWorld()
         camera.coordinateSystem = CoordinateSystem.WebGL
         if (scissorTest) gl.disable(GL.SCISSOR_TEST)
         try {
@@ -305,6 +307,8 @@ class WebGLRenderer(context: GLContext) {
             }
         }
         viewProjection.multiplyMatrices(projection, camera.matrixWorldInverse)
+        projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse)
+        frustum.setFromProjectionMatrix(projScreenMatrix, camera.coordinateSystem, camera.reversedDepth)
         cameraPosition.setFromMatrixPosition(camera.matrixWorld)
 
         gl.viewport(x, y, width, height)
@@ -315,23 +319,38 @@ class WebGLRenderer(context: GLContext) {
         }
         gl.depthFunc(if (camera.reversedDepth) GL.GEQUAL else GL.LEQUAL)
 
-        renderList.build(scene, viewProjection)
+        renderList.build(scene, camera, viewProjection, frustum)
         lights.setup(renderList.lights)
         lights.setupView(renderList.lights, camera.matrixWorldInverse)
-        for (item in renderList.opaque) renderObject(item.`object`, item.geometry, item.material, scene, camera, item.group)
-        for (item in renderList.transparent) renderObject(item.`object`, item.geometry, item.material, scene, camera, item.group)
+        for (item in renderList.opaque) renderObject(item.obj, item.geometry, item.material, scene, camera, item.group)
+        for (item in renderList.transparent) renderObject(item.obj, item.geometry, item.material, scene, camera, item.group)
         gl.disable(GL.BLEND)
         gl.disable(GL.SAMPLE_ALPHA_TO_COVERAGE)
         gl.depthMask(true)
     }
 
-    /** Draws one object, as `renderBufferDirect` does in Three.js. */
+    /**
+     * Draws one object between its [Object3D.onBeforeRender] and [Object3D.onAfterRender] callbacks, after
+     * setting its [Object3D.modelViewMatrix] and [Object3D.normalMatrix] for [camera], as Three.js does.
+     */
     private fun renderObject(
-        `object`: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera,
+        obj: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera,
+        group: BufferGeometry.Group? = null,
+    ) {
+        obj.onBeforeRender(this, scene, camera, geometry, material, group)
+        obj.modelViewMatrix.multiplyMatrices(camera.matrixWorldInverse, obj.matrixWorld)
+        obj.normalMatrix.getNormalMatrix(obj.modelViewMatrix)
+        renderBufferDirect(obj, geometry, material, scene, camera, group)
+        obj.onAfterRender(this, scene, camera, geometry, material, group)
+    }
+
+    /** Draws one object, as `renderBufferDirect` does in Three.js. */
+    private fun renderBufferDirect(
+        obj: Object3D, geometry: BufferGeometry, material: Material, scene: Scene, camera: Camera,
         group: BufferGeometry.Group? = null,
     ) {
         val position = geometry.getAttribute("position")
-        val wireframe = `object` is Mesh && material.wireframe
+        val wireframe = obj is Mesh && material.wireframe
         val index = if (wireframe) geometries.getWireframeIndices(geometry.index, position?.count ?: 0) else geometry.index
         val rangeFactor = if (wireframe) 2 else 1
         // Clamp the draw range to the available indices or vertices, as Three.js does.
@@ -355,26 +374,26 @@ class WebGLRenderer(context: GLContext) {
         if (drawCount < 0 || drawCount >= Int.MAX_VALUE) return
 
         val instanceCount = when {
-            `object` is InstancedMesh -> `object`.count
+            obj is InstancedMesh -> obj.count
             geometry is InstancedBufferGeometry -> minOf(geometry.instanceCount, maxInstanceCount(geometry))
             else -> -1
         }
         if (instanceCount == 0) return
 
-        val morphTargetInfluences = when (`object`) {
-            is Mesh -> `object`.morphTargetInfluences
-            is Line -> `object`.morphTargetInfluences
-            is Points -> `object`.morphTargetInfluences
+        val morphTargetInfluences = when (obj) {
+            is Mesh -> obj.morphTargetInfluences
+            is Line -> obj.morphTargetInfluences
+            is Points -> obj.morphTargetInfluences
             else -> null
         }
         val morphTargetsCount = if (morphTargetInfluences != null) geometry.morphAttributes["position"]?.size ?: 0 else 0
         val fog = scene.fog
-        val program = getProgram(material, `object`, geometry, morphTargetsCount, fog)
+        val program = getProgram(material, obj, geometry, morphTargetsCount, fog)
         gl.useProgram(program.handle)
-        setMaterialState(material, `object`.matrixWorld.determinantAffine() < 0.0)
+        setMaterialState(material, obj.matrixWorld.determinantAffine() < 0.0)
 
         uniforms.reset()
-        setBuiltInUniforms(program, `object`, camera)
+        setBuiltInUniforms(program, obj, camera)
         when (material) {
             is MeshBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
             is LineBasicMaterial -> setBasicUniforms(program, geometry, material.color, material.opacity, material.map)
@@ -382,7 +401,7 @@ class WebGLRenderer(context: GLContext) {
             is MeshPhongMaterial -> setPhongUniforms(program, geometry, material)
             is MeshLambertMaterial -> setLambertUniforms(program, geometry, material)
             is MeshNormalMaterial -> program.uniforms["opacity"]?.let { gl.uniform1f(it.location, material.opacity) }
-            is SpriteMaterial -> setSpriteUniforms(program, geometry, `object` as Sprite, material)
+            is SpriteMaterial -> setSpriteUniforms(program, geometry, obj as Sprite, material)
             is ShaderMaterial -> for (name in material.uniforms.names) {
                 val info = program.uniforms[name] ?: continue
                 uniforms.set(info, material.uniforms.get(name)!!.value)
@@ -409,9 +428,9 @@ class WebGLRenderer(context: GLContext) {
             }
         }
         if (morphTargetsCount > 0) morphtargets.update(morphTargetInfluences!!, geometry, program)
-        bindAttributes(program, `object`, geometry)
+        bindAttributes(program, obj, geometry)
 
-        val mode = when (`object`) {
+        val mode = when (obj) {
             is LineSegments -> GL.LINES
             is LineLoop -> GL.LINE_LOOP
             is Line -> GL.LINE_STRIP
@@ -419,7 +438,7 @@ class WebGLRenderer(context: GLContext) {
             else -> if (wireframe) GL.LINES else GL.TRIANGLES
         }
         if (wireframe) gl.lineWidth(pixelRatio)
-        if (`object` is Line && material is LineBasicMaterial) gl.lineWidth(material.linewidth * pixelRatio)
+        if (obj is Line && material is LineBasicMaterial) gl.lineWidth(material.linewidth * pixelRatio)
         if (index == null) {
             if (instanceCount < 0) gl.drawArrays(mode, drawStart.toInt(), drawCount.toInt())
             else gl.drawArraysInstanced(mode, drawStart.toInt(), drawCount.toInt(), instanceCount)
@@ -460,10 +479,10 @@ class WebGLRenderer(context: GLContext) {
      * get only the version line, when the material sets one. Programs are cached by their final source.
      */
     private fun getProgram(
-        material: Material, `object`: Object3D, geometry: BufferGeometry, morphTargetsCount: Int, fog: SceneFog?,
+        material: Material, obj: Object3D, geometry: BufferGeometry, morphTargetsCount: Int, fog: SceneFog?,
     ): WebGLProgram {
-        val instancing = `object` is InstancedMesh
-        val instancingColor = `object` is InstancedMesh && `object`.instanceColor != null
+        val instancing = obj is InstancedMesh
+        val instancingColor = obj is InstancedMesh && obj.instanceColor != null
         val instancingDefines = buildList {
             if (instancing) add("#define USE_INSTANCING")
             if (instancingColor) add("#define USE_INSTANCING_COLOR")
@@ -599,14 +618,13 @@ class WebGLRenderer(context: GLContext) {
     }
 
     /** Sets the camera and object matrices that the program declares. */
-    private fun setBuiltInUniforms(program: WebGLProgram, `object`: Object3D, camera: Camera) {
+    private fun setBuiltInUniforms(program: WebGLProgram, obj: Object3D, camera: Camera) {
         val programUniforms = program.uniforms
-        modelView.multiplyMatrices(camera.matrixWorldInverse, `object`.matrixWorld)
-        uniforms.setMatrix4(programUniforms["modelMatrix"], `object`.matrixWorld)
-        uniforms.setMatrix4(programUniforms["modelViewMatrix"], modelView)
+        uniforms.setMatrix4(programUniforms["modelMatrix"], obj.matrixWorld)
+        uniforms.setMatrix4(programUniforms["modelViewMatrix"], obj.modelViewMatrix)
         uniforms.setMatrix4(programUniforms["projectionMatrix"], projection)
         uniforms.setMatrix4(programUniforms["viewMatrix"], camera.matrixWorldInverse)
-        programUniforms["normalMatrix"]?.let { uniforms.setMatrix3(it, normalMatrix.getNormalMatrix(modelView)) }
+        programUniforms["normalMatrix"]?.let { uniforms.setMatrix3(it, obj.normalMatrix) }
         programUniforms["isOrthographic"]?.let { gl.uniform1i(it.location, if (camera is OrthographicCamera) 1 else 0) }
         programUniforms["cameraPosition"]?.let { gl.uniform3f(it.location, cameraPosition.x, cameraPosition.y, cameraPosition.z) }
     }
@@ -719,12 +737,12 @@ class WebGLRenderer(context: GLContext) {
      * attributes advance once per `meshPerAttribute` instances. Matrix attributes span consecutive
      * locations, one per column. Attributes the geometry lacks are disabled and read as `(0, 0, 0, 1)`.
      */
-    private fun bindAttributes(program: WebGLProgram, `object`: Object3D, geometry: BufferGeometry) {
+    private fun bindAttributes(program: WebGLProgram, obj: Object3D, geometry: BufferGeometry) {
         val used = mutableSetOf<Int>()
         for ((name, location) in program.attributes) {
             val attribute = when {
-                name == "instanceMatrix" && `object` is InstancedMesh -> `object`.instanceMatrix
-                name == "instanceColor" && `object` is InstancedMesh -> `object`.instanceColor
+                name == "instanceMatrix" && obj is InstancedMesh -> obj.instanceMatrix
+                name == "instanceColor" && obj is InstancedMesh -> obj.instanceColor
                 else -> geometry.getAttribute(name)
             } ?: continue
             val locationSize = program.attributeLocationSizes[name] ?: 1

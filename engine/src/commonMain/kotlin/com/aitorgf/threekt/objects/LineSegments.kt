@@ -33,4 +33,6 @@ open class LineSegments(
         geometry.setAttribute("lineDistance", Float32BufferAttribute(distances, 1))
         return this
     }
+
+    override fun clone(recursive: Boolean): LineSegments = LineSegments().copy(this, recursive) as LineSegments
 }

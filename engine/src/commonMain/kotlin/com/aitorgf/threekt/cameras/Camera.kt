@@ -67,15 +67,48 @@ abstract class Camera : Object3D() {
 
     override val looksAlongNegativeZ: Boolean get() = true
 
-    /** Writes the direction of the camera's local negative Z axis in world coordinates to [target]. */
-    fun getWorldDirection(target: Vector3): Vector3 {
-        updateWorldMatrix(updateParents = true, updateChildren = false)
-        return target.setFromMatrixColumn(matrixWorld, 2).normalize().negate()
+    /**
+     * Writes the viewing direction of the camera, its local negative Z axis in world space, to [target] and
+     * returns it.
+     */
+    override fun getWorldDirection(target: Vector3): Vector3 = super.getWorldDirection(target).negate()
+
+    /** Updates the world matrices, then rebuilds [matrixWorldInverse] from the camera's world pose. */
+    override fun updateMatrixWorld(force: Boolean) {
+        super.updateMatrixWorld(force)
+        updateMatrixWorldInverse()
     }
 
-    /** Rebuilds the view matrix from the camera's world pose, excluding scale. */
-    override fun updateWorldTransform() {
-        super.updateWorldTransform()
+    /** Updates the world matrices, then rebuilds [matrixWorldInverse] from the camera's world pose. */
+    override fun updateWorldMatrix(updateParents: Boolean, updateChildren: Boolean, force: Boolean) {
+        super.updateWorldMatrix(updateParents, updateChildren, force)
+        updateMatrixWorldInverse()
+    }
+
+    /**
+     * Copies the matrices, [coordinateSystem], [reversedDepth], [zoom] and [viewOffset] of [source] when it
+     * is a camera, in addition to what [Object3D.copy] copies. Returns this camera. Three.js copies the zoom
+     * and the view offset in each camera subclass.
+     */
+    override fun copy(source: Object3D, recursive: Boolean): Camera {
+        super.copy(source, recursive)
+        if (source is Camera) {
+            matrixWorldInverse.copy(source.matrixWorldInverse)
+            projectionMatrix.copy(source.projectionMatrix)
+            projectionMatrixInverse.copy(source.projectionMatrixInverse)
+            coordinateSystem = source.coordinateSystem
+            reversedDepth = source.reversedDepth
+            zoom = source.zoom
+            viewOffset = source.viewOffset
+        }
+        return this
+    }
+
+    /**
+     * Rebuilds the view matrix from the camera's world pose, excluding scale so that scaled cameras behave
+     * as in glTF.
+     */
+    private fun updateMatrixWorldInverse() {
         viewScale.setFromMatrixScale(matrixWorld)
         val determinant = matrixWorld.determinantAffine()
         val unitWorldScale = viewScale.x == 1.0 && viewScale.y == 1.0 && viewScale.z == 1.0

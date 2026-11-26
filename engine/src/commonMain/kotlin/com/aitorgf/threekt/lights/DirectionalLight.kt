@@ -25,4 +25,13 @@ class DirectionalLight(color: Color = Color(1.0, 1.0, 1.0), intensity: Double = 
         position.copy(DEFAULT_UP)
         updateMatrix()
     }
+
+    /** Copies the light settings of [source], and clones its [target] when it is a directional light. */
+    override fun copy(source: Object3D, recursive: Boolean): DirectionalLight {
+        super.copy(source, recursive)
+        if (source is DirectionalLight) target = source.target.clone()
+        return this
+    }
+
+    override fun clone(recursive: Boolean): DirectionalLight = DirectionalLight().copy(this, recursive)
 }

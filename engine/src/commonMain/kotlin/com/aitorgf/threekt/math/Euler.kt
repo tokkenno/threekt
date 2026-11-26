@@ -6,29 +6,75 @@ import kotlin.math.atan2
 import kotlin.js.JsExport
 import kotlin.js.JsName
 
-/** A mutable rotation represented by three axis angles in radians applied in [order]. */
+/**
+ * A mutable rotation represented by three axis angles in radians applied in [order].
+ *
+ * Every change runs the callback registered with [onChange], which [com.aitorgf.threekt.core.Object3D]
+ * uses to keep its `quaternion` in sync. [equals] compares the angles and the order, as the Three.js
+ * `equals()`.
+ */
 @JsExport
-data class Euler(
-    var x: Double = 0.0,
-    var y: Double = 0.0,
-    var z: Double = 0.0,
-    var order: Order = Order.XYZ,
-) {
+class Euler(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, order: Order = DEFAULT_ORDER) {
+    private var xValue = x
+    private var yValue = y
+    private var zValue = z
+    private var orderValue = order
+    private var onChangeCallback: () -> Unit = {}
+
+    /** The angle around the X axis, in radians. */
+    var x: Double
+        get() = xValue
+        set(value) {
+            xValue = value
+            onChangeCallback()
+        }
+
+    /** The angle around the Y axis, in radians. */
+    var y: Double
+        get() = yValue
+        set(value) {
+            yValue = value
+            onChangeCallback()
+        }
+
+    /** The angle around the Z axis, in radians. */
+    var z: Double
+        get() = zValue
+        set(value) {
+            zValue = value
+            onChangeCallback()
+        }
+
+    /** The order in which the rotations are applied. */
+    var order: Order
+        get() = orderValue
+        set(value) {
+            orderValue = value
+            onChangeCallback()
+        }
 
     /** Sets the Euler components. Returns this instance. */
-    fun set(x: Double, y: Double, z: Double, order: Order = this.order): Euler = apply {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.order = order
+    fun set(x: Double, y: Double, z: Double, order: Order = this.order): Euler {
+        xValue = x
+        yValue = y
+        zValue = z
+        orderValue = order
+        onChangeCallback()
+        return this
     }
+
+    /** Returns a new Euler with the same angles and order, as the Three.js `clone()`. */
+    fun copy(): Euler = Euler(xValue, yValue, zValue, orderValue)
 
     /** Copies the supplied values into this instance and returns it. */
     @JsName("copyFrom")
     fun copy(other: Euler): Euler = set(other.x, other.y, other.z, other.order)
 
-    /** Sets the angles of this Euler instance from a pure rotation matrix. Returns this instance. */
-    fun setFromRotationMatrix(matrix: Matrix4, order: Order = this.order): Euler {
+    /**
+     * Sets the angles of this Euler instance from a pure rotation matrix. The [onChange] callback runs only
+     * when [update] is true. Returns this instance.
+     */
+    fun setFromRotationMatrix(matrix: Matrix4, order: Order = this.order, update: Boolean = true): Euler {
         val e = matrix.elements
         val m11 = e[0]
         val m12 = e[4]
@@ -56,12 +102,20 @@ data class Euler(
             Order.XZY -> if (abs(m12) < limit) Triple(atan2(m32, m22), atan2(m13, m11), angle(-m12))
                 else Triple(atan2(-m23, m33), 0.0, angle(-m12))
         }
-        return set(x, y, z, order)
+        xValue = x
+        yValue = y
+        zValue = z
+        orderValue = order
+        if (update) onChangeCallback()
+        return this
     }
 
-    /** Sets the angles of this Euler instance from a normalized quaternion. Returns this instance. */
-    fun setFromQuaternion(quaternion: Quaternion, order: Order = this.order): Euler =
-        setFromRotationMatrix(Matrix4().makeRotationFromQuaternion(quaternion), order)
+    /**
+     * Sets the angles of this Euler instance from a normalized quaternion. The [onChange] callback runs only
+     * when [update] is true. Returns this instance.
+     */
+    fun setFromQuaternion(quaternion: Quaternion, order: Order = this.order, update: Boolean = true): Euler =
+        setFromRotationMatrix(Matrix4().makeRotationFromQuaternion(quaternion), order, update)
 
     /** Sets the angles of this Euler instance from the given vector. Returns this instance. */
     fun setFromVector3(vector: Vector3, order: Order = this.order): Euler = set(vector.x, vector.y, vector.z, order)
@@ -88,6 +142,28 @@ data class Euler(
         return array
     }
 
+    /**
+     * Registers [callback] to run after every change of the angles or the order, replacing the previous
+     * callback. Three.js calls this internal method `_onChange`. Returns this instance.
+     */
+    internal fun onChange(callback: () -> Unit): Euler {
+        onChangeCallback = callback
+        return this
+    }
+
+    override fun equals(other: Any?): Boolean =
+        other is Euler && other.xValue == xValue && other.yValue == yValue && other.zValue == zValue &&
+            other.orderValue == orderValue
+
+    override fun hashCode(): Int = listOf(xValue, yValue, zValue, orderValue).hashCode()
+
+    override fun toString(): String = "Euler(x=$xValue, y=$yValue, z=$zValue, order=$orderValue)"
+
     /** Order of the three distinct axes in an Euler rotation. */
     enum class Order { XYZ, YXZ, ZXY, ZYX, YZX, XZY }
+
+    companion object {
+        /** The order of new Euler instances, `XYZ`. */
+        val DEFAULT_ORDER = Order.XYZ
+    }
 }

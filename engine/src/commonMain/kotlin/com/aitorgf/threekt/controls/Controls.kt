@@ -3,16 +3,18 @@ package com.aitorgf.threekt.controls
 import com.aitorgf.threekt.core.EventDispatcher
 import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
+import kotlin.js.JsName
 
 /**
- * Base class for controls that drive [`object`] from user input on an [InputSurface]. Controls dispatch
+ * Base class for controls that drive [obj] from user input on an [InputSurface]. Controls dispatch
  * `change` when they move the object, and `start` and `end` around user interactions. Platforms supply
  * the surface, for example `DomInputSurface` in the browser.
  */
 @JsExport
 abstract class Controls<T : Object3D>(
-    /** Object moved by these controls, usually a camera. */
-    val `object`: T,
+    /** Object moved by these controls, usually a camera. Named `object` in JavaScript, as in Three.js. */
+    @JsName("object")
+    val obj: T,
 ) : EventDispatcher(), InputListener {
     /** Surface that delivers input, or null while the controls are disconnected. */
     var surface: InputSurface? = null
@@ -49,7 +51,7 @@ abstract class Controls<T : Object3D>(
     protected open fun onDisconnect(surface: InputSurface) = Unit
 
     /**
-     * Updates [`object`] from the accumulated input. [deltaTime] is the time since the previous update in
+     * Updates [obj] from the accumulated input. [deltaTime] is the time since the previous update in
      * seconds, or null when the update is not tied to a frame clock. Returns whether the object moved.
      */
     open fun update(deltaTime: Double? = null): Boolean = false

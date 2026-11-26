@@ -17,7 +17,10 @@ class GridHelper(
 ) : LineSegments(gridGeometry(size, divisions, color1, color2), LineBasicMaterial().apply {
     vertexColors = true
     fog = false
-})
+}) {
+    /** Returns a grid that shares the geometry and material of this one. */
+    override fun clone(recursive: Boolean): GridHelper = GridHelper().copy(this, recursive) as GridHelper
+}
 
 private fun gridGeometry(size: Double, divisions: Int, color1: Color, color2: Color): BufferGeometry {
     require(divisions > 0)

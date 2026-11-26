@@ -7,6 +7,7 @@ import com.aitorgf.threekt.math.Box3
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Sphere
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 
 /**
@@ -107,4 +108,24 @@ class InstancedMesh(
         val array = instanceMatrix.array
         for (i in 0 until 16) array[index * 16 + i] = elements[i].toFloat()
     }
+
+    /**
+     * Copies the instance transforms, colors, count and bounds of [source] when it is an instanced mesh with
+     * the same capacity, in addition to what [Mesh.copy] copies. Returns this mesh.
+     */
+    override fun copy(source: Object3D, recursive: Boolean): InstancedMesh {
+        super.copy(source, recursive)
+        if (source is InstancedMesh) {
+            source.instanceMatrix.array.copyInto(instanceMatrix.array, endIndex = minOf(source.instanceMatrix.array.size, instanceMatrix.array.size))
+            instanceMatrix.markUpdated()
+            instanceColor = source.instanceColor?.clone()
+            count = source.count
+            boundingBox = source.boundingBox?.copy()
+            boundingSphere = source.boundingSphere?.copy()
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): InstancedMesh =
+        InstancedMesh(geometry, material, instanceMatrix.count).copy(this, recursive)
 }

@@ -70,8 +70,7 @@ void main() {
 
 /**
  * Port of Three.js examples/webgl_buffergeometry_attributes_none.html. The geometry has no attributes:
- * the vertex shader derives every position and color from gl_VertexID. Threekt does not frustum-cull
- * yet, so the upstream `frustumCulled = false` is not needed.
+ * the vertex shader derives every position and color from gl_VertexID.
  */
 export async function createExample(canvas: HTMLCanvasElement) {
     const camera = new PerspectiveCamera(27, 1, 1, 3500);
@@ -94,6 +93,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     material.glslVersion = GLSLVersion.GLSL3;
 
     const mesh = new Mesh(geometry, material);
+    mesh.frustumCulled = false;
     scene.add(mesh);
     const rotation = new Euler();
 

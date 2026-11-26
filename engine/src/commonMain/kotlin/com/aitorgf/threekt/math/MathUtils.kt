@@ -8,6 +8,24 @@ object MathUtils {
     const val DEG2RAD = PI / 180.0
     const val RAD2DEG = 180.0 / PI
 
+    private val uuidLut = Array(256) { it.toString(16).padStart(2, '0') }
+
+    /**
+     * Returns a random version 4 UUID in lowercase, such as `a3bb189e-8bf9-4888-9912-ace4e6543002`, as
+     * [com.aitorgf.threekt.core.Object3D.uuid] uses. Not cryptographically secure.
+     */
+    fun generateUUID(random: Random = Random.Default): String {
+        val d0 = random.nextInt()
+        val d1 = random.nextInt()
+        val d2 = random.nextInt()
+        val d3 = random.nextInt()
+        val lut = uuidLut
+        return lut[d0 and 0xff] + lut[d0 shr 8 and 0xff] + lut[d0 shr 16 and 0xff] + lut[d0 shr 24 and 0xff] + "-" +
+            lut[d1 and 0xff] + lut[d1 shr 8 and 0xff] + "-" + lut[d1 shr 16 and 0x0f or 0x40] + lut[d1 shr 24 and 0xff] + "-" +
+            lut[d2 and 0x3f or 0x80] + lut[d2 shr 8 and 0xff] + "-" + lut[d2 shr 16 and 0xff] + lut[d2 shr 24 and 0xff] +
+            lut[d3 and 0xff] + lut[d3 shr 8 and 0xff] + lut[d3 shr 16 and 0xff] + lut[d3 shr 24 and 0xff]
+    }
+
     /** Clamps the given value between min and max. */
     fun clamp(value: Double, min: Double, max: Double): Double = maxOf(min, minOf(max, value))
 

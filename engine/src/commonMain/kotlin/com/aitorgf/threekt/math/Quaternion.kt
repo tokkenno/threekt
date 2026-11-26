@@ -9,22 +9,66 @@ import kotlin.js.JsName
 /**
  * A mutable quaternion with components [x], [y], [z], and [w]. Rotation operations expect unit
  * quaternions. The default value represents the identity rotation.
+ *
+ * Every change runs the callback registered with [onChange], which [com.aitorgf.threekt.core.Object3D]
+ * uses to keep its `rotation` in sync. [equals] compares the components, as the Three.js `equals()`.
  */
 @JsExport
-data class Quaternion(
-    var x: Double = 0.0,
-    var y: Double = 0.0,
-    var z: Double = 0.0,
-    var w: Double = 1.0,
-) {
+class Quaternion(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 1.0) {
+    private var xValue = x
+    private var yValue = y
+    private var zValue = z
+    private var wValue = w
+    private var onChangeCallback: () -> Unit = {}
+
+    /** The x component. */
+    var x: Double
+        get() = xValue
+        set(value) {
+            xValue = value
+            onChangeCallback()
+        }
+
+    /** The y component. */
+    var y: Double
+        get() = yValue
+        set(value) {
+            yValue = value
+            onChangeCallback()
+        }
+
+    /** The z component. */
+    var z: Double
+        get() = zValue
+        set(value) {
+            zValue = value
+            onChangeCallback()
+        }
+
+    /** The w component. */
+    var w: Double
+        get() = wValue
+        set(value) {
+            wValue = value
+            onChangeCallback()
+        }
 
     /** Sets the quaternion components. Returns this instance. */
-    fun set(x: Double, y: Double, z: Double, w: Double): Quaternion = apply {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.w = w
+    fun set(x: Double, y: Double, z: Double, w: Double): Quaternion {
+        setSilently(x, y, z, w)
+        onChangeCallback()
+        return this
     }
+
+    private fun setSilently(x: Double, y: Double, z: Double, w: Double) {
+        xValue = x
+        yValue = y
+        zValue = z
+        wValue = w
+    }
+
+    /** Returns a new quaternion with the same components, as the Three.js `clone()`. */
+    fun copy(): Quaternion = Quaternion(xValue, yValue, zValue, wValue)
 
     /** Sets the rotation about a unit [axis] by [angle] radians. */
     fun setFromAxisAngle(axis: Vector3, angle: Double): Quaternion {
@@ -94,9 +138,10 @@ data class Quaternion(
     )
 
     /**
-     * Sets this quaternion from the rotation specified by the given Euler angles. Returns this instance.
+     * Sets this quaternion from the rotation specified by the given Euler angles. The [onChange] callback
+     * runs only when [update] is true. Returns this instance.
      */
-    fun setFromEuler(euler: Euler): Quaternion {
+    fun setFromEuler(euler: Euler, update: Boolean = true): Quaternion {
         val cx = cos(euler.x / 2)
         val cy = cos(euler.y / 2)
         val cz = cos(euler.z / 2)
@@ -111,14 +156,16 @@ data class Quaternion(
         val crossY = sx * cy * sz
         val crossZ = sx * sy * cz
         val crossW = sx * sy * sz
-        return when (euler.order) {
-            Euler.Order.XYZ -> set(x + crossX, y - crossY, z + crossZ, w - crossW)
-            Euler.Order.YXZ -> set(x + crossX, y - crossY, z - crossZ, w + crossW)
-            Euler.Order.ZXY -> set(x - crossX, y + crossY, z + crossZ, w - crossW)
-            Euler.Order.ZYX -> set(x - crossX, y + crossY, z - crossZ, w + crossW)
-            Euler.Order.YZX -> set(x + crossX, y + crossY, z - crossZ, w - crossW)
-            Euler.Order.XZY -> set(x - crossX, y - crossY, z + crossZ, w + crossW)
+        when (euler.order) {
+            Euler.Order.XYZ -> setSilently(x + crossX, y - crossY, z + crossZ, w - crossW)
+            Euler.Order.YXZ -> setSilently(x + crossX, y - crossY, z - crossZ, w + crossW)
+            Euler.Order.ZXY -> setSilently(x - crossX, y + crossY, z + crossZ, w - crossW)
+            Euler.Order.ZYX -> setSilently(x - crossX, y + crossY, z - crossZ, w + crossW)
+            Euler.Order.YZX -> setSilently(x + crossX, y + crossY, z - crossZ, w - crossW)
+            Euler.Order.XZY -> setSilently(x - crossX, y - crossY, z + crossZ, w + crossW)
         }
+        if (update) onChangeCallback()
+        return this
     }
 
     /** Sets this quaternion from the unscaled upper-left 3×3 rotation in [matrix] and returns it. */
@@ -221,6 +268,22 @@ data class Quaternion(
         array[offset + 3] = w
         return array
     }
+
+    /**
+     * Registers [callback] to run after every change of the components, replacing the previous callback.
+     * Three.js calls this internal method `_onChange`. Returns this instance.
+     */
+    internal fun onChange(callback: () -> Unit): Quaternion {
+        onChangeCallback = callback
+        return this
+    }
+
+    override fun equals(other: Any?): Boolean =
+        other is Quaternion && other.xValue == xValue && other.yValue == yValue && other.zValue == zValue && other.wValue == wValue
+
+    override fun hashCode(): Int = listOf(xValue, yValue, zValue, wValue).hashCode()
+
+    override fun toString(): String = "Quaternion(x=$xValue, y=$yValue, z=$zValue, w=$wValue)"
 
     /** Sets the components of this quaternion from the given buffer attribute. Returns this instance. */
     fun fromBufferAttribute(attribute: BufferAttribute, index: Int): Quaternion {

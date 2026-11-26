@@ -1,9 +1,11 @@
 package com.aitorgf.threekt.renderers.webgl
 
+import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.lights.Light
 import com.aitorgf.threekt.materials.Material
+import com.aitorgf.threekt.math.Frustum
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Vector3
 import com.aitorgf.threekt.objects.Line
@@ -23,7 +25,7 @@ import com.aitorgf.threekt.objects.Sprite
 internal class WebGLRenderList {
     /** An object with its geometry, material, and the clip-space depth of its origin. */
     class RenderItem(
-        val `object`: Object3D,
+        val obj: Object3D,
         val geometry: BufferGeometry,
         val material: Material,
         val z: Double,
@@ -51,8 +53,8 @@ internal class WebGLRenderList {
     }
 
     /** Adds [object] with clip-space depth [z] to the list that matches [material]. */
-    fun push(`object`: Object3D, geometry: BufferGeometry, material: Material, z: Double, group: BufferGeometry.Group? = null) {
-        val item = RenderItem(`object`, geometry, material, z, group)
+    fun push(obj: Object3D, geometry: BufferGeometry, material: Material, z: Double, group: BufferGeometry.Group? = null) {
+        val item = RenderItem(obj, geometry, material, z, group)
         if (material.transparent) transparent.add(item) else opaque.add(item)
     }
 
@@ -63,16 +65,21 @@ internal class WebGLRenderList {
     }
 
     /**
-     * Fills the lists with the visible meshes, lines, and points under [root], using their depth under
-     * [projScreenMatrix], and sorts them. Hidden objects and their descendants are skipped. World
-     * matrices must be current.
+     * Fills the lists with the meshes, lines, points and sprites under [root] that [camera] can see, using
+     * their depth under [projScreenMatrix], and sorts them, as `projectObject` does in Three.js. Hidden
+     * objects and their descendants are skipped. Objects that share no layer with [camera] are skipped
+     * without their descendants, and so are objects with [Object3D.frustumCulled] set that
+     * [Object3D.intersectsFrustum] reports outside [frustum]. World matrices must be current.
      */
-    fun build(root: Object3D, projScreenMatrix: Matrix4) {
+    fun build(root: Object3D, camera: Camera, projScreenMatrix: Matrix4, frustum: Frustum) {
         init()
         root.traverseVisible { node ->
+            if (!node.layers.test(camera.layers)) return@traverseVisible
             val z = { vector.setFromMatrixPosition(node.matrixWorld).applyMatrix4(projScreenMatrix).z }
+            val culled = node.frustumCulled && !node.intersectsFrustum(frustum)
             when (node) {
-                is Mesh -> {
+                is Light -> lights.add(node)
+                is Mesh -> if (!culled) {
                     val materials = node.materials
                     if (materials == null) {
                         push(node, node.geometry, node.material, z())
@@ -85,17 +92,16 @@ internal class WebGLRenderList {
                         }
                     }
                 }
-                is Line -> push(node, node.geometry, node.material, z())
-                is Points -> push(node, node.geometry, node.material, z())
-                is Sprite -> push(node, node.geometry, node.material, z())
-                is Light -> lights.add(node)
+                is Line -> if (!culled) push(node, node.geometry, node.material, z())
+                is Points -> if (!culled) push(node, node.geometry, node.material, z())
+                is Sprite -> if (!culled) push(node, node.geometry, node.material, z())
             }
         }
         sort()
     }
 
     private companion object {
-        val PAINTER_SORT_STABLE = compareBy<RenderItem>({ it.`object`.renderOrder }, { it.material.id }, { it.z }, { it.`object`.id })
-        val REVERSE_PAINTER_SORT_STABLE = compareBy<RenderItem>({ it.`object`.renderOrder }, { -it.z }, { it.`object`.id })
+        val PAINTER_SORT_STABLE = compareBy<RenderItem>({ it.obj.renderOrder }, { it.material.id }, { it.z }, { it.obj.id })
+        val REVERSE_PAINTER_SORT_STABLE = compareBy<RenderItem>({ it.obj.renderOrder }, { -it.z }, { it.obj.id })
     }
 }

@@ -15,4 +15,10 @@ internal class MorphTargets {
         influences = DoubleArray(morphAttribute.size)
         dictionary = morphAttribute.withIndex().associate { (index, attribute) -> attribute.name.ifEmpty { index.toString() } to index }
     }
+
+    /** Copies the influences and the dictionary of [source], as the `copy()` of the Three.js objects. */
+    fun copy(source: MorphTargets) {
+        influences = source.influences?.copyOf()
+        dictionary = source.dictionary?.toMap()
+    }
 }

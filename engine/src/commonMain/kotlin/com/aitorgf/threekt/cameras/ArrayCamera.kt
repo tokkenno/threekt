@@ -1,5 +1,6 @@
 package com.aitorgf.threekt.cameras
 
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 
 /** A collection of perspective views of one scene, each rendered into its own viewport. */
@@ -25,4 +26,13 @@ class ArrayCamera @JsExport.Ignore constructor(
             require(width > 0 && height > 0) { "A viewport must have positive dimensions." }
         }
     }
+
+    /** Shares the [views] of [source] when it is an array camera. Returns this camera. */
+    override fun copy(source: Object3D, recursive: Boolean): ArrayCamera {
+        super.copy(source, recursive)
+        if (source is ArrayCamera) views = source.views
+        return this
+    }
+
+    override fun clone(recursive: Boolean): ArrayCamera = ArrayCamera().copy(this, recursive)
 }

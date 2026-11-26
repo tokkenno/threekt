@@ -10,4 +10,6 @@ import kotlin.js.JsExport
 class LineLoop(
     geometry: BufferGeometry = BufferGeometry(),
     material: Material = LineBasicMaterial(),
-) : Line(geometry, material)
+) : Line(geometry, material) {
+    override fun clone(recursive: Boolean): LineLoop = LineLoop().copy(this, recursive) as LineLoop
+}

@@ -39,7 +39,7 @@ class BoxHelperTest {
         group.add(mesh)
         val helper = BoxHelper(color = 0x474747)
         helper.setFromObject(group)
-        assertSame(group, helper.`object`)
+        assertSame(group, helper.obj)
         val position = helper.geometry.getAttribute("position") as Float32BufferAttribute
         assertEquals(5.5f, position.array[1])
     }

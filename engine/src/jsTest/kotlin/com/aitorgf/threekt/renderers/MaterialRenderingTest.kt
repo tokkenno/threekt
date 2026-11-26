@@ -259,7 +259,8 @@ class MaterialRenderingTest {
         material.uniforms.set("seed", Uniform(1.0))
         val geometry = BufferGeometry()
         val scene = Scene()
-        scene.add(Mesh(geometry, material))
+        // Without positions there are no bounds to cull against, so culling is disabled as in Three.js.
+        scene.add(Mesh(geometry, material).apply { frustumCulled = false })
         val camera = PerspectiveCamera()
 
         // Without attributes or indices, the default unbounded range draws nothing.

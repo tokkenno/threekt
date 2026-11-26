@@ -9,4 +9,6 @@ class AmbientLight(color: Color = Color(1.0, 1.0, 1.0), intensity: Double = 1.0)
     /** Creates a light from a packed sRGB [hex] color, as `0xcccccc`. */
     @JsExport.Ignore
     constructor(hex: Int, intensity: Double = 1.0) : this(Color(hex), intensity)
+
+    override fun clone(recursive: Boolean): AmbientLight = AmbientLight().copy(this, recursive) as AmbientLight
 }

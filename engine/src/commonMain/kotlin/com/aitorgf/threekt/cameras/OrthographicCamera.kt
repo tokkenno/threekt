@@ -1,4 +1,5 @@
 package com.aitorgf.threekt.cameras
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 
 /** Camera that projects objects at a constant apparent size regardless of their distance. */
@@ -37,4 +38,20 @@ class OrthographicCamera(
         projectionMatrix.makeOrthographic(viewLeft, viewRight, viewTop, viewBottom, near, far, coordinateSystem, reversedDepth)
         projectionMatrixInverse.copy(projectionMatrix).invert()
     }
+
+    /** Copies the frustum planes of [source] when it is an orthographic camera. Returns this camera. */
+    override fun copy(source: Object3D, recursive: Boolean): OrthographicCamera {
+        super.copy(source, recursive)
+        if (source is OrthographicCamera) {
+            left = source.left
+            right = source.right
+            top = source.top
+            bottom = source.bottom
+            near = source.near
+            far = source.far
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): OrthographicCamera = OrthographicCamera().copy(this, recursive)
 }

@@ -5,6 +5,7 @@ import com.aitorgf.threekt.math.Vector2
 import com.aitorgf.threekt.math.Vector3
 import kotlin.math.atan
 import kotlin.math.tan
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 
 /** Perspective camera with a vertical field of view in degrees. */
@@ -85,4 +86,21 @@ open class PerspectiveCamera(
         projectionMatrix.makePerspective(left, left + width, top, top - height, near, far, coordinateSystem, reversedDepth)
         projectionMatrixInverse.copy(projectionMatrix).invert()
     }
+
+    /** Copies the lens settings of [source] when it is a perspective camera. Returns this camera. */
+    override fun copy(source: Object3D, recursive: Boolean): PerspectiveCamera {
+        super.copy(source, recursive)
+        if (source is PerspectiveCamera) {
+            fov = source.fov
+            near = source.near
+            far = source.far
+            focus = source.focus
+            aspect = source.aspect
+            filmGauge = source.filmGauge
+            filmOffset = source.filmOffset
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): PerspectiveCamera = PerspectiveCamera().copy(this, recursive)
 }

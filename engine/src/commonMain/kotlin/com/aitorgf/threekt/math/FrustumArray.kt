@@ -3,6 +3,7 @@ package com.aitorgf.threekt.math
 import com.aitorgf.threekt.cameras.Camera
 import com.aitorgf.threekt.cameras.ArrayCamera
 import com.aitorgf.threekt.core.Object3D
+import com.aitorgf.threekt.objects.Sprite
 
 /**
  * FrustumArray is used to determine if an object is visible in at least one camera from an array of
@@ -43,7 +44,7 @@ class FrustumArray {
      * Returns `true` if the given sprite is intersecting any cached frustum.
      * [FrustumArray.setFromArrayCamera] must be called once per render before this method.
      */
-    fun intersectsSprite(sprite: Object3D): Boolean = anyFrustum { it.intersectsSprite(sprite) }
+    fun intersectsSprite(sprite: Sprite): Boolean = anyFrustum { it.intersectsSprite(sprite) }
 
     /**
      * Returns `true` if the given bounding sphere is intersecting any cached frustum.

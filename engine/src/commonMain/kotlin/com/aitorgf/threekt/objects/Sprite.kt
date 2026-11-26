@@ -6,6 +6,7 @@ import com.aitorgf.threekt.core.InterleavedBufferAttribute
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.SpriteMaterial
 import com.aitorgf.threekt.math.Vector2
+import com.aitorgf.threekt.math.Frustum
 import kotlin.js.JsExport
 
 /**
@@ -24,6 +25,18 @@ class Sprite(var material: SpriteMaterial = SpriteMaterial()) : Object3D() {
      */
     val center = Vector2(0.5, 0.5)
 
+    /** Copies [center] and shares the material of [source] when it is a sprite. Returns this sprite. */
+    override fun copy(source: Object3D, recursive: Boolean): Sprite {
+        super.copy(source, recursive)
+        if (source is Sprite) {
+            center.copy(source.center)
+            material = source.material
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): Sprite = Sprite().copy(this, recursive)
+
     private companion object {
         val sharedGeometry: BufferGeometry by lazy {
             val buffer = InterleavedBuffer(
@@ -41,4 +54,8 @@ class Sprite(var material: SpriteMaterial = SpriteMaterial()) : Object3D() {
                 .setAttribute("uv", InterleavedBufferAttribute(buffer, 2, 3, false))
         }
     }
+
+    /** Tests the bounding sphere of this sprite against [frustum], as the renderer does for culling. */
+    @JsExport.Ignore
+    override fun intersectsFrustum(frustum: Frustum): Boolean = frustum.intersectsSprite(this)
 }

@@ -2,6 +2,7 @@ package com.aitorgf.threekt.cameras
 
 import com.aitorgf.threekt.math.Box2
 import com.aitorgf.threekt.math.Vector2
+import com.aitorgf.threekt.core.Object3D
 import kotlin.js.JsExport
 
 /**
@@ -113,4 +114,22 @@ class CalibratedPerspectiveCamera(
         projectionMatrix.makePerspective(left, left + width, top, top - height, near, far, coordinateSystem, reversedDepth)
         projectionMatrixInverse.copy(projectionMatrix).invert()
     }
+
+    /** Copies the calibration of [source] when it is a calibrated camera. Returns this camera. */
+    override fun copy(source: Object3D, recursive: Boolean): CalibratedPerspectiveCamera {
+        super.copy(source, recursive)
+        if (source is CalibratedPerspectiveCamera) {
+            focal = source.focal
+            near = source.near
+            far = source.far
+            film.copy(source.film)
+            crop.copy(source.crop)
+            shift.copy(source.shift)
+            panOffset.copy(source.panOffset)
+            updateProjectionMatrix()
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): CalibratedPerspectiveCamera = CalibratedPerspectiveCamera().copy(this, recursive)
 }

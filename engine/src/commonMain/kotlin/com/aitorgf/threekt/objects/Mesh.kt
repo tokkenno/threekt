@@ -4,6 +4,7 @@ import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.Material
 import com.aitorgf.threekt.materials.MeshBasicMaterial
+import com.aitorgf.threekt.math.Frustum
 import kotlin.js.JsExport
 import kotlin.js.JsName
 
@@ -50,4 +51,25 @@ open class Mesh(
 
     /** Resets [morphTargetInfluences] to zero for the geometry's current morph targets. */
     fun updateMorphTargets() = morphTargets.update(geometry)
+
+    /**
+     * Shares the geometry and materials of [source] and copies its morph target state when it is a
+     * mesh. Returns this object.
+     */
+    override fun copy(source: Object3D, recursive: Boolean): Mesh {
+        super.copy(source, recursive)
+        if (source is Mesh) {
+            morphTargets.copy(source.morphTargets)
+            material = source.material
+            materials = source.materials?.copyOf()
+            geometry = source.geometry
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): Mesh = Mesh().copy(this, recursive)
+
+    /** Tests the bounding sphere of this mesh against [frustum], as the renderer does for culling. */
+    @JsExport.Ignore
+    override fun intersectsFrustum(frustum: Frustum): Boolean = frustum.intersectsObject(this)
 }

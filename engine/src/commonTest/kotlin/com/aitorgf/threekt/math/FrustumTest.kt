@@ -2,6 +2,7 @@ package com.aitorgf.threekt.math
 
 import com.aitorgf.threekt.cameras.OrthographicCamera
 import com.aitorgf.threekt.core.Object3D
+import com.aitorgf.threekt.objects.Sprite
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -22,7 +23,7 @@ class FrustumTest {
         assertTrue(frustum.intersectsBox(box))
         assertFalse(frustum.intersectsBox(box.translate(Vector3(0.1, 0.0, 0.0))))
 
-        val sprite = Object3D()
+        val sprite = Sprite()
         sprite.position.set(1.5, 0.0, -3.0)
         sprite.updateMatrixWorld()
         assertTrue(frustum.intersectsSprite(sprite))

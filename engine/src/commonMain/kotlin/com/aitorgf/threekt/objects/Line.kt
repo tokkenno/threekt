@@ -6,6 +6,7 @@ import com.aitorgf.threekt.core.Object3D
 import com.aitorgf.threekt.materials.LineBasicMaterial
 import com.aitorgf.threekt.materials.Material
 import com.aitorgf.threekt.math.Vector3
+import com.aitorgf.threekt.math.Frustum
 import kotlin.js.JsExport
 
 /** A continuous line through the vertices of a [BufferGeometry], drawn with a [Material]. */
@@ -52,4 +53,24 @@ open class Line(
         geometry.setAttribute("lineDistance", Float32BufferAttribute(distances, 1))
         return this
     }
+
+    /**
+     * Shares the geometry and material of [source] and copies its morph target state when it is a
+     * line. Returns this object.
+     */
+    override fun copy(source: Object3D, recursive: Boolean): Line {
+        super.copy(source, recursive)
+        if (source is Line) {
+            morphTargets.copy(source.morphTargets)
+            material = source.material
+            geometry = source.geometry
+        }
+        return this
+    }
+
+    override fun clone(recursive: Boolean): Line = Line().copy(this, recursive)
+
+    /** Tests the bounding sphere of this line against [frustum], as the renderer does for culling. */
+    @JsExport.Ignore
+    override fun intersectsFrustum(frustum: Frustum): Boolean = frustum.intersectsObject(this)
 }

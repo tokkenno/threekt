@@ -74,12 +74,15 @@ class BlendingRenderingTest {
         val positions = Float32BufferAttribute(floatArrayOf(2f, 2f, 0f, 3f, 2f, 0f, 2f, 3f, 0f), 3)
             .setUsage(Usage.DynamicDraw) as Float32BufferAttribute
         val scene = Scene()
-        scene.add(Mesh(BufferGeometry().setAttribute("position", positions), MeshBasicMaterial(Color(0.0, 1.0, 0.0))))
+        val mesh = Mesh(BufferGeometry().setAttribute("position", positions), MeshBasicMaterial(Color(0.0, 1.0, 0.0)))
+        scene.add(mesh)
         val camera = OrthographicCamera().apply { position.z = 1.0 }
         renderer.render(scene, camera)
         assertNear(listOf(0, 0, 0, 255), read(gl))
         floatArrayOf(-1f, -1f, 0f, 3f, -1f, 0f, -1f, 3f, 0f).copyInto(positions.array)
         positions.markUpdated()
+        // The bounds used for frustum culling must follow the moved vertices.
+        mesh.geometry.computeBoundingSphere()
         renderer.render(scene, camera)
         assertNear(listOf(0, 255, 0, 255), read(gl))
     }

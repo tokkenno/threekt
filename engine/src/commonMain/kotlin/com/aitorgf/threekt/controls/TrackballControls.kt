@@ -113,7 +113,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
      * the camera moved. Returns whether it moved.
      */
     override fun update(deltaTime: Double?): Boolean {
-        val camera = `object`
+        val camera = obj
         eye.subVectors(camera.position, target)
         if (!noRotate) {
             rotateCamera()
@@ -139,7 +139,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
 
     /** Restores the target, camera position, up direction and zoom from construction. */
     fun reset() {
-        val camera = `object`
+        val camera = obj
         state = State.None
         target.copy(target0)
         camera.position.copy(position0)
@@ -155,7 +155,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
     }
 
     private fun panCamera() {
-        val camera = `object`
+        val camera = obj
         mouseChange.copy(panEnd).sub(panStart)
         if (mouseChange.lengthSq() == 0.0) return
         if (camera is OrthographicCamera) {
@@ -176,7 +176,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
     }
 
     private fun rotateCamera() {
-        val camera = `object`
+        val camera = obj
         moveDirection.set(moveCurr.x - movePrev.x, moveCurr.y - movePrev.y, 0.0)
         var angle = moveDirection.length()
         if (angle != 0.0) {
@@ -215,7 +215,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
         }
         eyeDirection.copy(eye).normalize()
         quaternion.setFromAxisAngle(eyeDirection, lastRollAngle)
-        `object`.up.applyQuaternion(quaternion)
+        obj.up.applyQuaternion(quaternion)
     }
 
     private fun touchRollAngle(): Double {
@@ -241,7 +241,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
     }
 
     private fun zoomCamera() {
-        val camera = `object`
+        val camera = obj
         if (state == State.TouchZoomPan) {
             val factor = touchZoomDistanceStart / touchZoomDistanceEnd
             touchZoomDistanceStart = touchZoomDistanceEnd
@@ -278,7 +278,7 @@ class TrackballControls(camera: Camera, surface: InputSurface? = null) : Control
 
     private fun checkDistances() {
         if (noZoom && noPan) return
-        val camera = `object`
+        val camera = obj
         if (eye.lengthSq() > maxDistance * maxDistance) {
             camera.position.addVectors(target, eye.setLength(maxDistance))
             zoomStart.copy(zoomEnd)
