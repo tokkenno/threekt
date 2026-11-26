@@ -466,10 +466,11 @@ class WebGLRenderer(context: GLContext) {
     }
 
     /** Returns the instance divisor of [attribute], or null when it advances per vertex. */
-    private fun meshPerAttribute(attribute: BufferAttribute): Int? = when {
-        attribute is InstancedBufferAttribute -> attribute.meshPerAttribute
-        attribute is InterleavedBufferAttribute && attribute.data is InstancedInterleavedBuffer ->
-            (attribute.data as InstancedInterleavedBuffer).meshPerAttribute
+    private fun meshPerAttribute(attribute: BufferAttribute): Int? = when (attribute) {
+        is InstancedBufferAttribute -> attribute.meshPerAttribute
+        is InterleavedBufferAttribute if attribute.data is InstancedInterleavedBuffer ->
+            attribute.data.meshPerAttribute
+
         else -> null
     }
 

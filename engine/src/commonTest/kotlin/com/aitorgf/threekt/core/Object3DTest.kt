@@ -273,7 +273,6 @@ class Object3DTest {
         val mesh = Mesh().apply { name = "mesh" }
         group.add(mesh)
         val copy = group.clone()
-        assertTrue(copy is Group)
         assertNotSame(group.uuid, copy.uuid)
         assertEquals("group", copy.name)
         assertEquals(0.5, copy.rotation.x, 1e-12)

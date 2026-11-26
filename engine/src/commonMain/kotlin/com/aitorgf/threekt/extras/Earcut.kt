@@ -30,7 +30,7 @@ private class Node(val i: Int, val x: Double, val y: Double) {
 
 private fun earcut(data: DoubleArray, holeIndices: IntArray?, dim: Int): MutableList<Int> {
     val hasHoles = holeIndices != null && holeIndices.isNotEmpty()
-    val outerLen = if (hasHoles) holeIndices!![0] * dim else data.size
+    val outerLen = if (hasHoles) holeIndices[0] * dim else data.size
     var outerNode = linkedList(data, 0, outerLen, dim, true)
     val triangles = mutableListOf<Int>()
     if (outerNode == null || outerNode.next === outerNode.prev) return triangles
@@ -38,7 +38,7 @@ private fun earcut(data: DoubleArray, holeIndices: IntArray?, dim: Int): Mutable
     var minX = 0.0
     var minY = 0.0
     var invSize = 0.0
-    if (hasHoles) outerNode = eliminateHoles(data, holeIndices!!, outerNode, dim)
+    if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim)
 
     // If the shape is not too simple, use a z-order curve hash later; calculate the polygon bounding box.
     if (data.size > 80 * dim) {
