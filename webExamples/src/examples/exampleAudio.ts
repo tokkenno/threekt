@@ -1,7 +1,11 @@
-import { Quaternion, Vector3, type Camera, type Object3D } from 'threekt';
+import { AudioContext, WebAudioContext } from 'threekt/audio';
 import { examplePanel } from './exampleControls';
 
-export function exampleAudio(canvas: HTMLCanvasElement, initialize: (context: AudioContext) => Promise<void>, parent?: HTMLElement) {
+/**
+ * Adds a play/pause button that creates the shared Threekt audio context on the first click, as browsers only
+ * start audio after a user gesture. [initialize] builds the example's audio objects once the context runs.
+ */
+export function exampleAudio(canvas: HTMLCanvasElement, initialize: (context: WebAudioContext) => Promise<void>, parent?: HTMLElement) {
     const panel = parent ?? examplePanel(canvas);
     const button = document.createElement('button');
     button.textContent = 'Play audio';
@@ -9,20 +13,31 @@ export function exampleAudio(canvas: HTMLCanvasElement, initialize: (context: Au
     status.setAttribute('role', 'status');
     status.hidden = true;
     panel.append(button, status);
-    let context: AudioContext | undefined;
+    let context: WebAudioContext | undefined;
     let ready = false;
     let disposed = false;
+    const native = () => context?.context as globalThis.AudioContext | undefined;
+    const close = async () => {
+        const closing = native();
+        context = undefined;
+        ready = false;
+        AudioContext.getInstance().setContext(null);
+        if (closing && closing.state !== 'closed') await closing.close();
+    };
     button.addEventListener('click', async () => {
         button.disabled = true;
         status.hidden = true;
         try {
-            context ??= new AudioContext();
-            if (context.state === 'running' && ready) {
-                await context.suspend();
+            if (!context) {
+                context = new WebAudioContext();
+                AudioContext.getInstance().setContext(context);
+            }
+            if (native()!.state === 'running' && ready) {
+                await native()!.suspend();
                 button.textContent = 'Resume audio';
                 return;
             }
-            await context.resume();
+            await native()!.resume();
             if (!ready) {
                 button.textContent = 'Loading audio…';
                 await initialize(context);
@@ -33,80 +48,32 @@ export function exampleAudio(canvas: HTMLCanvasElement, initialize: (context: Au
             if (disposed) return;
             status.textContent = String(error);
             status.hidden = false;
-            const failed = context;
-            context = undefined;
-            if (failed && failed.state !== 'closed') await failed.close();
-            ready = false;
+            await close();
             button.textContent = 'Retry audio';
         } finally {
             button.disabled = false;
         }
     });
     return {
-        get context() { return ready ? context : undefined; },
+        /** Whether the audio objects exist and the context is producing sound. */
+        get running() { return ready && native()?.state === 'running'; },
         dispose() {
             disposed = true;
             button.remove();
             status.remove();
             if (!parent) panel.remove();
-            if (context && context.state !== 'closed') void context.close();
+            void close();
         },
     };
 }
 
-export async function loadAudioBuffer(context: AudioContext, url: string) {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Could not load sound (HTTP ' + response.status + ').');
-    return context.decodeAudioData(await response.arrayBuffer());
-}
-
-export function playAudioBuffer(context: AudioContext, buffer: AudioBuffer, destination: AudioNode, loop = false, when = 0) {
-    const source = context.createBufferSource();
-    source.buffer = buffer;
-    source.loop = loop;
-    source.connect(destination);
-    source.start(when);
-    return source;
-}
-
-export function spatialAudio() {
-    const position = new Vector3(), forward = new Vector3(), up = new Vector3();
-    const orientation = new Quaternion();
-    return {
-        updateListener(context: AudioContext, camera: Camera) {
-            camera.getWorldPosition(position);
-            camera.getWorldQuaternion(orientation);
-            forward.set(0, 0, -1).applyQuaternion(orientation);
-            up.set(0, 1, 0).applyQuaternion(orientation);
-            const listener = context.listener;
-            // Firefox exposes the listener's pose through the legacy methods.
-            if (listener.positionX && listener.forwardX && listener.upX) {
-                listener.positionX.value = position.x;
-                listener.positionY.value = position.y;
-                listener.positionZ.value = position.z;
-                listener.forwardX.value = forward.x;
-                listener.forwardY.value = forward.y;
-                listener.forwardZ.value = forward.z;
-                listener.upX.value = up.x;
-                listener.upY.value = up.y;
-                listener.upZ.value = up.z;
-            } else {
-                listener.setPosition(position.x, position.y, position.z);
-                listener.setOrientation(forward.x, forward.y, forward.z, up.x, up.y, up.z);
-            }
-        },
-        updatePanner(panner: PannerNode, node: Object3D) {
-            node.getWorldPosition(position);
-            node.getWorldQuaternion(orientation);
-            forward.set(0, 0, 1).applyQuaternion(orientation);
-            panner.positionX.value = position.x;
-            panner.positionY.value = position.y;
-            panner.positionZ.value = position.z;
-            panner.orientationX.value = forward.x;
-            panner.orientationY.value = forward.y;
-            panner.orientationZ.value = forward.z;
-        },
-    };
+/** Creates a looping media element for `WebAudioContext.createMediaElementSource`, as upstream's `<audio loop>` tags. */
+export function loopingMediaElement(url: string) {
+    const element = document.createElement('audio');
+    element.src = url;
+    element.loop = true;
+    element.crossOrigin = 'anonymous';
+    return element;
 }
 
 export const badCatSound = new URL('./assets/sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg', import.meta.url).href;

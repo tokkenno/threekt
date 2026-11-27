@@ -2,7 +2,8 @@ import { BoxGeometry, BufferGeometry, Color, DirectionalLight, DomInputSurface, 
     HemisphereLight, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, MeshPhongMaterial,
     OrbitControls, PerspectiveCamera, PlaneGeometry, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
 import model from './assets/BoomBox.glb?url';
-import { badCatSound, exampleAudio, loadAudioBuffer, playAudioBuffer, spatialAudio } from './exampleAudio';
+import { AudioListener, PositionalAudio } from 'threekt/audio';
+import { badCatSound, exampleAudio, loopingMediaElement } from './exampleAudio';
 import { fitPerspective } from './fitPerspective';
 import { loadImageTexture } from './loadImageTexture';
 import { readExampleGltfGeometry, type ExampleGltf } from './readExampleGltf';
@@ -75,24 +76,25 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const controls = new OrbitControls(camera, new DomInputSurface(canvas));
     controls.target.y = 0.1;
     controls.maxDistance = 7;
-    const spatial = spatialAudio();
+    let element: HTMLAudioElement | undefined;
     const audio = exampleAudio(canvas, async context => {
-        const sample = await loadAudioBuffer(context, badCatSound);
-        if (context.state === 'closed') return;
-        const panner = new PannerNode(context, { panningModel: 'HRTF', refDistance: 1, coneInnerAngle: 180,
-            coneOuterAngle: 230, coneOuterGain: 0.1 });
-        spatial.updatePanner(panner, radio);
-        panner.connect(context.destination);
-        playAudioBuffer(context, sample, panner, true);
+        const listener = new AudioListener();
+        camera.add(listener);
+        element = loopingMediaElement(badCatSound);
+        await element.play();
+        const positionalAudio = new PositionalAudio(listener);
+        positionalAudio.setNodeSource(context.createMediaElementSource(element));
+        positionalAudio.setRefDistance(1);
+        positionalAudio.setDirectionalCone(180, 230, 0.1);
+        radio.add(positionalAudio);
     });
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
     return {
         render() {
             if (!fitPerspective(canvas, camera, renderer)) return;
             controls.update();
-            if (audio.context?.state === 'running') spatial.updateListener(audio.context, camera);
             renderer.render(scene, camera);
         },
-        dispose() { audio.dispose(); controls.dispose(); renderer.dispose(); },
+        dispose() { element?.pause(); audio.dispose(); controls.dispose(); renderer.dispose(); },
     };
 }

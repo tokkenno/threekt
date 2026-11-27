@@ -1,13 +1,18 @@
 import { AmbientLight, Color, DirectionalLight, DomInputSurface, Mesh, MeshLambertMaterial, OrbitControls,
-    PerspectiveCamera, PlaneGeometry, Scene, SphereGeometry, WebGL2Context, WebGLRenderer } from 'threekt';
+    PerspectiveCamera, PlaneGeometry, Scene, SphereGeometry, Timer, WebGL2Context, WebGLRenderer } from 'threekt';
+import { AudioListener, AudioLoader, PositionalAudio } from 'threekt/audio';
 import ping from './assets/sounds/ping_pong.mp3?url';
-import { exampleAudio, loadAudioBuffer, playAudioBuffer, spatialAudio } from './exampleAudio';
+import { exampleAudio } from './exampleAudio';
 import { fitPerspective } from './fitPerspective';
 
 export function createExample(canvas: HTMLCanvasElement) {
+    const speed = 2.5;
+    const height = 3;
+    const offset = 0.5;
     const camera = new PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(7, 3, 7);
     const controls = new OrbitControls(camera, new DomInputSurface(canvas));
+    controls.minDistance = 1;
     controls.maxDistance = 25;
     const scene = new Scene();
     scene.background = Color.fromHex(0x202736);
@@ -19,48 +24,50 @@ export function createExample(canvas: HTMLCanvasElement) {
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
     const geometry = new SphereGeometry(0.3, 32, 16);
+    geometry.translate(0, 0.3, 0);
     const material = new MeshLambertMaterial(Color.fromHex(0xcccccc));
     const balls = Array.from({ length: 5 }, (_, index) => {
-        const node = new Mesh(geometry, material);
-        const angle = index * Math.PI * 2 / 5;
-        node.position.set(3 * Math.cos(angle), 0.3, 3 * Math.sin(angle));
-        scene.add(node);
-        return { node, phase: index * 0.5, next: 0, panner: undefined as PannerNode | undefined };
+        const ball = new Mesh(geometry, material);
+        const angle = index / 5 * Math.PI * 2;
+        ball.position.set(3 * Math.cos(angle), 0, 3 * Math.sin(angle));
+        scene.add(ball);
+        return { ball, down: false, audio: undefined as PositionalAudio | undefined };
     });
-    const spatial = spatialAudio();
-    const speed = 2.5;
-    let start = 0;
-    let sample: AudioBuffer | undefined;
-    const audio = exampleAudio(canvas, async context => {
-        sample = await loadAudioBuffer(context, ping);
-        if (context.state === 'closed') return;
-        start = context.currentTime + 0.08;
-        for (const ball of balls) {
-            ball.panner = new PannerNode(context, { refDistance: 4, panningModel: 'HRTF' });
-            ball.panner.connect(context.destination);
-            spatial.updatePanner(ball.panner, ball.node);
-            ball.next = start + ((Math.PI - ball.phase) % Math.PI) / speed;
+    const audio = exampleAudio(canvas, async () => {
+        const listener = new AudioListener();
+        camera.add(listener);
+        const buffer = await new AudioLoader().loadAsync(ping);
+        for (const entry of balls) {
+            entry.audio = new PositionalAudio(listener);
+            entry.audio.setBuffer(buffer);
+            entry.ball.add(entry.audio);
         }
     });
+    const timer = new Timer();
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));
     return {
-        render(seconds: number) {
+        render() {
             if (!fitPerspective(canvas, camera, renderer)) return;
             controls.update();
-            const context = audio.context;
-            const time = context ? Math.max(0, context.currentTime - start) : seconds;
-            if (context?.state === 'running') spatial.updateListener(context, camera);
-            for (const ball of balls) {
-                ball.node.position.y = 0.3 + Math.abs(Math.sin(time * speed + ball.phase)) * 3;
-                if (!sample || !ball.panner || context?.state !== 'running') continue;
-                while (ball.next < context.currentTime - 0.04) ball.next += Math.PI / speed;
-                if (ball.next <= context.currentTime + 0.12) {
-                    playAudioBuffer(context, sample, ball.panner, false, ball.next);
-                    ball.next += Math.PI / speed;
+            timer.update();
+            const time = timer.getElapsed();
+            balls.forEach((entry, i) => {
+                const previousHeight = entry.ball.position.y;
+                entry.ball.position.y = Math.abs(Math.sin(i * offset + time * speed) * height);
+                if (entry.ball.position.y < previousHeight) {
+                    entry.down = true;
+                } else if (entry.down) {
+                    // Play the sound with perfect timing when the ball hits the surface.
+                    if (audio.running) entry.audio?.play();
+                    entry.down = false;
                 }
-            }
+            });
             renderer.render(scene, camera);
         },
-        dispose() { audio.dispose(); controls.dispose(); renderer.dispose(); },
+        dispose() {
+            audio.dispose();
+            controls.dispose();
+            renderer.dispose();
+        },
     };
 }

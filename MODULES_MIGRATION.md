@@ -54,7 +54,9 @@ Each step is one or more local commits. After each step: `./gradlew` tests of ev
 Partly done on branch `migrate-modules`: the `threekt.multiplatform-library` convention plugin exists and the old
 `engine` module now lives in `engine/core` (`:engine:core`, JS module `threekt-core`) with unchanged packages.
 `engine/loaders` (`:engine:loaders`) holds the loaders, their `Json` reader and `TextGeometry` (which uses
-`Font`). `engine/render/gl` is still to be created.
+`Font`). `engine/audio` (`:engine:audio`) holds the
+audio classes behind the `AudioGraph*` interfaces, with `WebAudioContext` for the browser. `engine/render/gl` is
+still to be created.
 
 1. Add an included build `build-logic` with a convention plugin for the shared Kotlin Multiplatform setup:
    `jvmToolchain(21)`, JVM target, JS `browser()` library with ES modules, `es2015` target, TypeScript

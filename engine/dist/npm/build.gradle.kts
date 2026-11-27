@@ -8,6 +8,7 @@ plugins {
 val engineModules = mapOf(
     ":engine:core" to "threekt-core",
     ":engine:loaders" to "threekt-loaders",
+    ":engine:audio" to "threekt-audio",
 )
 
 /** Engine modules with the folders holding their sources, used to place type-only declarations. */

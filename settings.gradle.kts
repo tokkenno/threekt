@@ -30,5 +30,6 @@ dependencyResolutionManagement {
 
 include(":engine:core")
 include(":engine:loaders")
+include(":engine:audio")
 include(":engine:dist:npm")
 include(":jvmExamples")
