@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
  *
  * Each module compiles to a JVM jar and a Kotlin/JS klib. The JS target is declared as a browser library with
  * ES modules and TypeScript definitions so that the module can be tested on its own, but the npm packages are
- * assembled by `:dist:npm`, which links every module once with per-module granularity.
+ * assembled by `:engine:dist:npm`, which links every module once with per-module granularity.
  */
 class MultiplatformLibraryConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) = with(project) {

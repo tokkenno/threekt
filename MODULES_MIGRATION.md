@@ -79,7 +79,7 @@ Done on branch `migrate-modules` for the core; new modules only need to be regis
 
 1. Engine modules are never consumed through their own Kotlin/JS library distribution, which would embed the
    Kotlin runtime in every package.
-2. `dist/npm` (`:dist:npm`) depends on every engine module and links them in one Kotlin/JS compilation with
+2. `engine/dist/npm` (`:engine:dist:npm`) depends on every engine module and links them in one Kotlin/JS compilation with
    per-module granularity. The output has one ES module per Kotlin runtime library (`kotlin-kotlin-stdlib.mjs`),
    one per engine module (`threekt-core.mjs`, later `threekt-gl.mjs`) and the TypeScript declarations.
 3. The `npmDevelopmentPackage` and `npmProductionPackage` tasks copy that output into a single npm package,

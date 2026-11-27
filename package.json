@@ -4,10 +4,10 @@
   "private": true,
   "workspaces": [
     "webExamples",
-    "dist/npm/build/packages/development"
+    "engine/dist/npm/build/packages/development"
   ],
   "scripts": {
-    "build:engine": "./gradlew :dist:npm:npmDevelopmentPackage",
+    "build:engine": "./gradlew :engine:dist:npm:npmDevelopmentPackage",
     "build": "npm run build:engine && npm run build -w webExamples",
     "start": "npm run build:engine && npm run start -w webExamples"
   }

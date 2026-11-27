@@ -29,5 +29,5 @@ dependencyResolutionManagement {
 }
 
 include(":engine:core")
-include(":dist:npm")
+include(":engine:dist:npm")
 include(":jvmExamples")
