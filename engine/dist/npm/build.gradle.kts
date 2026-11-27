@@ -7,6 +7,7 @@ plugins {
 /** Engine modules shipped in the npm package, as Gradle path to the ES module name set by `outputModuleName`. */
 val engineModules = mapOf(
     ":engine:core" to "threekt-core",
+    ":engine:loaders" to "threekt-loaders",
 )
 
 /** Engine modules with the folders holding their sources, used to place type-only declarations. */

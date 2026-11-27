@@ -31,15 +31,16 @@ To build the examples for production, run `npm run build`.
 
 ### Modules and the npm package
 
-The engine is split into Gradle modules under `engine/`. Today there is `engine/core` (`:engine:core`); renderer
-modules will follow under `engine/render/`. On the JVM, and later on Kotlin/Native, each module is published as
+The engine is split into Gradle modules under `engine/`: `engine/core` (`:engine:core`) and `engine/loaders`
+(`:engine:loaders`, the file format loaders and `TextGeometry`, which needs their `Font`). Renderer modules will
+follow under `engine/render/`. On the JVM, and later on Kotlin/Native, each module is published as
 its own jar or klib.
 
 For JavaScript, `engine/dist/npm` (`:engine:dist:npm`) links every engine module in a single Kotlin/JS compilation with
 per-module granularity. That way the modules share one copy of the Kotlin runtime instead of each bundling
 their own. The `threekt` npm package contains one ES module per Kotlin runtime library
 (`kotlin-kotlin-stdlib.mjs`, …) and one per engine module (`threekt-core.mjs`, …), each with its own `.d.mts`
-TypeScript declarations. Applications import `threekt` (the core) or a module subpath such as `threekt/core`.
+TypeScript declarations. Applications import `threekt` (the core) or a module subpath such as `threekt/core` or `threekt/loaders`.
 
 - `./gradlew :engine:dist:npm:npmDevelopmentPackage` writes the package to `engine/dist/npm/build/packages/development`
   (this is what `npm run build:engine` runs and what the workspace links).

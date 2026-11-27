@@ -1,7 +1,8 @@
 import {
-    Blending, Color, Float32BufferAttribute, FontLoader, Line, PerspectiveCamera, Scene, ShaderMaterial,
-    TextGeometry, Uniform, Uniforms, Usage, WebGL2Context, WebGLRenderer,
+    Blending, Color, Float32BufferAttribute, Line, PerspectiveCamera, Scene, ShaderMaterial, Uniform, Uniforms, Usage,
+    WebGL2Context, WebGLRenderer,
 } from 'threekt';
+import { FontLoader, TextGeometry } from 'threekt/loaders';
 import fontUrl from './assets/fonts/helvetiker_bold.typeface.json?url';
 import { fitPerspective } from './fitPerspective';
 

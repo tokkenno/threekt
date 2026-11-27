@@ -1,4 +1,5 @@
-import { Mesh, OBJLoader } from 'threekt';
+import { Mesh } from 'threekt';
+import { OBJLoader } from 'threekt/loaders';
 import walt from './assets/walt/WaltHead.obj?url';
 import { createCubemapModels } from './createCubemapModels';
 

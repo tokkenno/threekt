@@ -1,4 +1,4 @@
-import { PLYLoader } from 'threekt';
+import { PLYLoader } from 'threekt/loaders';
 import lucy from './assets/ply/Lucy100k.ply?url';
 import { createCubemapModels } from './createCubemapModels';
 

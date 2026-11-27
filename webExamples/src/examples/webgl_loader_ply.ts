@@ -1,7 +1,8 @@
 import {
-    Color, DirectionalLight, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry,
-    PLYLoader, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    Color, DirectionalLight, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry, Scene,
+    Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
+import { PLYLoader } from 'threekt/loaders';
 import dolphins from './assets/ply/dolphins.ply?url';
 import lucy from './assets/ply/Lucy100k.ply?url';
 import { fitPerspective } from './fitPerspective';

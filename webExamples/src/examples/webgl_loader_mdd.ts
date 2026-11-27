@@ -1,7 +1,7 @@
 import {
-    Box, LinearInterpolant, MDDLoader, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector3,
-    WebGL2Context, WebGLRenderer,
+    Box, LinearInterpolant, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
+import { MDDLoader } from 'threekt/loaders';
 import mdd from './assets/mdd/cube.mdd?url';
 import { fitPerspective } from './fitPerspective';
 

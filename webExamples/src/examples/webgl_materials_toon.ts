@@ -1,7 +1,8 @@
 import {
-    Color, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, ShaderMaterial,
-    Side, SphereGeometry, FontLoader, TextGeometry, Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer,
+    Color, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, ShaderMaterial, Side,
+    SphereGeometry, Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
+import { FontLoader, TextGeometry } from 'threekt/loaders';
 import fontUrl from './assets/fonts/gentilis_regular.typeface.json?url';
 import { fitPerspective } from './fitPerspective';
 import { encodeSrgb } from './fullscreenPass';

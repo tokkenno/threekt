@@ -1,7 +1,9 @@
-import { Box, BufferGeometry, CatmullRomCurve3, Color, ColorSpace, DataTexture, DomInputSurface,
-    Float32BufferAttribute, FontLoader, InstancedBufferAttribute, InstancedMesh, LineBasicMaterial, LineLoop,
-    Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, ShaderMaterial, TextGeometry,
-    Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
+import {
+    Box, BufferGeometry, CatmullRomCurve3, Color, ColorSpace, DataTexture, DomInputSurface, Float32BufferAttribute,
+    InstancedBufferAttribute, InstancedMesh, LineBasicMaterial, LineLoop, Mesh, MeshBasicMaterial, OrbitControls,
+    PerspectiveCamera, Scene, ShaderMaterial, Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer,
+} from 'threekt';
+import { FontLoader, TextGeometry } from 'threekt/loaders';
 import fontUrl from './assets/fonts/helvetiker_regular.typeface.json?url';
 import { dragMeshes } from './dragMeshes';
 import { fitPerspective } from './fitPerspective';

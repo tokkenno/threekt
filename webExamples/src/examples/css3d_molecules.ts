@@ -1,4 +1,5 @@
-import { Group, PDBLoader, PerspectiveCamera, Scene, Vector3 } from 'threekt';
+import { Group, PerspectiveCamera, Scene, Vector3 } from 'threekt';
+import { PDBLoader } from 'threekt/loaders';
 import { addSelect, examplePanel } from './exampleControls';
 import { cssPanel, cssTrackball, exampleCss3d, fitCssCamera } from './exampleCss3d';
 
