@@ -39,8 +39,9 @@ export async function createHeadMaterialExample(canvas: HTMLCanvasElement, mode:
             }
         }
     })();
-    for (const texture of Object.values(maps)) texture.flipY = false;
-    if (maps.matcap) maps.matcap.flipY = true;
+    // Like upstream, the standalone JPEG/PNG maps keep TextureLoader's flipY default; only images
+    // embedded in the glTF (the Nefertiti maps) follow the glTF convention of an unflipped origin.
+    if (mode === 'object') for (const texture of Object.values(maps)) texture.flipY = false;
     const shader = exampleMappedMaterial(maps, mode === 'object');
     const mesh = new Mesh(geometry, shader.material);
     mesh.scale.setScalar(scale);
