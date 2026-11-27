@@ -51,6 +51,10 @@ Each step is one or more local commits. After each step: `./gradlew` tests of ev
 
 ### 2. Create the Gradle modules with shared build logic
 
+Partly done on branch `migrate-modules`: the `threekt.multiplatform-library` convention plugin exists and the old
+`engine` module now lives in `engine/core` (`:engine:core`, JS module `threekt-core`) with unchanged packages.
+`engine/render/gl` is still to be created.
+
 1. Add an included build `build-logic` with a convention plugin for the shared Kotlin Multiplatform setup:
    `jvmToolchain(21)`, JVM target, JS `browser()` library with ES modules, `es2015` target, TypeScript
    definitions and the `kotlin.js.ExperimentalJsExport` opt-in.
@@ -71,17 +75,18 @@ Each step is one or more local commits. After each step: `./gradlew` tests of ev
 
 ### 4. JavaScript packaging
 
-1. Prototype first: build `@threekt/gl` as a Kotlin/JS library and confirm that its output imports
-   `threekt-core.mjs` instead of embedding the core. The project already uses per-module output (separate
-   `kotlin-kotlin-stdlib.mjs`).
-2. Publish layout: `@threekt/core` holds `threekt-core.mjs`, the Kotlin runtime files and `threekt-core.d.mts`.
-   `@threekt/gl` holds only `threekt-gl.mjs` and `threekt-gl.d.mts`, with `@threekt/core` as a dependency.
-   A small Gradle task in the `gl` module rewrites the relative imports of `threekt-core.mjs` and of the
-   runtime files into `@threekt/core` imports and drops the duplicated files.
-3. Verify in a browser test that a `Mesh` created through `@threekt/core` renders with a `WebGLRenderer` from
-   `@threekt/gl`, which proves that both packages share one copy of each class.
-4. Fallback if the rewrite is not reliable: `@threekt/gl` re-exports the core API from its own bundle and
-   `@threekt/core` is only used by code that never renders. Decide before step 5.
+Done on branch `migrate-modules` for the core; new modules only need to be registered.
+
+1. Engine modules are never consumed through their own Kotlin/JS library distribution, which would embed the
+   Kotlin runtime in every package.
+2. `dist/npm` (`:dist:npm`) depends on every engine module and links them in one Kotlin/JS compilation with
+   per-module granularity. The output has one ES module per Kotlin runtime library (`kotlin-kotlin-stdlib.mjs`),
+   one per engine module (`threekt-core.mjs`, later `threekt-gl.mjs`) and the TypeScript declarations.
+3. The `npmDevelopmentPackage` and `npmProductionPackage` tasks copy that output into a single npm package,
+   `threekt`, whose `exports` map `.` to the core and `./<name>` to each engine module listed in
+   `engineModules`.
+4. Open: Kotlin writes the declarations of all linked modules into one `.d.mts`. With a second module, either
+   ship that file as shared declarations referenced by every subpath, or split it per module.
 
 ### 5. Consumers
 

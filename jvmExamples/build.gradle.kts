@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlinJvm)
+    id("org.jetbrains.kotlin.jvm")
     application
 }
 
@@ -18,7 +18,7 @@ val lwjglNatives = run {
 }
 
 dependencies {
-    implementation(project(":engine"))
+    implementation(project(":engine:core"))
     implementation(libs.lwjgl)
     implementation(libs.lwjgl.egl)
     implementation(libs.lwjgl.glfw)

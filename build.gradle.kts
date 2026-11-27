@@ -1,6 +1,5 @@
 plugins {
-    // this is necessary to avoid the plugins to be loaded multiple times
-    // in each subproject's classloader
-    alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.kotlinJvm) apply false
+    // Puts the convention plugin, and with it the Kotlin Gradle plugin, on the root build classpath once, so that
+    // every subproject loads the same Kotlin plugin classes.
+    id("threekt.multiplatform-library") apply false
 }

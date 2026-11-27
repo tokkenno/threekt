@@ -1,6 +1,7 @@
 rootProject.name = "threekt"
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             mavenContent {
@@ -27,5 +28,6 @@ dependencyResolutionManagement {
     }
 }
 
-include(":engine")
+include(":engine:core")
+include(":dist:npm")
 include(":jvmExamples")

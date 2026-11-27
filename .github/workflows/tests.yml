@@ -26,9 +26,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
 
       # Browser tests run in headless Chrome, which the Ubuntu runner provides, with SwiftShader WebGL2
-      # configured in engine/karma.config.d.
+      # configured in engine/core/karma.config.d.
       - name: Run engine tests
-        run: ./gradlew :engine:jvmTest :engine:jsTest --continue
+        run: ./gradlew :engine:core:jvmTest :engine:core:jsTest --continue
 
       - name: Upload test reports
         if: always()
@@ -36,6 +36,6 @@ jobs:
         with:
           name: engine-test-reports
           path: |
-            engine/build/reports/tests
-            engine/build/test-results
+            engine/*/build/reports/tests
+            engine/*/build/test-results
           if-no-files-found: ignore
