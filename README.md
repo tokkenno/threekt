@@ -38,8 +38,8 @@ its own jar or klib.
 For JavaScript, `dist/npm` (`:dist:npm`) links every engine module in a single Kotlin/JS compilation with
 per-module granularity. That way the modules share one copy of the Kotlin runtime instead of each bundling
 their own. The `threekt` npm package contains one ES module per Kotlin runtime library
-(`kotlin-kotlin-stdlib.mjs`, …), one per engine module (`threekt-core.mjs`, …) and their TypeScript
-declarations. Applications import `threekt` (the core) or a module subpath such as `threekt/core`.
+(`kotlin-kotlin-stdlib.mjs`, …) and one per engine module (`threekt-core.mjs`, …), each with its own `.d.mts`
+TypeScript declarations. Applications import `threekt` (the core) or a module subpath such as `threekt/core`.
 
 - `./gradlew :dist:npm:npmDevelopmentPackage` writes the package to `dist/npm/build/packages/development`
   (this is what `npm run build:engine` runs and what the workspace links).

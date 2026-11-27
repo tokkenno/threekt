@@ -9,6 +9,9 @@ val engineModules = mapOf(
     ":engine:core" to "threekt-core",
 )
 
+/** Engine modules with the folders holding their sources, used to place type-only declarations. */
+val engineModuleSources = engineModules.toList()
+
 kotlin {
     js {
         // Linking this module emits one ES module per engine module and per Kotlin runtime library
@@ -29,28 +32,44 @@ kotlin {
 }
 
 /**
- * Copies the linked ES modules of one distribution into an npm package.
+ * Splits the TypeScript declarations of one distribution into one `.d.mts` per ES module.
+ *
+ * Kotlin writes the declarations of every linked module into `threekt-npm.d.mts`. The split gives the Kotlin
+ * runtime and each engine module their own declaration file, which imports the types it uses from the others.
+ */
+fun registerDeclarationSplit(distribution: String) =
+    tasks.register<SplitTypeScriptDeclarations>("split${distribution}Declarations") {
+        val directory = layout.buildDirectory.dir("dist/js/${distribution.replaceFirstChar { it.lowercase() }}Library")
+        dependsOn("jsBrowser${distribution}LibraryDistribution")
+        modulesDirectory.set(directory)
+        declarations.set(directory.map { it.file("threekt-npm.d.mts") })
+        engineModules.set(engineModuleSources.map { (path, module) ->
+            objects.newInstance<SplitTypeScriptDeclarations.EngineModule>().apply {
+                name.set(module)
+                sources.from(rootProject.layout.projectDirectory.dir(path.removePrefix(":").replace(':', '/') + "/src"))
+            }
+        })
+        outputDirectory.set(layout.buildDirectory.dir("declarations/${distribution.lowercase()}"))
+    }
+
+/**
+ * Copies the linked ES modules of one distribution and their declarations into an npm package.
  *
  * The package exports each engine module under its own subpath (`threekt/core`), and the root entry point
  * resolves to the core. The Kotlin runtime modules ship next to them as private files that the engine modules
- * import with relative paths. The `threekt-npm` entry module of this build is dropped. Kotlin writes the
- * TypeScript declarations of every linked module into its `.d.mts`, which therefore ships as the core
- * declarations while the core is the only engine module.
+ * import with relative paths. The `threekt-npm` entry module of this build is dropped.
  */
-fun registerNpmPackage(name: String, distribution: String) = tasks.register<Sync>(name) {
+fun registerNpmPackage(name: String, distribution: String, declarations: TaskProvider<SplitTypeScriptDeclarations>) =
+    tasks.register<Sync>(name) {
     group = "distribution"
     description = "Assembles the npm package from the $distribution Kotlin/JS distribution."
-    val source = tasks.named("jsBrowser${distribution}LibraryDistribution")
-    dependsOn(source)
+    dependsOn("jsBrowser${distribution}LibraryDistribution")
     val sourceDir = layout.buildDirectory.dir("dist/js/${distribution.replaceFirstChar { it.lowercase() }}Library")
     from(sourceDir) {
         include("*.mjs", "*.mjs.map")
         exclude("threekt-npm.mjs", "threekt-npm.mjs.map")
     }
-    from(sourceDir) {
-        include("threekt-npm.d.mts")
-        rename { "threekt-core.d.mts" }
-    }
+    from(declarations)
     into(layout.buildDirectory.dir("packages/${distribution.lowercase()}"))
 
     // Same rule as the Kotlin/JS package.json: npm needs a semantic version.
@@ -76,5 +95,5 @@ fun registerNpmPackage(name: String, distribution: String) = tasks.register<Sync
     }
 }
 
-registerNpmPackage("npmDevelopmentPackage", "Development")
-registerNpmPackage("npmProductionPackage", "Production")
+registerNpmPackage("npmDevelopmentPackage", "Development", registerDeclarationSplit("Development"))
+registerNpmPackage("npmProductionPackage", "Production", registerDeclarationSplit("Production"))

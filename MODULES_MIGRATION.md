@@ -85,8 +85,10 @@ Done on branch `migrate-modules` for the core; new modules only need to be regis
 3. The `npmDevelopmentPackage` and `npmProductionPackage` tasks copy that output into a single npm package,
    `threekt`, whose `exports` map `.` to the core and `./<name>` to each engine module listed in
    `engineModules`.
-4. Open: Kotlin writes the declarations of all linked modules into one `.d.mts`. With a second module, either
-   ship that file as shared declarations referenced by every subpath, or split it per module.
+4. Kotlin writes the declarations of all linked modules into one `.d.mts`. The `SplitTypeScriptDeclarations` task
+   from `build-logic` splits it into one `.d.mts` per ES module: each declaration goes to the module whose `.mjs`
+   exports it, exported interfaces to the engine module whose sources declare them, and each file imports what
+   it uses from the others.
 
 ### 5. Consumers
 
