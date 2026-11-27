@@ -1,13 +1,13 @@
 import { Uniform, Uniforms } from 'threekt';
 import { loadImageTexture } from './loadImageTexture';
 
-const urls = import.meta.glob('./assets/cube/*/*.{png,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
-const faces = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
+const urls = import.meta.glob('./assets/cube/{pisa,Park3Med,SwedishRoyalCastle}/*.{png,jpg}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+export const cubeFaces = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
 
-export async function loadExampleCubeMap(folder: 'pisa' | 'Park3Med') {
+export async function loadExampleCubeMap(folder: 'pisa' | 'Park3Med' | 'SwedishRoyalCastle') {
     const uniforms = new Uniforms();
     const extension = folder === 'pisa' ? 'png' : 'jpg';
-    await Promise.all(faces.map(async face => {
+    await Promise.all(cubeFaces.map(async face => {
         const texture = await loadImageTexture(urls[`./assets/cube/${folder}/${face}.${extension}`]);
         uniforms.set(face, new Uniform(texture));
     }));

@@ -1,9 +1,9 @@
 import { BufferGeometry, Float32BufferAttribute, Uint16BufferAttribute } from 'threekt';
 
-// The bundled assets use tightly packed float attributes and 16-bit indices in one buffer.
+// The bundled assets use float attributes and 16-bit indices in one buffer.
 export type ExampleGltf = {
     accessors: { bufferView: number; byteOffset?: number; count: number; componentType: number; type: string }[];
-    bufferViews: { byteOffset?: number }[];
+    bufferViews: { byteOffset?: number; byteStride?: number; byteLength?: number }[];
     meshes: { name: string; primitives: {
         attributes: { POSITION: number; NORMAL?: number; TEXCOORD_0?: number };
         indices: number;
@@ -20,7 +20,16 @@ export function readExampleGltfGeometry(document: ExampleGltf, binary: ArrayBuff
     const readVector = (index: number, size = 3) => {
         const accessor = document.accessors[index];
         if (accessor.type !== `VEC${size}` || accessor.componentType !== 5126) throw new Error(`Expected a glTF float VEC${size}.`);
-        return new Float32BufferAttribute(new Float32Array(binary, offset(accessor), accessor.count * size), size);
+        const stride = document.bufferViews[accessor.bufferView].byteStride ?? size * 4;
+        const start = offset(accessor);
+        if (stride === size * 4) return new Float32BufferAttribute(new Float32Array(binary, start, accessor.count * size), size);
+        const source = new DataView(binary, start);
+        const values = new Float32Array(accessor.count * size);
+        for (let i = 0; i < accessor.count; i++) {
+            for (let component = 0; component < size; component++) values[i * size + component] =
+                source.getFloat32(i * stride + component * 4, true);
+        }
+        return new Float32BufferAttribute(values, size);
     };
     const geometry = new BufferGeometry().setAttribute('position', readVector(primitive.attributes.POSITION));
     const index = document.accessors[primitive.indices];

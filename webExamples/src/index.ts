@@ -144,6 +144,31 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_loader_mdd', () => import('./examples/webgl_loader_mdd')],
     ['misc_animation_keys', () => import('./examples/misc_animation_keys')],
     ['misc_animation_groups', () => import('./examples/misc_animation_groups')],
+    ['css2d_label', () => import('./examples/css2d_label')],
+    ['css3d_mixed', () => import('./examples/css3d_mixed')],
+    ['css3d_molecules', () => import('./examples/css3d_molecules')],
+    ['css3d_orthographic', () => import('./examples/css3d_orthographic')],
+    ['css3d_periodictable', () => import('./examples/css3d_periodictable')],
+    ['css3d_sandbox', () => import('./examples/css3d_sandbox')],
+    ['css3d_sprites', () => import('./examples/css3d_sprites')],
+    ['css3d_youtube', () => import('./examples/css3d_youtube')],
+    ['svg_lines', () => import('./examples/svg_lines')],
+    ['svg_sandbox', () => import('./examples/svg_sandbox')],
+    ['webaudio_orientation', () => import('./examples/webaudio_orientation')],
+    ['webaudio_sandbox', () => import('./examples/webaudio_sandbox')],
+    ['webaudio_timing', () => import('./examples/webaudio_timing')],
+    ['webaudio_visualizer', () => import('./examples/webaudio_visualizer')],
+    ['webgl_materials_cubemap', () => import('./examples/webgl_materials_cubemap')],
+    ['webgl_materials_cubemap_refraction', () => import('./examples/webgl_materials_cubemap_refraction')],
+    ['webgl_materials_cubemap_mipmaps', () => import('./examples/webgl_materials_cubemap_mipmaps')],
+    ['webgl_postprocessing_3dlut', () => import('./examples/webgl_postprocessing_3dlut')],
+    ['webgl_postprocessing_advanced', () => import('./examples/webgl_postprocessing_advanced')],
+    ['webgl_postprocessing_dof', () => import('./examples/webgl_postprocessing_dof')],
+    ['webgl_postprocessing_dof2', () => import('./examples/webgl_postprocessing_dof2')],
+    ['webgl_postprocessing_masking', () => import('./examples/webgl_postprocessing_masking')],
+    ['webgl_postprocessing_outline', () => import('./examples/webgl_postprocessing_outline')],
+    ['webgl_postprocessing_ssaa', () => import('./examples/webgl_postprocessing_ssaa')],
+    ['webgl_postprocessing_taa', () => import('./examples/webgl_postprocessing_taa')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;
@@ -186,6 +211,9 @@ document.addEventListener('keydown', (event) => {
 
 restoreMenu();
 
+if (new URLSearchParams(window.location.search).get('embed') === '1' && window.parent !== window) {
+    document.body.classList.add('gallery-embed');
+}
 const exampleId = new URLSearchParams(window.location.search).get('example');
 const load = exampleId !== null ? examples.get(exampleId) : undefined;
 const selected = Array.from(gallery.querySelectorAll<HTMLAnchorElement>('a[data-description]'))

@@ -69,3 +69,6 @@ webExamples/src/examples/assets/**/*.json filter=lfs diff=lfs merge=lfs -text
 # Molecular structures and printer toolpaths
 *.[pP][dD][bB] filter=lfs diff=lfs merge=lfs -text
 *.[gG][cC][oO][dD][eE] filter=lfs diff=lfs merge=lfs -text
+
+# Color lookup tables
+*.[cC][uU][bB][eE] filter=lfs diff=lfs merge=lfs -text

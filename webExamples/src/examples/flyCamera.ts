@@ -47,6 +47,7 @@ export function flyCamera(canvas: HTMLCanvasElement, camera: PerspectiveCamera, 
     let last: number | undefined;
     const pressed = (...codes: string[]) => Number(codes.some(code => keys.has(code)));
     return {
+        panel,
         update(seconds: number) {
             const step = Math.min(0.05, Math.max(0, seconds - (last ?? seconds)));
             last = seconds;
