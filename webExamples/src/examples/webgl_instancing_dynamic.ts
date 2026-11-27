@@ -1,5 +1,5 @@
 import {
-    Box, Color, DirectionalLight, HemisphereLight, InstancedMesh, MeshLambertMaterial, Object3D,
+    BoxGeometry, Color, DirectionalLight, HemisphereLight, InstancedMesh, MeshLambertMaterial, Object3D,
     PerspectiveCamera, Scene, Usage, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import edge from './assets/edge3.jpg?url';
@@ -20,7 +20,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const texture = await loadImageTexture(edge);
     const material = new MeshLambertMaterial(Color.fromHex(0xffffff));
     material.map = texture;
-    const mesh = new InstancedMesh(new Box(), material, amount ** 2);
+    const mesh = new InstancedMesh(new BoxGeometry(), material, amount ** 2);
     mesh.instanceMatrix.setUsage(Usage.DynamicDraw);
     scene.add(mesh);
     const dummy = new Object3D();

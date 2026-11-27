@@ -1,5 +1,5 @@
 import {
-    Box, Color, DirectionalLight, DomInputSurface, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial,
+    BoxGeometry, Color, DirectionalLight, DomInputSurface, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial,
     PerspectiveCamera, Scene, TrackballControls, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { PDBLoader } from 'threekt/loaders';
@@ -26,7 +26,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     }
     const loader = new PDBLoader();
     const atomGeometry = new IcosahedronGeometry(1, 3);
-    const bondGeometry = new Box(1, 1, 1);
+    const bondGeometry = new BoxGeometry(1, 1, 1);
     const bondMaterial = new MeshPhongMaterial();
     const read = async (name: string, signal?: AbortSignal) => {
         const response = await fetch(urls[`./assets/pdb/${name}.pdb`], { signal });

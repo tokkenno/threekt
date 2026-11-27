@@ -1,4 +1,4 @@
-import { Box, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TextureFilter, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TextureFilter, WebGL2Context, WebGLRenderer } from 'threekt';
 import brickUrl from './assets/brick_diffuse.jpg?url';
 import { addSelect, addToggle, examplePanel } from './exampleControls';
 import { exampleSupersampling } from './exampleSupersampling';
@@ -12,7 +12,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const camera = new PerspectiveCamera(70, 1, 1, 1000);
     camera.position.z = 330;
     const scene = new Scene();
-    const geometry = new Box(120, 120, 120);
+    const geometry = new BoxGeometry(120, 120, 120);
     const wireMaterial = new MeshBasicMaterial(Color.fromHex(0xffffff));
     wireMaterial.wireframe = true;
     const wire = new Mesh(geometry, wireMaterial);

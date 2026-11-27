@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene,
+    AmbientLight, BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene,
     Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { fitPerspective } from './fitPerspective';
@@ -13,7 +13,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     scene.add(light);
     const camera = new PerspectiveCamera(70, 1, 0.1, 500);
     camera.position.z = 50;
-    const geometry = new Box();
+    const geometry = new BoxGeometry();
     const meshes = Array.from({ length: 200 }, () => {
         const material = new MeshLambertMaterial(Color.fromHex(Math.floor(Math.random() * 0x1000000)));
         const mesh = new Mesh(geometry, material);

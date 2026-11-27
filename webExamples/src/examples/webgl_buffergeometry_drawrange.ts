@@ -1,5 +1,5 @@
 import {
-    Blending, Box, BoxHelper, BufferGeometry, DomInputSurface, Euler, Float32BufferAttribute, Group, LineBasicMaterial,
+    Blending, BoxGeometry, BoxHelper, BufferGeometry, DomInputSurface, Euler, Float32BufferAttribute, Group, LineBasicMaterial,
     LineSegments, Mesh, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Usage, Vector3, WebGL2Context,
     WebGLRenderer,
 } from 'threekt';
@@ -40,7 +40,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const group = new Group();
     scene.add(group);
 
-    const helper = new BoxHelper(new Mesh(new Box(r, r, r)));
+    const helper = new BoxHelper(new Mesh(new BoxGeometry(r, r, r)));
     (helper.material as LineBasicMaterial).color.setHex(0x474747);
     helper.material.blending = Blending.Additive;
     helper.material.transparent = true;

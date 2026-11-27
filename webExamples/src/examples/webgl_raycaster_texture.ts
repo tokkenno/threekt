@@ -1,5 +1,5 @@
 import {
-    Box, BufferGeometry, CircleGeometry, Color, Float32BufferAttribute, ImageTexture, Mesh, MeshBasicMaterial,
+    BoxGeometry, BufferGeometry, CircleGeometry, Color, Float32BufferAttribute, ImageTexture, Mesh, MeshBasicMaterial,
     PerspectiveCamera, PlaneGeometry, Raycaster, Scene, WebGL2Context, WebGLRenderer, Wrapping,
 } from 'threekt';
 import gridUrl from './assets/uv_grid_opengl.jpg?url';
@@ -40,7 +40,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     mark(0, 0);
     const scene = new Scene();
     scene.background = Color.fromHex(0xeeeeee);
-    const geometries: BufferGeometry[] = [new Box(20, 20, 20), new PlaneGeometry(25, 25), new CircleGeometry(25, 40)];
+    const geometries: BufferGeometry[] = [new BoxGeometry(20, 20, 20), new PlaneGeometry(25, 25), new CircleGeometry(25, 40)];
     const meshes = geometries.map((geometry, index) => {
         const uv = (geometry.getAttribute('uv') as Float32BufferAttribute).array;
         for (let i = 0; i < uv.length; i++) uv[i] = (uv[i] - (index === 2 ? 0.25 : 0)) * 2;

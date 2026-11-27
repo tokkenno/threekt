@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, DirectionalLight, Euler, GridHelper, Mesh, MeshBasicMaterial, MeshPhongMaterial,
+    AmbientLight, BoxGeometry, Color, DirectionalLight, Euler, GridHelper, Mesh, MeshBasicMaterial, MeshPhongMaterial,
     PerspectiveCamera, PlaneGeometry, Raycaster, Scene, Vector2, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import textureUrl from './assets/square-outline-textured.png?url';
@@ -10,7 +10,7 @@ import { setPointer } from './raycastPointer';
 export async function createExample(canvas: HTMLCanvasElement) {
     const scene = new Scene();
     scene.background = Color.fromHex(0xf0f0f0);
-    const box = new Box(50, 50, 50);
+    const box = new BoxGeometry(50, 50, 50);
     const previewMaterial = new MeshBasicMaterial(Color.fromHex(0xff0000));
     previewMaterial.opacity = 0.5;
     previewMaterial.transparent = true;

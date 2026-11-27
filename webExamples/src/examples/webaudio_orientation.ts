@@ -1,4 +1,4 @@
-import { Box, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Fog, GridHelper,
+import { BoxGeometry, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Fog, GridHelper,
     HemisphereLight, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, MeshPhongMaterial,
     OrbitControls, PerspectiveCamera, PlaneGeometry, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
 import model from './assets/BoomBox.glb?url';
@@ -56,7 +56,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const red = new MeshBasicMaterial(Color.fromHex(0xff0000));
     red.transparent = true;
     red.opacity = 0.42;
-    const wall = new Mesh(new Box(2, 1, 0.1), red);
+    const wall = new Mesh(new BoxGeometry(2, 1, 0.1), red);
     wall.position.set(0, 0.5, -0.5);
     scene.add(wall);
 

@@ -1,5 +1,5 @@
 import {
-    Box, BufferGeometry, Color, Euler, Float32BufferAttribute, PerspectiveCamera, Points, Raycaster, Scene,
+    BoxGeometry, BufferGeometry, Color, Euler, Float32BufferAttribute, PerspectiveCamera, Points, Raycaster, Scene,
     ShaderMaterial, Uniform, Uniforms, Usage, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import discUrl from './assets/disc.png?url';
@@ -45,7 +45,7 @@ const fragmentShader = `
 `;
 
 export async function createExample(canvas: HTMLCanvasElement) {
-    const box = new Box(200, 200, 200, 16, 16, 16);
+    const box = new BoxGeometry(200, 200, 200, 16, 16, 16);
     const source = box.getAttribute('position')!;
     const coordinates: number[] = [];
     const unique = new Set<string>();

@@ -1,4 +1,4 @@
-import { Box, Color, Euler, GridHelper, Group, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BoxGeometry, Color, Euler, GridHelper, Group, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
 import earthUrl from './assets/earth_atmos_2048.jpg?url';
 import { fitPerspective } from './fitPerspective';
 import { loadImageTexture } from './loadImageTexture';
@@ -26,7 +26,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const group = new Group();
     scene.add(group);
     group.add(new GridHelper(4, 12, Color.fromHex(0x888888), Color.fromHex(0x444444)));
-    const geometry = new Box();
+    const geometry = new BoxGeometry();
     const cubes = [300, 600, 900, 1300, 1600, 1900].map((delay, index) => {
         const mesh = new Mesh(geometry, index < 3 ? imageMaterial : bitmapMaterial);
         mesh.position.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);

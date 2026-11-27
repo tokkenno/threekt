@@ -1,7 +1,7 @@
 package com.aitorgf.threekt.renderers
 
 import com.aitorgf.threekt.cameras.PerspectiveCamera
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.objects.Mesh
 import com.aitorgf.threekt.renderers.webgl.WebGL2Context
@@ -33,7 +33,7 @@ class TextureRenderingTest {
             val camera = PerspectiveCamera().apply { position.z = 3.0 }
             val texture = ImageTexture(source)
             val material = MeshBasicMaterial(map = texture)
-            scene.add(Mesh(Box(), material))
+            scene.add(Mesh(BoxGeometry(), material))
             renderer.render(scene, camera)
             val pixels: dynamic = js("new Uint8Array(4)")
             gl.readPixels(16, 16, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
@@ -86,7 +86,7 @@ class TextureRenderingTest {
             val camera = PerspectiveCamera().apply { position.z = 3.0 }
             val texture = ImageTexture(source)
             texture.anisotropy = renderer.capabilities.getMaxAnisotropy()
-            scene.add(Mesh(Box(), MeshBasicMaterial(map = texture)))
+            scene.add(Mesh(BoxGeometry(), MeshBasicMaterial(map = texture)))
             val pixels: dynamic = js("new Uint8Array(4)")
             fun sample(): Pair<Int, Int> {
                 renderer.render(scene, camera)

@@ -8,7 +8,7 @@ import com.aitorgf.threekt.controls.PointerInput
 import com.aitorgf.threekt.controls.WheelInput
 import com.aitorgf.threekt.core.Intersection
 import com.aitorgf.threekt.core.Raycaster
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.geometries.PlaneGeometry
 import com.aitorgf.threekt.helpers.GridHelper
 import com.aitorgf.threekt.lights.AmbientLight
@@ -31,7 +31,7 @@ import kotlin.math.PI
 class webgl_interactive_voxelpainter(context: GLContext, private val input: InputSurface) : Example, InputListener {
     private val scene = Scene().apply { background = Color(0xf0f0f0) }
     private val camera = PerspectiveCamera(45.0, 1.0, 1.0, 10000.0)
-    private val box = Box(50.0, 50.0, 50.0)
+    private val box = BoxGeometry(50.0, 50.0, 50.0)
     private val preview = Mesh(box, MeshBasicMaterial(Color(0xff0000)).apply {
         opacity = 0.5
         transparent = true

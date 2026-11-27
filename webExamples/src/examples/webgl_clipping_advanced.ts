@@ -1,4 +1,4 @@
-import { Box, Color, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhongMaterial,
+import { BoxGeometry, Color, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhongMaterial,
     Object3D, Plane, PlaneGeometry, Side, Vector3 } from 'threekt';
 import { clippingScene } from './clippingScene';
 import { addToggle, examplePanel } from './exampleControls';
@@ -15,7 +15,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     const planes = originalPlanes.map(plane => plane.copy());
     const material = new MeshPhongMaterial(Color.fromHex(0xee0a10));
     material.clippingPlanes = planes;
-    const lattice = new InstancedMesh(new Box(0.18, 0.18, 0.18), material, 125);
+    const lattice = new InstancedMesh(new BoxGeometry(0.18, 0.18, 0.18), material, 125);
     const dummy = new Object3D();
     let index = 0;
     for (let z = -2; z <= 2; z++) for (let y = -2; y <= 2; y++) for (let x = -2; x <= 2; x++) {

@@ -1,12 +1,12 @@
 import {
-    AmbientLight, Box, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Mesh, MeshPhongMaterial,
+    AmbientLight, BoxGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Mesh, MeshPhongMaterial,
     OrbitControls, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { addSliders } from './addSliders';
 import { fitPerspective } from './fitPerspective';
 
 export async function createExample(canvas: HTMLCanvasElement) {
-    const geometry = new Box(2, 2, 2, 32, 32, 32);
+    const geometry = new BoxGeometry(2, 2, 2, 32, 32, 32);
     const position = geometry.getAttribute('position')!;
     const sphere = new Float32Array(position.count * 3);
     const twist = new Float32Array(sphere.length);

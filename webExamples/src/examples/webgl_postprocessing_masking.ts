@@ -1,4 +1,4 @@
-import { Box, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TorusGeometry,
+import { BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TorusGeometry,
     Uniform, Uniforms, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt';
 import fruit from './assets/758px-Canestra_di_frutta_(Caravaggio).jpg?url';
 import photograph from './assets/2294472375_24a3b8ef46_o.jpg?url';
@@ -14,7 +14,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const material = new MeshBasicMaterial(Color.fromHex(0xffffff));
     const targets = [new WebGLRenderTarget(), new WebGLRenderTarget()];
     const scenes = [new Scene(), new Scene()];
-    const box = new Mesh(new Box(4, 4, 4), material);
+    const box = new Mesh(new BoxGeometry(4, 4, 4), material);
     const ring = new Mesh(new TorusGeometry(3, 1, 16, 32), material);
     scenes[0].add(box);
     scenes[1].add(ring);

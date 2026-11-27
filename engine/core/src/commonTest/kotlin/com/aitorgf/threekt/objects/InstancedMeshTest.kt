@@ -2,7 +2,7 @@ package com.aitorgf.threekt.objects
 
 import com.aitorgf.threekt.cameras.PerspectiveCamera
 import com.aitorgf.threekt.core.Raycaster
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.materials.SpriteMaterial
 import com.aitorgf.threekt.math.Color
@@ -16,7 +16,7 @@ import kotlin.test.assertSame
 class InstancedMeshTest {
     @Test
     fun matricesAndColorsRoundTripAndColorsStartWhite() {
-        val mesh = InstancedMesh(Box(), MeshBasicMaterial(), 3)
+        val mesh = InstancedMesh(BoxGeometry(), MeshBasicMaterial(), 3)
         assertEquals(Matrix4(), mesh.getMatrixAt(2, Matrix4()))
         assertNull(mesh.instanceColor)
         val matrix = Matrix4().makeTranslation(1.0, 2.0, 3.0)
@@ -31,7 +31,7 @@ class InstancedMeshTest {
 
     @Test
     fun raycastingReportsTheNearestInstance() {
-        val mesh = InstancedMesh(Box(), MeshBasicMaterial(), 2)
+        val mesh = InstancedMesh(BoxGeometry(), MeshBasicMaterial(), 2)
         mesh.setMatrixAt(0, Matrix4().makeTranslation(0.0, 0.0, -5.0))
         mesh.setMatrixAt(1, Matrix4().makeTranslation(0.0, 0.0, -2.0))
         val raycaster = Raycaster()

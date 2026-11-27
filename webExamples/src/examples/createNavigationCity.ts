@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, CylinderGeometry, DirectionalLight, DomInputSurface, FogExp2, Mesh,
+    AmbientLight, BoxGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, FogExp2, Mesh,
     MeshPhongMaterial, MouseAction, OrbitControls, PerspectiveCamera, Scene, TouchAction, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { addToggle, examplePanel } from './exampleControls';
@@ -25,7 +25,7 @@ export function createNavigationCity(canvas: HTMLCanvasElement, map: boolean) {
     }
     controls.update();
 
-    const geometry = map ? new Box(1, 1, 1) : new CylinderGeometry(0, 10, 30, 4, 1);
+    const geometry = map ? new BoxGeometry(1, 1, 1) : new CylinderGeometry(0, 10, 30, 4, 1);
     const material = new MeshPhongMaterial(Color.fromHex(map ? 0xeeeeee : 0xffffff));
     material.flatShading = true;
     for (let i = 0; i < 500; i++) {

@@ -4,9 +4,9 @@ import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
 import kotlin.js.JsExport
 
-/** A centered box subdivided along each axis. Three.js calls this class `BoxGeometry`. */
+/** A centered box subdivided along each axis. */
 @JsExport
-class Box(
+class BoxGeometry(
     width: Double = 1.0,
     height: Double = 1.0,
     depth: Double = 1.0,

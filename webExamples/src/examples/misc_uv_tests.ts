@@ -1,5 +1,5 @@
 import {
-    Box, CylinderGeometry, IcosahedronGeometry, LatheGeometry, OctahedronGeometry, PlaneGeometry,
+    BoxGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, OctahedronGeometry, PlaneGeometry,
     SphereGeometry, TorusGeometry, TorusKnotGeometry, Vector2, type BufferGeometry,
 } from 'threekt';
 
@@ -44,7 +44,7 @@ export function createExample(canvas: HTMLCanvasElement) {
         ['Icosahedron', new IcosahedronGeometry(30, 1)],
         ['Octahedron', new OctahedronGeometry(30, 2)],
         ['Cylinder', new CylinderGeometry(25, 75, 100, 10, 5)],
-        ['Box', new Box(100, 100, 100, 4, 4, 4)],
+        ['Box', new BoxGeometry(100, 100, 100, 4, 4, 4)],
         ['Lathe', new LatheGeometry(profile, 8)],
         ['Torus', new TorusGeometry(50, 20, 8, 8)],
         ['Torus knot', new TorusKnotGeometry(50, 10, 12, 6)],

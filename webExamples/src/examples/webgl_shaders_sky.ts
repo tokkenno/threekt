@@ -1,5 +1,5 @@
 import {
-    Box, DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene, ShaderMaterial,
+    BoxGeometry, DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene, ShaderMaterial,
     Side, SphereGeometry, Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { addSliders } from './addSliders';
@@ -43,7 +43,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     const material = new ShaderMaterial(vertex, encodeSrgb + fragment, uniforms);
     material.side = Side.Back;
     material.depthWrite = false;
-    const sky = new Mesh(new Box(450000, 450000, 450000), material);
+    const sky = new Mesh(new BoxGeometry(450000, 450000, 450000), material);
     scene.add(sky);
     const reflected = new ShaderMaterial('#define REFLECTION\n' + vertex, '#define REFLECTION\n' + encodeSrgb + fragment, uniforms);
     scene.add(new Mesh(new SphereGeometry(400, 64, 32), reflected));

@@ -1,5 +1,5 @@
 import {
-    Box, Color, DomInputSurface, Group, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera,
+    BoxGeometry, Color, DomInputSurface, Group, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera,
     PointLight, Scene, ShaderMaterial, Uniform, Uniforms, WebGL2Context, WebGLRenderer, WebGLRenderTarget,
 } from 'threekt';
 import { addSelect, addToggle, examplePanel } from './exampleControls';
@@ -13,13 +13,13 @@ export function createExample(canvas: HTMLCanvasElement) {
     scene.background = Color.fromHex(0x444444);
     const group = new Group();
     scene.add(group);
-    const floor = new Mesh(new Box(100, 1, 100), new MeshPhongMaterial());
+    const floor = new Mesh(new BoxGeometry(100, 1, 100), new MeshPhongMaterial());
     floor.position.y = -10;
     scene.add(floor);
     const light = new PointLight(Color.fromHex(0xffffff), 250);
     light.position.y = 2;
     scene.add(light);
-    const geometry = new Box(2, 2, 2);
+    const geometry = new BoxGeometry(2, 2, 2);
     const material = new ShaderMaterial(`
         varying vec2 texcoord;
         varying vec3 faceNormal;

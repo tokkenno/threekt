@@ -1,5 +1,5 @@
 import {
-    Box, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera,
+    BoxGeometry, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera,
     Raycaster, Scene, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { raycastPointer } from './raycastPointer';
@@ -11,7 +11,7 @@ export function createInteractiveCubes(canvas: HTMLCanvasElement, ortho: boolean
     const light = new DirectionalLight(Color.fromHex(0xffffff), 3);
     light.position.set(1, 1, 1).normalize();
     scene.add(light);
-    const geometry = new Box();
+    const geometry = new BoxGeometry();
     const cubes = Array.from({ length: 2000 }, () => {
         const material = new MeshPhongMaterial(Color.fromHex(Math.floor(Math.random() * 0x1000000)));
         material.specular.setHex(0);

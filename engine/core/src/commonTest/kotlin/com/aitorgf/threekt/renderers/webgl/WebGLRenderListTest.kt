@@ -4,7 +4,7 @@ import com.aitorgf.threekt.cameras.PerspectiveCamera
 import com.aitorgf.threekt.materials.Material
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.core.Object3D
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.math.Frustum
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.objects.Line
@@ -100,9 +100,9 @@ class WebGLRenderListTest {
 
     @Test
     fun frustumCullingUsesTheGeometryBoundsUnlessDisabled() {
-        val inside = Mesh(Box(), opaqueMaterial).apply { position.z = -5.0 }
-        val behind = Mesh(Box(), opaqueMaterial).apply { position.z = 5.0 }
-        val unculled = Mesh(Box(), opaqueMaterial).apply {
+        val inside = Mesh(BoxGeometry(), opaqueMaterial).apply { position.z = -5.0 }
+        val behind = Mesh(BoxGeometry(), opaqueMaterial).apply { position.z = 5.0 }
+        val unculled = Mesh(BoxGeometry(), opaqueMaterial).apply {
             position.z = 5.0
             frustumCulled = false
         }

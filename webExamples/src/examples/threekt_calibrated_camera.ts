@@ -1,5 +1,5 @@
 import {
-    Box, CalibratedPerspectiveCamera, CameraHelper, Color, CylinderGeometry, Euler, GridHelper, Mesh,
+    BoxGeometry, CalibratedPerspectiveCamera, CameraHelper, Color, CylinderGeometry, Euler, GridHelper, Mesh,
     MeshBasicMaterial, PerspectiveCamera, Scene, SphereGeometry, Vector2, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 
@@ -72,14 +72,14 @@ export async function createExample(canvas: HTMLCanvasElement) {
     observer.lookAt(new Vector3());
     const scene = new Scene();
     scene.add(new GridHelper(20, 20, Color.fromHex(0x526783), Color.fromHex(0x334155)));
-    const addShape = (geometry: Box | CylinderGeometry | SphereGeometry, color: number, x: number, y: number, z: number) => {
+    const addShape = (geometry: BoxGeometry | CylinderGeometry | SphereGeometry, color: number, x: number, y: number, z: number) => {
         const material = new MeshBasicMaterial(Color.fromHex(color));
         material.wireframe = true;
         const mesh = new Mesh(geometry, material);
         mesh.position.set(x, y, z);
         scene.add(mesh);
     };
-    addShape(new Box(1.3, 1.3, 1.3), 0x55caff, -1.8, 0.65, 1);
+    addShape(new BoxGeometry(1.3, 1.3, 1.3), 0x55caff, -1.8, 0.65, 1);
     addShape(new SphereGeometry(1, 16, 12), 0xffb454, 0, 1, -2);
     addShape(new CylinderGeometry(0.6, 0.85, 2, 16), 0x75e39f, 2.2, 1, -4);
     const helper = new CameraHelper(calibrated);

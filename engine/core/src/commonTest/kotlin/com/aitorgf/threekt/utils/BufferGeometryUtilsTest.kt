@@ -2,7 +2,7 @@ package com.aitorgf.threekt.utils
 
 import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.math.Matrix4
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,8 +11,8 @@ import kotlin.test.assertNull
 class BufferGeometryUtilsTest {
     @Test
     fun mergeOffsetsIndicesAndKeepsTransformedPositions() {
-        val a = Box()
-        val b = Box().clone().applyMatrix4(Matrix4().makeTranslation(10.0, 0.0, 0.0))
+        val a = BoxGeometry()
+        val b = BoxGeometry().clone().applyMatrix4(Matrix4().makeTranslation(10.0, 0.0, 0.0))
         val merged = BufferGeometryUtils.mergeGeometries(arrayOf(a, b))!!
         val count = a.getAttribute("position")!!.count
         assertEquals(count * 2, merged.getAttribute("position")!!.count)
@@ -24,7 +24,7 @@ class BufferGeometryUtilsTest {
     @Test
     fun incompatibleGeometriesReturnNull() {
         val positions = BufferGeometry().setAttribute("position", Float32BufferAttribute(FloatArray(9), 3))
-        assertNull(BufferGeometryUtils.mergeGeometries(arrayOf(Box(), positions)))
+        assertNull(BufferGeometryUtils.mergeGeometries(arrayOf(BoxGeometry(), positions)))
     }
 
     @Test

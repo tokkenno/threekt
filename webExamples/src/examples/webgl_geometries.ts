@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, CapsuleGeometry, CircleGeometry, Color, ColorSpace, CylinderGeometry, Euler, IcosahedronGeometry,
+    AmbientLight, BoxGeometry, CapsuleGeometry, CircleGeometry, Color, ColorSpace, CylinderGeometry, Euler, IcosahedronGeometry,
     LatheGeometry, Mesh, MeshPhongMaterial, OctahedronGeometry, ParametricFunctions, ParametricGeometry, PerspectiveCamera,
     PlaneGeometry, PointLight, RingGeometry, Scene, Side, SphereGeometry, TetrahedronGeometry, TorusGeometry,
     TorusKnotGeometry, Vector2, Vector3, WebGL2Context, WebGLRenderer, Wrapping, type BufferGeometry,
@@ -40,7 +40,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     add(new TetrahedronGeometry(75), 300, 300);
 
     add(new PlaneGeometry(100, 100, 4, 4), -300, 100);
-    add(new Box(100, 100, 100, 4, 4, 4), -100, 100);
+    add(new BoxGeometry(100, 100, 100, 4, 4, 4), -100, 100);
     add(new CircleGeometry(50, 20, 0, Math.PI * 2), 100, 100);
     add(new RingGeometry(10, 50, 20, 5, 0, Math.PI * 2), 300, 100);
 

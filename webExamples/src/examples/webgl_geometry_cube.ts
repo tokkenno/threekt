@@ -1,4 +1,4 @@
-import { Box, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BoxGeometry, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
 import crateUrl from './assets/crate.gif?url';
 import { fitPerspective } from './fitPerspective';
 
@@ -12,7 +12,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const camera = new PerspectiveCamera(70, 1, 0.1, 100);
     camera.position.set(0, 0, 2);
     const texture = new ImageTexture(image);
-    const cube = new Mesh(new Box(), new MeshBasicMaterial(Color.fromHex(0xffffff), texture));
+    const cube = new Mesh(new BoxGeometry(), new MeshBasicMaterial(Color.fromHex(0xffffff), texture));
     scene.add(cube);
     const rotation = new Euler();
 

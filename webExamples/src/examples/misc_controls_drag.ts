@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
+    AmbientLight, BoxGeometry, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
     WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { dragMeshes } from './dragMeshes';
@@ -15,7 +15,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     scene.add(light);
     const camera = new PerspectiveCamera(70, 1, 0.1, 500);
     camera.position.z = 25;
-    const geometry = new Box(1, 1, 1);
+    const geometry = new BoxGeometry(1, 1, 1);
     const rotation = new Euler();
     const meshes = Array.from({ length: 200 }, () => {
         const mesh = new Mesh(geometry, new MeshPhongMaterial(Color.fromHex(Math.floor(Math.random() * 0x1000000))));

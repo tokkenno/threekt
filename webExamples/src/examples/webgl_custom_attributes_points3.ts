@@ -1,5 +1,5 @@
 import { ColorSpace,
-    Box, Color, Euler, Matrix4, PerspectiveCamera, Points, Quaternion, Scene, ShaderMaterial,
+    BoxGeometry, Color, Euler, Matrix4, PerspectiveCamera, Points, Quaternion, Scene, ShaderMaterial,
     Uniform, Vector3, WebGL2Context, WebGLRenderer, Wrapping,
 } from 'threekt';
 import ballUrl from './assets/ball.png?url';
@@ -59,8 +59,8 @@ export async function createExample(canvas: HTMLCanvasElement) {
     }
     const innerCount = vertices.length / 3;
 
-    const horizontal = uniquePositions(new Box(200, 20, 20, 50, 5, 5));
-    const vertical = uniquePositions(new Box(20, 240, 20, 5, 60, 5));
+    const horizontal = uniquePositions(new BoxGeometry(200, 20, 20, 50, 5, 5));
+    const vertical = uniquePositions(new BoxGeometry(20, 240, 20, 5, 60, 5));
     const matrix = new Matrix4();
     const position = new Vector3();
     const vertex = new Vector3();

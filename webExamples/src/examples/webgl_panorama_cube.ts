@@ -1,5 +1,5 @@
 import {
-    Box, BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, Group, ImageTexture,
+    BoxGeometry, BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, Group, ImageTexture,
     Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, Side, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import atlasUrl from './assets/sun_temple_stripe.jpg?url';
@@ -10,7 +10,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     atlas.src = atlasUrl;
     await atlas.decode();
 
-    const cube = new Box();
+    const cube = new BoxGeometry();
     const positions = (cube.getAttribute('position') as Float32BufferAttribute).array;
     const uv = (cube.getAttribute('uv') as Float32BufferAttribute).array;
     const skybox = new Group();

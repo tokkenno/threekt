@@ -1,4 +1,4 @@
-import { Box, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BoxGeometry, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
 import { fitPerspective } from './fitPerspective';
 
 /** Port of Three.js examples/webgl_materials_texture_canvas.html. */
@@ -21,7 +21,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const camera = new PerspectiveCamera(50, 1, 1, 2000);
     camera.position.set(0, 0, 500);
     const texture = new ImageTexture(drawingCanvas);
-    const cube = new Mesh(new Box(200, 200, 200), new MeshBasicMaterial(Color.fromHex(0xffffff), texture));
+    const cube = new Mesh(new BoxGeometry(200, 200, 200), new MeshBasicMaterial(Color.fromHex(0xffffff), texture));
     scene.add(cube);
     const rotation = new Euler();
     const renderer = new WebGLRenderer(new WebGL2Context(canvas));

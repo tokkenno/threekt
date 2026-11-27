@@ -1,5 +1,5 @@
 import {
-    Box, BufferGeometry, CatmullRomCurve3, Color, ColorSpace, DataTexture, DomInputSurface, Float32BufferAttribute,
+    BoxGeometry, BufferGeometry, CatmullRomCurve3, Color, ColorSpace, DataTexture, DomInputSurface, Float32BufferAttribute,
     InstancedBufferAttribute, InstancedMesh, LineBasicMaterial, LineLoop, Mesh, MeshBasicMaterial, OrbitControls,
     PerspectiveCamera, Scene, ShaderMaterial, Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
@@ -22,7 +22,7 @@ export async function createCurveModifierExample(canvas: HTMLCanvasElement, inst
 
     const scene = new Scene();
     scene.background = Color.fromHex(0x17202a);
-    const handleGeometry = new Box(0.12, 0.12, 0.12);
+    const handleGeometry = new BoxGeometry(0.12, 0.12, 0.12);
     const handleMaterial = new MeshBasicMaterial(Color.fromHex(0xffffff));
     const curves = Array.from({ length: instanced ? 2 : 1 }, (_, i) => {
         const y = instanced ? i - 0.5 : 0;

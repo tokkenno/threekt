@@ -1,5 +1,5 @@
 import {
-    Color, DomInputSurface, Euler, HemisphereLight, Box, Mesh, MeshBasicMaterial, MeshLambertMaterial, OBB, OrbitControls,
+    Color, DomInputSurface, Euler, HemisphereLight, BoxGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, OBB, OrbitControls,
     PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { fitPerspective } from './fitPerspective';
@@ -20,7 +20,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     scene.add(hemiLight);
 
     const size = new Vector3(10, 5, 6);
-    const geometry = new Box(size.x, size.y, size.z);
+    const geometry = new BoxGeometry(size.x, size.y, size.z);
     // OBB on geometry level.
     const geometryObb = new OBB();
     geometryObb.halfSize.copyFrom(size).multiplyScalar(0.5);

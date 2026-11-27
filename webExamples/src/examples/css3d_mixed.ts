@@ -1,5 +1,5 @@
 import {
-    Box, Color, DomInputSurface, EdgesGeometry, ExtrudeGeometry, HemisphereLight, LineBasicMaterial,
+    BoxGeometry, Color, DomInputSurface, EdgesGeometry, ExtrudeGeometry, HemisphereLight, LineBasicMaterial,
     LineSegments, Mesh, MeshLambertMaterial, OrbitControls, Path, PerspectiveCamera, Scene, Shape,
     Vector2, WebGL2Context, WebGLRenderer,
 } from 'threekt';
@@ -29,7 +29,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     const roomMaterial = new LineBasicMaterial(Color.fromHex(0x000000));
     roomMaterial.transparent = true;
     roomMaterial.opacity = 0.2;
-    scene.add(new LineSegments(new EdgesGeometry(new Box(4000, 2000, 4000, 10, 5, 10)), roomMaterial));
+    scene.add(new LineSegments(new EdgesGeometry(new BoxGeometry(4000, 2000, 4000, 10, 5, 10)), roomMaterial));
     scene.add(new HemisphereLight(Color.fromHex(0xffffff), Color.fromHex(0x444444), 4));
     const shape = new Shape(rectangle(width + border * 2, height + border * 2));
     shape.holes.asJsArrayView().push(new Path(rectangle(width, height)));
@@ -37,7 +37,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     const material = new MeshLambertMaterial(Color.fromHex(0x2200ff));
     const frame = new Mesh(new ExtrudeGeometry([shape], options), material);
     frame.position.z = -border / 2;
-    const back = new Mesh(new Box(width + 2 * border, height + 2 * border, 8), material);
+    const back = new Mesh(new BoxGeometry(width + 2 * border, height + 2 * border, 8), material);
     back.position.z = -border / 2 - 4;
     scene.add(frame);
     // The DOM screen sits behind the WebGL canvas. The solid backing appears when viewed from behind.

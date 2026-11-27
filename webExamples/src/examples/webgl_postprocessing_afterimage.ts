@@ -1,5 +1,5 @@
 import {
-    Box, Color, Fog, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Uniform, Uniforms,
+    BoxGeometry, Color, Fog, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Uniform, Uniforms,
     WebGL2Context, WebGLRenderer, WebGLRenderTarget,
 } from 'threekt';
 import { addToggle, examplePanel } from './exampleControls';
@@ -11,7 +11,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     camera.position.z = 400;
     const scene = new Scene();
     scene.fog = new Fog(Color.fromHex(0), 1, 1000);
-    const cube = new Mesh(new Box(150, 150, 150, 2, 2, 2), new MeshNormalMaterial());
+    const cube = new Mesh(new BoxGeometry(150, 150, 150, 2, 2, 2), new MeshNormalMaterial());
     scene.add(cube);
     const source = new WebGLRenderTarget();
     let history = new WebGLRenderTarget(1, 1, undefined, false);

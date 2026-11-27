@@ -1,6 +1,6 @@
 package com.aitorgf.threekt.exporters
 
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.loaders.OBJLoader
 import com.aitorgf.threekt.loaders.STLLoader
 import com.aitorgf.threekt.objects.Group
@@ -14,7 +14,7 @@ class GeometryExportTest {
     fun stlAndObjPreserveWorldTriangles() {
         val root = Group()
         root.position.x = 2.0
-        val mesh = Mesh(Box())
+        val mesh = Mesh(BoxGeometry())
         root.add(mesh)
         val stl = STLExporter()
         val loader = STLLoader()
@@ -30,7 +30,7 @@ class GeometryExportTest {
 
     @Test
     fun plyBinaryOptionsWriteTheDeclaredByteOrder() {
-        val mesh = Mesh(Box())
+        val mesh = Mesh(BoxGeometry())
         val exporter = PLYExporter()
         for (littleEndian in listOf(false, true)) {
             val bytes = exporter.parseBinary(mesh, littleEndian)

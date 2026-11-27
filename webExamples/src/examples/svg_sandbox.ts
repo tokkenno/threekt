@@ -1,4 +1,4 @@
-import { Box, BufferGeometry, Color, CylinderGeometry, Float32BufferAttribute, Group, Object3D,
+import { BoxGeometry, BufferGeometry, Color, CylinderGeometry, Float32BufferAttribute, Group, Object3D,
     PerspectiveCamera, PlaneGeometry, Vector3, type BufferAttribute } from 'threekt';
 import qrUrl from './assets/geometry-json/QRCode_buffergeometry.json?url';
 import { cssTrackball, fitCssCamera } from './exampleCss3d';
@@ -34,8 +34,8 @@ export async function createExample(canvas: HTMLCanvasElement) {
         return node;
     }
     place(await loadExampleGeometry(qrUrl), 0x101010, 0, 0, 0);
-    place(new Box(160, 160, 160), 0x2233ff, 380, 0, 0, 0.5).rotation.set(0.4, 0.6, 0);
-    place(new Box(140, 140, 140), 0xffa136, 330, 310, 0).rotation.set(0.2, 0.5, 0);
+    place(new BoxGeometry(160, 160, 160), 0x2233ff, 380, 0, 0, 0.5).rotation.set(0.4, 0.6, 0);
+    place(new BoxGeometry(140, 140, 140), 0xffa136, 330, 310, 0).rotation.set(0.2, 0.5, 0);
     place(new PlaneGeometry(180, 180), 0x52ba69, 0, -340, 0);
     place(new CylinderGeometry(20, 80, 200, 10), 0xb145e2, -370, 0, 0).rotation.x = -Math.PI / 2;
 

@@ -1,7 +1,7 @@
 package com.aitorgf.threekt.math
 
 import com.aitorgf.threekt.cameras.PerspectiveCamera
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.math.color.ColorSpace
 import com.aitorgf.threekt.math.color.CssColorNames
 import com.aitorgf.threekt.math.color.HSL
@@ -138,7 +138,7 @@ class ThreeMathParityTest {
         right.updateProjectionMatrix()
         right.position.x = 10.0
         right.updateMatrixWorld()
-        val mesh = Mesh(Box())
+        val mesh = Mesh(BoxGeometry())
         mesh.position.set(10.0, 0.0, -5.0)
         mesh.updateMatrixWorld()
 

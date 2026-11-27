@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, ColorSpace, DirectionalLight, IcosahedronGeometry, InstancedMesh,
+    AmbientLight, BoxGeometry, Color, ColorSpace, DirectionalLight, IcosahedronGeometry, InstancedMesh,
     MeshPhongMaterial, Object3D, PerspectiveCamera, Scene, Uniform, Uniforms,
     WebGL2Context, WebGLRenderer, WebGLRenderTarget, type BufferGeometry,
 } from 'threekt';
@@ -37,7 +37,7 @@ function createScene(geometry: BufferGeometry, background: number, tint: number)
 export async function createExample(canvas: HTMLCanvasElement) {
     const textures = await Promise.all(Array.from({ length: 6 }, (_, i) => loadImageTexture(masks[`./assets/transition/transition${i + 1}.png`])));
     for (const texture of textures) texture.colorSpace = ColorSpace.None;
-    const a = createScene(new Box(2, 2, 2), 0xffffff, 0x4070bd);
+    const a = createScene(new BoxGeometry(2, 2, 2), 0xffffff, 0x4070bd);
     const b = createScene(new IcosahedronGeometry(1, 1), 0, 0xd15537);
     const camera = new PerspectiveCamera(50, 1, 0.1, 100);
     camera.position.z = 20;

@@ -2,7 +2,7 @@ package com.aitorgf.threekt.helpers
 
 import com.aitorgf.threekt.core.Float32BufferAttribute
 import com.aitorgf.threekt.core.Usage
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.materials.LineBasicMaterial
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.objects.Group
@@ -16,7 +16,7 @@ import kotlin.test.assertSame
 class BoxHelperTest {
     @Test
     fun boxHelperOutlinesTheWorldBoundsOfItsObject() {
-        val mesh = Mesh(Box(2.0, 4.0, 6.0))
+        val mesh = Mesh(BoxGeometry(2.0, 4.0, 6.0))
         val helper = BoxHelper(mesh)
         assertEquals(Color(0xffff00), assertIs<LineBasicMaterial>(helper.material).color)
         assertEquals(24, helper.geometry.index!!.size)
@@ -35,7 +35,7 @@ class BoxHelperTest {
     @Test
     fun boxHelperCanFollowAnotherObject() {
         val group = Group()
-        val mesh = Mesh(Box()).apply { position.y = 5.0 }
+        val mesh = Mesh(BoxGeometry()).apply { position.y = 5.0 }
         group.add(mesh)
         val helper = BoxHelper(color = 0x474747)
         helper.setFromObject(group)

@@ -13,10 +13,10 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class BoxTest {
+class BoxGeometryTest {
     @Test
     fun boxHasCenteredVerticesAndOutwardFacingTriangles() {
-        val geometry = Box(2.0, 4.0, 6.0)
+        val geometry = BoxGeometry(2.0, 4.0, 6.0)
         val positions = assertIs<Float32BufferAttribute>(geometry.getAttribute("position"))
         val normals = assertIs<Float32BufferAttribute>(geometry.getAttribute("normal"))
         val uvs = assertIs<Float32BufferAttribute>(geometry.getAttribute("uv"))
@@ -54,7 +54,7 @@ class BoxTest {
 
     @Test
     fun meshCarriesGeometryAndMaterialThroughSceneHierarchy() {
-        val box = Box()
+        val box = BoxGeometry()
         val material = MeshBasicMaterial(0x336699)
         val mesh = Mesh(box, material)
         val scene = Scene()

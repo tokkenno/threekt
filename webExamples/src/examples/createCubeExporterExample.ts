@@ -1,5 +1,5 @@
 import {
-    Box, Color, DirectionalLight, DomInputSurface, Euler, Fog, GridHelper, HemisphereLight, Mesh,
+    BoxGeometry, Color, DirectionalLight, DomInputSurface, Euler, Fog, GridHelper, HemisphereLight, Mesh,
     MeshPhongMaterial, OrbitControls, PerspectiveCamera, PlaneGeometry, Scene, Uint8BufferAttribute,
     WebGL2Context, WebGLRenderer,
 } from 'threekt';
@@ -33,7 +33,7 @@ export function createCubeExporterExample(canvas: HTMLCanvasElement, vertexColor
     grid.material.transparent = true;
     scene.add(grid);
 
-    const geometry = new Box();
+    const geometry = new BoxGeometry();
     const material = new MeshPhongMaterial(Color.fromHex(vertexColors ? 0xffffff : 0x00ff00));
     material.vertexColors = vertexColors;
     if (vertexColors) {

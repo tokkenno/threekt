@@ -1,5 +1,5 @@
 import {
-    AxesHelper, Box, DiscreteInterpolant, LinearInterpolant, Mesh, MeshBasicMaterial, PerspectiveCamera,
+    AxesHelper, BoxGeometry, DiscreteInterpolant, LinearInterpolant, Mesh, MeshBasicMaterial, PerspectiveCamera,
     Quaternion, QuaternionLinearInterpolant, Scene, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { fitPerspective } from './fitPerspective';
@@ -9,7 +9,7 @@ export function createKeyframeExample(canvas: HTMLCanvasElement, grouped: boolea
     camera.position.set(grouped ? 50 : 25, grouped ? 50 : 25, grouped ? 100 : 50);
     camera.lookAt(new Vector3());
     const scene = new Scene();
-    const geometry = new Box(5, 5, 5);
+    const geometry = new BoxGeometry(5, 5, 5);
     const material = new MeshBasicMaterial();
     material.transparent = true;
     const items = Array.from({ length: grouped ? 25 : 1 }, (_, i) => {

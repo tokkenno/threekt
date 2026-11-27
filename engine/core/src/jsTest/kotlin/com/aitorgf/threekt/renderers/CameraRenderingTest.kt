@@ -3,7 +3,7 @@ package com.aitorgf.threekt.renderers
 import com.aitorgf.threekt.cameras.ArrayCamera
 import com.aitorgf.threekt.cameras.CubeCamera
 import com.aitorgf.threekt.cameras.PerspectiveCamera
-import com.aitorgf.threekt.geometries.Box
+import com.aitorgf.threekt.geometries.BoxGeometry
 import com.aitorgf.threekt.materials.MeshBasicMaterial
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.objects.Mesh
@@ -22,9 +22,9 @@ class CameraRenderingTest {
         val renderer = WebGLRenderer(WebGL2Context(gl.canvas))
         try {
             val scene = Scene()
-            scene.add(Mesh(Box(), MeshBasicMaterial(0xff0000)).apply { position.z = -2.0 })
-            scene.add(Mesh(Box(), MeshBasicMaterial(0x00ff00)).apply { position.z = -4.0 })
-            val nearOccluder = Mesh(Box(0.25, 0.25, 0.25), MeshBasicMaterial(0xffff00))
+            scene.add(Mesh(BoxGeometry(), MeshBasicMaterial(0xff0000)).apply { position.z = -2.0 })
+            scene.add(Mesh(BoxGeometry(), MeshBasicMaterial(0x00ff00)).apply { position.z = -4.0 })
+            val nearOccluder = Mesh(BoxGeometry(0.25, 0.25, 0.25), MeshBasicMaterial(0xffff00))
             nearOccluder.position.z = -0.75
             scene.add(nearOccluder)
             val camera = PerspectiveCamera(near = 1.0, far = 10.0)
@@ -82,8 +82,8 @@ class CameraRenderingTest {
         val target = WebGLCubeRenderTarget(context, 32)
         try {
             val scene = Scene()
-            scene.add(Mesh(Box(), MeshBasicMaterial(0xff0000)).apply { position.x = 3.0 })
-            scene.add(Mesh(Box(), MeshBasicMaterial(0x00ff00)).apply { position.z = -3.0 })
+            scene.add(Mesh(BoxGeometry(), MeshBasicMaterial(0xff0000)).apply { position.x = 3.0 })
+            scene.add(Mesh(BoxGeometry(), MeshBasicMaterial(0x00ff00)).apply { position.z = -3.0 })
             val cube = CubeCamera()
             val positiveX = CubeCamera.Face.PositiveX
             val negativeZ = CubeCamera.Face.NegativeZ

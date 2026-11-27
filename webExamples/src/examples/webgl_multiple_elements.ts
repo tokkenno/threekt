@@ -1,5 +1,5 @@
 import {
-    Box, Color, CylinderGeometry, DirectionalLight, DomInputSurface, Euler, HemisphereLight, Mesh,
+    BoxGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, Euler, HemisphereLight, Mesh,
     MeshPhongMaterial, OrbitControls, PerspectiveCamera, PolyhedronGeometry, Scene, SphereGeometry, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 
@@ -47,7 +47,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     const list = document.createElement('article');
     list.className = 'element-scenes';
     canvas.after(list);
-    const geometries = [new Box(1, 1, 1), new SphereGeometry(0.5, 12, 8),
+    const geometries = [new BoxGeometry(1, 1, 1), new SphereGeometry(0.5, 12, 8),
         dodecahedron(), new CylinderGeometry(0.5, 0.5, 1, 12, 1)];
     const views = Array.from({ length: 40 }, (_, index) => {
         const cell = document.createElement('figure');

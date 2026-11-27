@@ -1,5 +1,5 @@
 import {
-    Box, Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, Mesh, MeshPhongMaterial, PerspectiveCamera,
+    BoxGeometry, Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, Mesh, MeshPhongMaterial, PerspectiveCamera,
     Scene, VideoTexture, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 // Sintel, Blender Foundation, from the Three.js example.
@@ -28,7 +28,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const rotation = new Euler();
     for (let x = 0; x < columns; x++) {
         for (let y = 0; y < rows; y++) {
-            const geometry = new Box(width, height, width);
+            const geometry = new BoxGeometry(width, height, width);
             const uv = (geometry.getAttribute('uv') as Float32BufferAttribute).array;
             for (let i = 0; i < uv.length; i += 2) {
                 uv[i] = (uv[i] + x) / columns;

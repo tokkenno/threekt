@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, DirectionalLight, DomInputSurface, IcosahedronGeometry, Mesh, MeshNormalMaterial,
+    AmbientLight, BoxGeometry, Color, DirectionalLight, DomInputSurface, IcosahedronGeometry, Mesh, MeshNormalMaterial,
     MeshPhongMaterial, OrbitControls, OrthographicCamera, PlaneGeometry, Scene, TextureFilter,
     Uniform, Uniforms, Vector2, WebGL2Context, WebGLRenderer, WebGLRenderTarget, Wrapping,
 } from 'threekt';
@@ -38,7 +38,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const boxMaterial = new MeshPhongMaterial();
     boxMaterial.map = boxMap;
     for (const [size, x, z] of [[0.4, 0, 0], [0.5, -0.5, -0.5]]) {
-        const box = new Mesh(new Box(size, size, size), boxMaterial);
+        const box = new Mesh(new BoxGeometry(size, size, size), boxMaterial);
         box.position.set(x, size / 2, z);
         box.rotation.y = Math.PI / 4;
         register(box);

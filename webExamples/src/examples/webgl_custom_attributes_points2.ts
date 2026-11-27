@@ -1,5 +1,5 @@
 import { ColorSpace,
-    Box, Color, Euler, Matrix4, PerspectiveCamera, Points, Scene, ShaderMaterial, SphereGeometry,
+    BoxGeometry, Color, Euler, Matrix4, PerspectiveCamera, Points, Scene, ShaderMaterial, SphereGeometry,
     Uint32BufferAttribute, Uniform, Vector3, WebGL2Context, WebGLRenderer, Wrapping,
 } from 'threekt';
 import discUrl from './assets/disc.png?url';
@@ -44,7 +44,7 @@ void main() {
 export async function createExample(canvas: HTMLCanvasElement) {
     const radius = 100;
     const sphere = uniquePositions(new SphereGeometry(radius, 68, 38));
-    const box = uniquePositions(new Box(80, 80, 80, 10, 10, 10));
+    const box = uniquePositions(new BoxGeometry(80, 80, 80, 10, 10, 10));
     const sphereCount = sphere.length / 3;
     const { geometry, position, size, sizes } = customPointGeometry(sphere.concat(box), sphereCount, (color, i, y) => {
         if (i < sphereCount) color.setHSL(0.01 + 0.1 * i / sphereCount, 0.99, (y + radius) / (4 * radius));

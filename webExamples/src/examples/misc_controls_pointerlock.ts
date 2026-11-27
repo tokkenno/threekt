@@ -1,5 +1,5 @@
 import {
-    Box, Color, Euler, Float32BufferAttribute, Fog, HemisphereLight, Mesh, MeshBasicMaterial, MeshPhongMaterial,
+    BoxGeometry, Color, Euler, Float32BufferAttribute, Fog, HemisphereLight, Mesh, MeshBasicMaterial, MeshPhongMaterial,
     PerspectiveCamera, PlaneGeometry, Raycaster, Scene, Vector3, WebGL2Context, WebGLRenderer,
     type BufferGeometry,
 } from 'threekt';
@@ -38,7 +38,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     floorMaterial.vertexColors = true;
     scene.add(new Mesh(floor, floorMaterial));
 
-    const geometry = new Box(20, 20, 20).toNonIndexed();
+    const geometry = new BoxGeometry(20, 20, 20).toNonIndexed();
     addColors(geometry);
     const blocks = Array.from({ length: 500 }, () => {
         const material = new MeshPhongMaterial(new Color(0, 0, 0).setHSL(Math.random() * 0.2 + 0.5, 0.75, 0.75));

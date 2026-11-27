@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, Color, DirectionalLight, DomInputSurface, ImageTexture, Mesh, MeshPhongMaterial, OrbitControls,
+    AmbientLight, BoxGeometry, Color, DirectionalLight, DomInputSurface, ImageTexture, Mesh, MeshPhongMaterial, OrbitControls,
     PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { TGALoader } from 'threekt/loaders';
@@ -20,7 +20,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
         source.getContext('2d')!.putImageData(new ImageData(rgba, image.width, image.height), 0, 0);
         return new ImageTexture(source);
     }));
-    const geometry = new Box();
+    const geometry = new BoxGeometry();
     const scene = new Scene();
     textures.forEach((texture, index) => {
         const material = new MeshPhongMaterial();

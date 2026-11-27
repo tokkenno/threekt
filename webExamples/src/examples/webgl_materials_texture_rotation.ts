@@ -1,5 +1,5 @@
 import {
-    Box, Color, DomInputSurface, ImageTexture, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
+    BoxGeometry, Color, DomInputSurface, ImageTexture, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
     Wrapping,
 } from 'threekt';
 import uvGridUrl from './assets/uv_grid_opengl.jpg?url';
@@ -28,7 +28,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     texture.wrapS = Wrapping.Repeat;
     texture.wrapT = Wrapping.Repeat;
     texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    scene.add(new Mesh(new Box(10, 10, 10), new MeshBasicMaterial(Color.fromHex(0xffffff), texture)));
+    scene.add(new Mesh(new BoxGeometry(10, 10, 10), new MeshBasicMaterial(Color.fromHex(0xffffff), texture)));
 
     const settings = {
         offsetX: { label: 'Offset X', min: 0, max: 1, value: 0 },

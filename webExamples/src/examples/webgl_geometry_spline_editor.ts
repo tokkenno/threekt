@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, GridHelper,
+    AmbientLight, BoxGeometry, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, GridHelper,
     Line, LineBasicMaterial, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera, Scene, Usage, Vector3,
     WebGL2Context, WebGLRenderer,
 } from 'threekt';
@@ -26,7 +26,7 @@ export function createExample(canvas: HTMLCanvasElement) {
     controls.update();
 
     const points: Mesh[] = [];
-    const geometry = new Box(20, 20, 20);
+    const geometry = new BoxGeometry(20, 20, 20);
     function addPoint(x: number, y: number, z: number) {
         const mesh = new Mesh(geometry, new MeshPhongMaterial(Color.fromHex(Math.floor(Math.random() * 0x1000000))));
         mesh.position.set(x, y, z);

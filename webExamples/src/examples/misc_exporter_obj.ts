@@ -1,5 +1,5 @@
 import {
-    AmbientLight, Box, BufferGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface,
+    AmbientLight, BoxGeometry, BufferGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface,
     Euler, Float32BufferAttribute, Group, Mesh, MeshPhongMaterial, OBJExporter, OrbitControls,
     PerspectiveCamera, Points, PointsMaterial, Scene, WebGL2Context, WebGLRenderer,
 } from 'threekt';
@@ -20,7 +20,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const triangle = new BufferGeometry()
         .setAttribute('position', new Float32BufferAttribute(new Float32Array([-50,-50,0,50,-50,0,50,50,0]), 3))
         .setAttribute('normal', new Float32BufferAttribute(new Float32Array([0,0,1,0,0,1,0,0,1]), 3));
-    const box = new Box(100, 100, 100);
+    const box = new BoxGeometry(100, 100, 100);
     const cylinder = new CylinderGeometry(50, 50, 100, 30);
     const material = new MeshPhongMaterial(Color.fromHex(0x00cc00));
     material.specular.setHex(0);

@@ -1,5 +1,5 @@
 import {
-    Box, LinearInterpolant, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    BoxGeometry, LinearInterpolant, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer,
 } from 'threekt';
 import { MDDLoader } from 'threekt/loaders';
 import mdd from './assets/mdd/cube.mdd?url';
@@ -9,7 +9,7 @@ export async function createExample(canvas: HTMLCanvasElement) {
     const response = await fetch(mdd);
     if (!response.ok) throw new Error('Could not load the MDD point cache.');
     const { times, morphTargets } = new MDDLoader().parse(new Int8Array(await response.arrayBuffer()));
-    const geometry = new Box();
+    const geometry = new BoxGeometry();
     geometry.setMorphAttribute('position', morphTargets);
     const mesh = new Mesh(geometry, new MeshNormalMaterial());
     const influences = mesh.morphTargetInfluences!;
