@@ -79,15 +79,21 @@ export function spatialAudio() {
             forward.set(0, 0, -1).applyQuaternion(orientation);
             up.set(0, 1, 0).applyQuaternion(orientation);
             const listener = context.listener;
-            listener.positionX.value = position.x;
-            listener.positionY.value = position.y;
-            listener.positionZ.value = position.z;
-            listener.forwardX.value = forward.x;
-            listener.forwardY.value = forward.y;
-            listener.forwardZ.value = forward.z;
-            listener.upX.value = up.x;
-            listener.upY.value = up.y;
-            listener.upZ.value = up.z;
+            // Firefox exposes the listener's pose through the legacy methods.
+            if (listener.positionX && listener.forwardX && listener.upX) {
+                listener.positionX.value = position.x;
+                listener.positionY.value = position.y;
+                listener.positionZ.value = position.z;
+                listener.forwardX.value = forward.x;
+                listener.forwardY.value = forward.y;
+                listener.forwardZ.value = forward.z;
+                listener.upX.value = up.x;
+                listener.upY.value = up.y;
+                listener.upZ.value = up.z;
+            } else {
+                listener.setPosition(position.x, position.y, position.z);
+                listener.setOrientation(forward.x, forward.y, forward.z, up.x, up.y, up.z);
+            }
         },
         updatePanner(panner: PannerNode, node: Object3D) {
             node.getWorldPosition(position);
