@@ -81,6 +81,12 @@
                        data-description="Change the lookup table used to color a mesh from its pressure measurements.">Pressure color maps</a></li>
                 <li><a href="?example=webgl_geometry_convex"
                        data-description="Orbit a translucent hull built from the unique vertices of a dodecahedron.">Convex hull</a></li>
+                <li><a href="?example=webgl_geometry_teapot" data-new
+                       data-description="Change how Bézier patches are tessellated and switch between six shading modes.">Utah teapot</a></li>
+                <li><a href="?example=webgl_modifier_curve" data-new
+                       data-description="Drag the handles to reshape a closed path that bends and moves text.">Curve deformation</a></li>
+                <li><a href="?example=webgl_modifier_curve_instanced" data-new
+                       data-description="Move eight text instances along two independently editable paths.">Instanced curve deformation</a></li>
                 <li><a href="?example=webgl_clipping"
                        data-description="Move two clipping planes through a spinning torus knot and its ground.">Local and global clipping</a></li>
                 <li><a href="?example=webgl_clipping_advanced"
@@ -163,11 +169,27 @@
                     data-description="Orbit two copies of the same head mesh to compare standard wireframe lines with shader-based edges. The slider adjusts the shader’s edge thickness.">Shader wireframe</a></li>
                 <li><a href="?example=webgl_materials_toon"
                        data-description="Orbit a grid of outlined spheres with stepped lighting and an animated light source.">Toon shading and outlines</a></li>
-                <li><a href="?example=webgl_materials_cubemap" data-new
+                <li><a href="?example=webgl_materials_bumpmap" data-new
+                       data-description="Move a light over the Lee Perry Smith head and adjust relief from a grayscale map.">Bump mapping</a></li>
+                <li><a href="?example=webgl_materials_displacementmap" data-new
+                       data-description="Move the ninja head’s vertices using a height map and adjust its surface shading.">Displacement mapping</a></li>
+                <li><a href="?example=webgl_materials_channels" data-new
+                       data-description="Inspect the ninja head’s normals, depth packing and motion vectors.">Material channels</a></li>
+                <li><a href="?example=webgl_materials_normalmap" data-new
+                       data-description="Adjust the tangent-space normal map on a textured head.">Tangent-space normals</a></li>
+                <li><a href="?example=webgl_materials_normalmap_object_space" data-new
+                       data-description="Orbit the Nefertiti bust and compare object-space normals with the base geometry.">Object-space normals</a></li>
+                <li><a href="?example=webgl_materials_matcap" data-new
+                       data-description="Shade a head with a view-dependent capture texture, with tint and exposure controls.">Matcap shading</a></li>
+                <li><a href="?example=webgl_materials_alphahash" data-new
+                       data-description="Compare stochastic cutouts and blending in a translucent grid of spheres.">Alpha hashing</a></li>
+                <li><a href="?example=webgl_materials_modified" data-new
+                       data-description="Compare two heads twisting in opposite directions with normals deformed in the shader.">Twisted vertex shader</a></li>
+                <li><a href="?example=webgl_materials_cubemap"
                        data-description="Orbit the reflective and refractive Walt heads inside a castle environment.">Cubemap reflection and refraction</a></li>
-                <li><a href="?example=webgl_materials_cubemap_refraction" data-new
+                <li><a href="?example=webgl_materials_cubemap_refraction"
                        data-description="Compare three refractive Lucy sculptures in a park environment.">Cubemap refraction</a></li>
-                <li><a href="?example=webgl_materials_cubemap_mipmaps" data-new
+                <li><a href="?example=webgl_materials_cubemap_mipmaps"
                        data-description="Compare manually supplied and generated mipmaps on two reflected spheres.">Cubemap mipmaps</a></li>
                 <li><a href="?example=webgl_materials_blending_custom"
                     data-description="Compare compositing results by changing the blend equation and inspecting the grid of source and destination factors.">Custom blending equations</a></li>
@@ -220,22 +242,30 @@
                        data-description="Print the rotating cubes as patterned RGB dots, lines or squares.">RGB halftone</a></li>
                 <li><a href="?example=webgl_postprocessing_pixel"
                        data-description="Adjust pixel size and depth and normal edges around a floating crystal.">Pixelated rendering</a></li>
-                <li><a href="?example=webgl_postprocessing_3dlut" data-new
+                <li><a href="?example=webgl_postprocessing_3dlut"
                        data-description="Compare color grades on a helmet and its surroundings.">3D color lookup tables</a></li>
-                <li><a href="?example=webgl_postprocessing_advanced" data-new
+                <li><a href="?example=webgl_postprocessing_advanced"
                        data-description="Compare grain, dots, sepia and bleach on the same rotating scene.">Four postprocessing treatments</a></li>
-                <li><a href="?example=webgl_postprocessing_dof" data-new
+                <li><a href="?example=webgl_postprocessing_dof"
                        data-description="Adjust focus and aperture across a field of reflective spheres.">Depth of field</a></li>
-                <li><a href="?example=webgl_postprocessing_dof2" data-new
+                <li><a href="?example=webgl_postprocessing_dof2"
                        data-description="Move the pointer to focus among falling particles and colored Suzanne meshes.">Pointer autofocus</a></li>
-                <li><a href="?example=webgl_postprocessing_masking" data-new
+                <li><a href="?example=webgl_postprocessing_masking"
                        data-description="Reveal two photographs through a moving box and ring.">Texture masks</a></li>
-                <li><a href="?example=webgl_postprocessing_outline" data-new
+                <li><a href="?example=webgl_postprocessing_outline"
                        data-description="Move the pointer over objects to show their postprocessed outline.">Selection outlines</a></li>
-                <li><a href="?example=webgl_postprocessing_ssaa" data-new
+                <li><a href="?example=webgl_postprocessing_ssaa"
                        data-description="Compare sample counts and camera projections on a cluster of spheres.">Spatial supersampling</a></li>
-                <li><a href="?example=webgl_postprocessing_taa" data-new
+                <li><a href="?example=webgl_postprocessing_taa"
                        data-description="Watch two cubes accumulate subpixel samples when they stop rotating.">Temporal accumulation</a></li>
+                <li><a href="?example=webgl_postprocessing_unreal_bloom" data-new
+                       data-description="Watch the animated Primary Ion Drive and adjust the glow from its bright surfaces.">Bloom</a></li>
+                <li><a href="?example=webgl_postprocessing_unreal_bloom_selective" data-new
+                       data-description="Click spheres to choose which ones cast a halo.">Selective bloom</a></li>
+                <li><a href="?example=webgl_mirror" data-new
+                       data-description="Orbit a room with animated objects reflected in floor and wall mirrors.">Planar mirrors</a></li>
+                <li><a href="?example=webgl_portal" data-new
+                       data-description="Look through two linked surfaces rendered from off-axis viewpoints.">Linked portals</a></li>
                 <li><a href="?example=webgl_rtt"
                        data-description="Render two revolving rings once, then reuse the image on the background and a grid of spheres.">Render to texture</a></li>
                 <li><a href="?example=webgl_read_float_buffer"
@@ -365,38 +395,38 @@
         <section>
             <h2>DOM and SVG</h2>
             <ul>
-                <li><a href="?example=css2d_label" data-new
+                <li><a href="?example=css2d_label"
                        data-description="Follow projected labels as the Moon orbits Earth.">Earth and Moon labels</a></li>
-                <li><a href="?example=css3d_mixed" data-new
+                <li><a href="?example=css3d_mixed"
                        data-description="Orbit an embedded animation set inside a WebGL frame.">CSS and WebGL frame</a></li>
-                <li><a href="?example=css3d_molecules" data-new
+                <li><a href="?example=css3d_molecules"
                        data-description="Rotate a molecule and switch between its atoms and bonds.">CSS molecules</a></li>
-                <li><a href="?example=css3d_orthographic" data-new
+                <li><a href="?example=css3d_orthographic"
                        data-description="Compare CSS surfaces and matching WebGL wireframes with an orthographic camera.">Orthographic CSS panels</a></li>
-                <li><a href="?example=css3d_periodictable" data-new
+                <li><a href="?example=css3d_periodictable"
                        data-description="Arrange the 118 element cards as a table, sphere, helix or grid.">Periodic table in 3D</a></li>
-                <li><a href="?example=css3d_sandbox" data-new
+                <li><a href="?example=css3d_sandbox"
                        data-description="Orbit colored DOM planes and their matching WebGL wireframes.">Perspective CSS panels</a></li>
-                <li><a href="?example=css3d_sprites" data-new
+                <li><a href="?example=css3d_sprites"
                        data-description="Watch 512 camera-facing DOM images arrange themselves into four formations.">CSS sprites</a></li>
-                <li><a href="?example=css3d_youtube" data-new
+                <li><a href="?example=css3d_youtube"
                        data-description="Orbit four DOM planes and choose which YouTube video to load.">Video planes</a></li>
-                <li><a href="?example=svg_lines" data-new
+                <li><a href="?example=svg_lines"
                        data-description="See thick and dashed SVG paths traced by rotating 3D rings.">SVG lines</a></li>
-                <li><a href="?example=svg_sandbox" data-new
+                <li><a href="?example=svg_sandbox"
                        data-description="Orbit a scene of SVG polygons, projected primitives and markers.">SVG geometry</a></li>
             </ul>
         </section>
         <section>
             <h2>Audio</h2>
             <ul>
-                <li><a href="?example=webaudio_orientation" data-new
+                <li><a href="?example=webaudio_orientation"
                        data-description="Orbit a boombox and hear its directional cone change with the listening angle.">Directional audio</a></li>
-                <li><a href="?example=webaudio_sandbox" data-new
+                <li><a href="?example=webaudio_sandbox"
                        data-description="Fly among three sound sources whose glow follows the audio spectrum.">Spatial audio sources</a></li>
-                <li><a href="?example=webaudio_timing" data-new
+                <li><a href="?example=webaudio_timing"
                        data-description="Listen to five balls trigger spatial sounds as they reach the floor.">Audio timing</a></li>
-                <li><a href="?example=webaudio_visualizer" data-new
+                <li><a href="?example=webaudio_visualizer"
                        data-description="Play a track and watch its frequency spectrum update a WebGL texture.">Audio spectrum</a></li>
             </ul>
         </section>

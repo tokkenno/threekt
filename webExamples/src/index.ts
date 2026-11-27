@@ -169,6 +169,21 @@ const examples = new Map<string, () => Promise<ExampleModule>>([
     ['webgl_postprocessing_outline', () => import('./examples/webgl_postprocessing_outline')],
     ['webgl_postprocessing_ssaa', () => import('./examples/webgl_postprocessing_ssaa')],
     ['webgl_postprocessing_taa', () => import('./examples/webgl_postprocessing_taa')],
+    ['webgl_materials_bumpmap', () => import('./examples/webgl_materials_bumpmap')],
+    ['webgl_materials_displacementmap', () => import('./examples/webgl_materials_displacementmap')],
+    ['webgl_materials_channels', () => import('./examples/webgl_materials_channels')],
+    ['webgl_materials_normalmap', () => import('./examples/webgl_materials_normalmap')],
+    ['webgl_materials_normalmap_object_space', () => import('./examples/webgl_materials_normalmap_object_space')],
+    ['webgl_materials_matcap', () => import('./examples/webgl_materials_matcap')],
+    ['webgl_materials_alphahash', () => import('./examples/webgl_materials_alphahash')],
+    ['webgl_materials_modified', () => import('./examples/webgl_materials_modified')],
+    ['webgl_postprocessing_unreal_bloom', () => import('./examples/webgl_postprocessing_unreal_bloom')],
+    ['webgl_postprocessing_unreal_bloom_selective', () => import('./examples/webgl_postprocessing_unreal_bloom_selective')],
+    ['webgl_mirror', () => import('./examples/webgl_mirror')],
+    ['webgl_portal', () => import('./examples/webgl_portal')],
+    ['webgl_geometry_teapot', () => import('./examples/webgl_geometry_teapot')],
+    ['webgl_modifier_curve', () => import('./examples/webgl_modifier_curve')],
+    ['webgl_modifier_curve_instanced', () => import('./examples/webgl_modifier_curve_instanced')],
 ]);
 
 const gallery = document.querySelector<HTMLElement>('#gallery')!;
