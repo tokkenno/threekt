@@ -1,7 +1,10 @@
 import {
-    AmbientLight, AxesHelper, Color, DirectionalLight, DomInputSurface, Mesh, MeshPhongMaterial,
-    Object3D, OrbitControls, PerspectiveCamera, Scene, SphereGeometry, Vector3
+    AmbientLight, Color, DirectionalLight, Mesh, MeshPhongMaterial, Object3D, PerspectiveCamera, Scene,
+    Vector3,
 } from 'threekt';
+import { AxesHelper } from 'threekt/helpers';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import earthUrl from './assets/planets/earth_atmos_2048.jpg?url';
 import moonUrl from './assets/planets/moon_1024.jpg?url';

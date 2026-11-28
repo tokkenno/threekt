@@ -1,7 +1,8 @@
 import {
-    AmbientLight, Color, DirectionalLight, DomInputSurface, Mesh, MeshLambertMaterial, OrbitControls,
-    PerspectiveCamera, PlaneGeometry, Scene, SphereGeometry, Timer
+    AmbientLight, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, Timer,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { PlaneGeometry, SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { AudioListener, AudioLoader, PositionalAudio } from 'threekt/audio';
 import ping from './assets/sounds/ping_pong.mp3?url';

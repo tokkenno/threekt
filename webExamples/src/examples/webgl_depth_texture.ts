@@ -1,7 +1,8 @@
 import {
-    Color, DomInputSurface, InstancedMesh, MeshBasicMaterial, Object3D, OrbitControls, PerspectiveCamera, Scene,
-    TorusKnotGeometry, Uniform, Uniforms,
+    Color, InstancedMesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Scene, Uniform, Uniforms,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { TorusKnotGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { fullscreenPass } from './fullscreenPass';

@@ -1,7 +1,8 @@
 import {
-    Color, DomInputSurface, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera, PointLight,
-    Scene, Side, SphereGeometry, Uniform, Uniforms,
+    Color, Mesh, MeshPhongMaterial, PerspectiveCamera, PointLight, Scene, Side, Uniform, Uniforms,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { SphereGeometry } from 'threekt/geometry';
 import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import woodUrl from './assets/hardwood2_diffuse.jpg?url';
 import { addSelect, addToggle, examplePanel } from './exampleControls';

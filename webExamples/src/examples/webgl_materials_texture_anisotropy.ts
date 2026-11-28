@@ -1,7 +1,8 @@
 import {
-    AmbientLight, Color, DirectionalLight, Euler, Fog, Mesh, MeshPhongMaterial, PerspectiveCamera,
-    PlaneGeometry, Scene, Wrapping,
+    AmbientLight, Color, DirectionalLight, Euler, Fog, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
+    Wrapping,
 } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import crateUrl from './assets/crate.gif?url';
 import { loadImageTexture } from './exampleControls';

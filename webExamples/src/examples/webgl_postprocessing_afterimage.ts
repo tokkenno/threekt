@@ -1,6 +1,5 @@
-import {
-    BoxGeometry, Color, Fog, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Uniform, Uniforms,
-} from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
+import { Color, Fog, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Uniform, Uniforms } from 'threekt';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

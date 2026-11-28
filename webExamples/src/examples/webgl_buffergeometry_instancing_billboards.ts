@@ -1,6 +1,7 @@
+import { CircleGeometry } from 'threekt/geometry';
 import {
-    CircleGeometry, ColorSpace, Euler, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, PerspectiveCamera,
-    Scene, Uniform,
+    ColorSpace, Euler, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, PerspectiveCamera, Scene,
+    Uniform,
 } from 'threekt';
 import { RawShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import circleUrl from './assets/circle.png?url';

@@ -1,7 +1,9 @@
 import {
-    AmbientLight, BoxGeometry, Color, DirectionalLight, Euler, GridHelper, Mesh, MeshBasicMaterial, MeshPhongMaterial,
-    PerspectiveCamera, PlaneGeometry, Raycaster, Scene, Vector2, Vector3,
+    AmbientLight, Color, DirectionalLight, Euler, Mesh, MeshBasicMaterial, MeshPhongMaterial,
+    PerspectiveCamera, Raycaster, Scene, Vector2, Vector3,
 } from 'threekt';
+import { BoxGeometry, PlaneGeometry } from 'threekt/geometry';
+import { GridHelper } from 'threekt/helpers';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import textureUrl from './assets/square-outline-textured.png?url';
 import { fitPerspective } from './fitPerspective';

@@ -1,10 +1,14 @@
 import {
-    AmbientLight, CameraHelper, CatmullRomCurve3, CinquefoilKnot, Color, DecoratedTorusKnot4a, DecoratedTorusKnot4b,
-    DecoratedTorusKnot5a, DecoratedTorusKnot5c, DirectionalLight, DomInputSurface, FigureEightPolynomialKnot, GrannyKnot,
-    HeartCurve, HelixCurve, KnotCurve, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, OrbitControls,
-    PerspectiveCamera, Scene, SphereGeometry, TorusKnot, TrefoilKnot, TrefoilPolynomialKnot, TubeGeometry, Vector3,
-    VivianiCurve, type Curve,
+    AmbientLight, Color, DirectionalLight, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D,
+    PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { CameraHelper } from 'threekt/helpers';
+import {
+    CatmullRomCurve3, CinquefoilKnot, DecoratedTorusKnot4a, DecoratedTorusKnot4b, DecoratedTorusKnot5a,
+    DecoratedTorusKnot5c, FigureEightPolynomialKnot, GrannyKnot, HeartCurve, HelixCurve, KnotCurve,
+    SphereGeometry, TorusKnot, TrefoilKnot, TrefoilPolynomialKnot, TubeGeometry, VivianiCurve, type Curve,
+} from 'threekt/geometry';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { examplePanel } from './exampleControls';
 

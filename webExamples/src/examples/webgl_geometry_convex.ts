@@ -1,8 +1,10 @@
 import {
-    AmbientLight, AxesHelper, BufferGeometry, Color, ConvexGeometry, DodecahedronGeometry, DomInputSurface,
-    Float32BufferAttribute, Group, Mesh, MeshLambertMaterial, OrbitControls, PerspectiveCamera, PointLight,
-    Points, PointsMaterial, Scene, Side, Vector3,
+    AmbientLight, BufferGeometry, Color, Float32BufferAttribute, Group, Mesh, MeshLambertMaterial,
+    PerspectiveCamera, PointLight, Points, PointsMaterial, Scene, Side, Vector3,
 } from 'threekt';
+import { AxesHelper } from 'threekt/helpers';
+import { ConvexGeometry, DodecahedronGeometry } from 'threekt/geometry';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import disc from './assets/disc.png';
 import { fitPerspective } from './fitPerspective';

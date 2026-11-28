@@ -1,7 +1,8 @@
 import {
-    AmbientLight, Color, InstancedMesh, Matrix4, Mesh, MeshLambertMaterial, MeshSurfaceSampler, Object3D,
-    PerspectiveCamera, PointLight, Scene, Sphere, TorusKnotGeometry, Usage, Vector3,
+    AmbientLight, Color, InstancedMesh, Matrix4, Mesh, MeshLambertMaterial, Object3D, PerspectiveCamera,
+    PointLight, Scene, Sphere, Usage, Vector3,
 } from 'threekt';
+import { MeshSurfaceSampler, TorusKnotGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import flowerUrl from './assets/flower/Flower.glb?url';
 import { addSelect, examplePanel } from './exampleControls';

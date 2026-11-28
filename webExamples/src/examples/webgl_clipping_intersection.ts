@@ -1,4 +1,5 @@
-import { Color, Group, Mesh, MeshLambertMaterial, Plane, Side, SphereGeometry, Vector3 } from 'threekt';
+import { Color, Group, Mesh, MeshLambertMaterial, Plane, Side, Vector3 } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 import { addSliders } from './addSliders';
 import { clippingPlaneHelper, clippingScene } from './clippingScene';
 import { addToggle, examplePanel } from './exampleControls';

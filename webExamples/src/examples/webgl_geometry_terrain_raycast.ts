@@ -1,7 +1,6 @@
-import {
-    Color, CylinderGeometry, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera,
-    Raycaster, Scene, Vector2, Vector3,
-} from 'threekt';
+import { Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3 } from 'threekt';
+import { CylinderGeometry } from 'threekt/geometry';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { createTerrain } from './createTerrain';
 import { fitPerspective } from './fitPerspective';

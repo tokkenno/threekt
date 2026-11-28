@@ -1,4 +1,5 @@
-import { Color, Mesh, MeshPhongMaterial, Plane, Side, TorusKnotGeometry, Vector3 } from 'threekt';
+import { Color, Mesh, MeshPhongMaterial, Plane, Side, Vector3 } from 'threekt';
+import { TorusKnotGeometry } from 'threekt/geometry';
 import { addSliders } from './addSliders';
 import { clippingScene } from './clippingScene';
 import { addToggle, examplePanel } from './exampleControls';

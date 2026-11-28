@@ -1,7 +1,8 @@
 import {
     AmbientLight, Color, InstancedMesh, MeshPhongMaterial, Object3D, OrthographicCamera, PerspectiveCamera,
-    PointLight, Scene, SphereGeometry
+    PointLight, Scene,
 } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addSliders } from './addSliders';
 import { addSelect, addToggle, examplePanel } from './exampleControls';

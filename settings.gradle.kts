@@ -29,6 +29,10 @@ dependencyResolutionManagement {
 }
 
 include(":engine:core")
+include(":engine:controls")
+include(":engine:exporters")
+include(":engine:geometry")
+include(":engine:helpers")
 include(":engine:loaders")
 include(":engine:audio")
 include(":engine:render:gl")

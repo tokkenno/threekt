@@ -1,5 +1,8 @@
-import { BoxGeometry, BufferGeometry, Color, CylinderGeometry, Float32BufferAttribute, Group, Object3D,
-    PerspectiveCamera, PlaneGeometry, Vector3, type BufferAttribute } from 'threekt';
+import { BoxGeometry, CylinderGeometry, PlaneGeometry } from 'threekt/geometry';
+import {
+    BufferGeometry, Color, Float32BufferAttribute, Group, Object3D, PerspectiveCamera, Vector3,
+    type BufferAttribute,
+} from 'threekt';
 import qrUrl from './assets/geometry-json/QRCode_buffergeometry.json?url';
 import { cssTrackball, fitCssCamera } from './exampleCss3d';
 import { exampleSvg, svgNamespace } from './exampleSvg';

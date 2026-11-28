@@ -1,7 +1,10 @@
 import {
-    Blending, BoxGeometry, BoxHelper, BufferGeometry, DomInputSurface, Euler, Float32BufferAttribute, Group, LineBasicMaterial,
-    LineSegments, Mesh, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Usage, Vector3,
+    Blending, BufferGeometry, Euler, Float32BufferAttribute, Group, LineBasicMaterial, LineSegments, Mesh,
+    PerspectiveCamera, Points, PointsMaterial, Scene, Usage, Vector3,
 } from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
+import { BoxHelper } from 'threekt/helpers';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 

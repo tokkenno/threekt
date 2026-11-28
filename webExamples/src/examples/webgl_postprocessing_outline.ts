@@ -1,8 +1,9 @@
 import {
-    AmbientLight, Color, DirectionalLight, DomInputSurface, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    OrbitControls, PerspectiveCamera, PlaneGeometry, Raycaster, Scene, SphereGeometry, TorusGeometry, Uniform, Uniforms,
-    Vector2,
+    AmbientLight, Color, DirectionalLight, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
+    PerspectiveCamera, Raycaster, Scene, Uniform, Uniforms, Vector2,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { PlaneGeometry, SphereGeometry, TorusGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { OBJLoader } from 'threekt/loaders';
 import treeUrl from './assets/tree.obj?url';

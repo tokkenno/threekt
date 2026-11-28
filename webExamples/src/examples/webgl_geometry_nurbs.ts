@@ -1,8 +1,8 @@
 import {
-    AmbientLight, BufferGeometry, Color, DirectionalLight, Float32BufferAttribute, Group, Line, LineBasicMaterial,
-    Mesh, MeshLambertMaterial, NURBSCurve, NURBSSurface, NURBSVolume, ParametricGeometry, PerspectiveCamera,
-    Scene, Side, Vector3, Vector4, Wrapping,
+    AmbientLight, BufferGeometry, Color, DirectionalLight, Float32BufferAttribute, Group, Line,
+    LineBasicMaterial, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, Side, Vector3, Vector4, Wrapping,
 } from 'threekt';
+import { NURBSCurve, NURBSSurface, NURBSVolume, ParametricGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import gridUrl from './assets/uv_grid_opengl.jpg';
 import { fitPerspective } from './fitPerspective';

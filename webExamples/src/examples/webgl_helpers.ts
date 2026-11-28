@@ -1,8 +1,9 @@
+import { BoxHelper, GridHelper } from 'threekt/helpers';
 import {
-    BoxHelper, BufferGeometry, Color, EdgesGeometry, Float32BufferAttribute, GridHelper, Group,
-    LineBasicMaterial, LineSegments, Mesh, MeshPhongMaterial, OctahedronGeometry, PerspectiveCamera,
-    PointLight, Scene, Vector3, WireframeGeometry,
+    BufferGeometry, Color, Float32BufferAttribute, Group, LineBasicMaterial, LineSegments, Mesh,
+    MeshPhongMaterial, PerspectiveCamera, PointLight, Scene, Vector3,
 } from 'threekt';
+import { EdgesGeometry, OctahedronGeometry, WireframeGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import model from './assets/lee-perry-smith/LeePerrySmith.glb?url';
 import { fitPerspective } from './fitPerspective';

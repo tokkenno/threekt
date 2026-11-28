@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, Lut, Mesh, MeshLambertMaterial,
-    OrbitControls, PerspectiveCamera, PointLight, Scene, Side,
+    BufferGeometry, Color, Float32BufferAttribute, Lut, Mesh, MeshLambertMaterial, PerspectiveCamera,
+    PointLight, Scene, Side,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import pressureUrl from './assets/pressure.json?url';
 import { addSelect, examplePanel } from './exampleControls';

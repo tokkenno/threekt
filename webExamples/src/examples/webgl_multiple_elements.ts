@@ -1,7 +1,8 @@
+import { BoxGeometry, CylinderGeometry, PolyhedronGeometry, SphereGeometry } from 'threekt/geometry';
 import {
-    BoxGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, Euler, HemisphereLight, Mesh,
-    MeshPhongMaterial, OrbitControls, PerspectiveCamera, PolyhedronGeometry, Scene, SphereGeometry,
+    Color, DirectionalLight, Euler, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 function dodecahedron() {

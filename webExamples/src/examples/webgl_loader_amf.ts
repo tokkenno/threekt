@@ -1,7 +1,9 @@
 import {
-    AmbientLight, BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, GridHelper, Mesh,
-    MeshPhongMaterial, OrbitControls, PerspectiveCamera, PointLight, Scene, Side,
+    AmbientLight, BufferGeometry, Color, Float32BufferAttribute, Mesh, MeshPhongMaterial, PerspectiveCamera,
+    PointLight, Scene, Side,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { GridHelper } from 'threekt/helpers';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import rook from './assets/amf/rook.amf?url';
 import { fitPerspective } from './fitPerspective';

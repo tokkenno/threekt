@@ -1,7 +1,7 @@
 import {
-    Color, DirectionalLight, DomInputSurface, HemisphereLight, Mesh, MeshLambertMaterial, OrbitControls,
-    PerspectiveCamera, Scene,
+    Color, DirectionalLight, HemisphereLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { VOXLoader } from 'threekt/loaders';
 import model from './assets/vox/monu10.vox?url';

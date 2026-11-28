@@ -1,9 +1,12 @@
 import {
-    AmbientLight, BoxGeometry, CapsuleGeometry, CircleGeometry, Color, ColorSpace, CylinderGeometry, Euler, IcosahedronGeometry,
-    LatheGeometry, Mesh, MeshPhongMaterial, OctahedronGeometry, ParametricFunctions, ParametricGeometry, PerspectiveCamera,
-    PlaneGeometry, PointLight, RingGeometry, Scene, Side, SphereGeometry, TetrahedronGeometry, TorusGeometry,
-    TorusKnotGeometry, Vector2, Vector3, Wrapping, type BufferGeometry,
+    AmbientLight, Color, ColorSpace, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, PointLight, Scene,
+    Side, Vector2, Vector3, Wrapping, type BufferGeometry,
 } from 'threekt';
+import {
+    BoxGeometry, CapsuleGeometry, CircleGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry,
+    OctahedronGeometry, ParametricFunctions, ParametricGeometry, PlaneGeometry, RingGeometry, SphereGeometry,
+    TetrahedronGeometry, TorusGeometry, TorusKnotGeometry,
+} from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import uvGridUrl from './assets/uv_grid_opengl.jpg?url';
 import { fitPerspective } from './fitPerspective';

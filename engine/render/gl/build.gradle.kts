@@ -7,6 +7,9 @@ kotlin {
         outputModuleName = "threekt-render-gl"
     }
     sourceSets {
+        commonTest.dependencies {
+            implementation(project(":engine:geometry"))
+        }
         commonMain.dependencies {
             api(project(":engine:core"))
         }

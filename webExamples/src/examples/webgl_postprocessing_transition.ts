@@ -1,8 +1,8 @@
 import {
-    AmbientLight, BoxGeometry, Color, ColorSpace, DirectionalLight, IcosahedronGeometry, InstancedMesh,
-    MeshPhongMaterial, Object3D, PerspectiveCamera, Scene, Uniform, Uniforms,
-    type BufferGeometry,
+    AmbientLight, Color, ColorSpace, DirectionalLight, InstancedMesh, MeshPhongMaterial, Object3D,
+    PerspectiveCamera, Scene, Uniform, Uniforms, type BufferGeometry,
 } from 'threekt';
+import { BoxGeometry, IcosahedronGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { addSelect, addToggle, examplePanel } from './exampleControls';
 import { addSliders } from './addSliders';

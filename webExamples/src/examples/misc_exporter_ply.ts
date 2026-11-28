@@ -1,4 +1,4 @@
-import { PLYExporter } from 'threekt';
+import { PLYExporter } from 'threekt/exporters';
 import { createCubeExporterExample } from './createCubeExporterExample';
 
 export async function createExample(canvas: HTMLCanvasElement) {

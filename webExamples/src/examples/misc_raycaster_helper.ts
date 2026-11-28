@@ -1,8 +1,8 @@
 import {
-    BufferGeometry, CapsuleGeometry, Color, Float32BufferAttribute, LineBasicMaterial, LineSegments,
-    Mesh, MeshNormalMaterial, PerspectiveCamera, Points, PointsMaterial, Raycaster, Scene, Side,
-    Vector3,
+    BufferGeometry, Color, Float32BufferAttribute, LineBasicMaterial, LineSegments, Mesh, MeshNormalMaterial,
+    PerspectiveCamera, Points, PointsMaterial, Raycaster, Scene, Side, Vector3,
 } from 'threekt';
+import { CapsuleGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 

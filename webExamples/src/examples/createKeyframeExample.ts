@@ -1,6 +1,8 @@
+import { AxesHelper } from 'threekt/helpers';
+import { BoxGeometry } from 'threekt/geometry';
 import {
-    AxesHelper, BoxGeometry, DiscreteInterpolant, LinearInterpolant, Mesh, MeshBasicMaterial, PerspectiveCamera,
-    Quaternion, QuaternionLinearInterpolant, Scene, Vector3,
+    DiscreteInterpolant, LinearInterpolant, Mesh, MeshBasicMaterial, PerspectiveCamera, Quaternion,
+    QuaternionLinearInterpolant, Scene, Vector3,
 } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';

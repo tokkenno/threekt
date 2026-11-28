@@ -1,6 +1,5 @@
-import {
-    DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene, Uniforms, type BufferGeometry,
-} from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { Mesh, PerspectiveCamera, Scene, Uniforms, type BufferGeometry } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { loadExampleCubeMap } from './exampleCubeMap';
 import { addEnvironment, environmentMaterial } from './exampleEnvironment';

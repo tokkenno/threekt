@@ -1,7 +1,8 @@
 import {
     BoxGeometry, CylinderGeometry, IcosahedronGeometry, LatheGeometry, OctahedronGeometry, PlaneGeometry,
-    SphereGeometry, TorusGeometry, TorusKnotGeometry, Vector2, type BufferGeometry,
-} from 'threekt';
+    SphereGeometry, TorusGeometry, TorusKnotGeometry,
+} from 'threekt/geometry';
+import { Vector2, type BufferGeometry } from 'threekt';
 
 function drawUVs(geometry: BufferGeometry, size: number) {
     const chart = document.createElement('canvas');

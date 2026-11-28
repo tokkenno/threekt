@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, CatmullRomCurve3, Color, ColorSpace, Euler, Float32BufferAttribute, Line,
-    LineBasicMaterial, PerspectiveCamera, Scene, Vector3,
+    BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, Line, LineBasicMaterial,
+    PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { CatmullRomCurve3 } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { followPointer } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

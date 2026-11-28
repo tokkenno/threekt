@@ -1,4 +1,5 @@
-import { BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TextureFilter } from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
+import { Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TextureFilter } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import brickUrl from './assets/brick_diffuse.jpg?url';
 import { addSelect, addToggle, examplePanel } from './exampleControls';

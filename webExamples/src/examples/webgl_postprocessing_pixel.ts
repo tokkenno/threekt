@@ -1,8 +1,9 @@
 import {
-    AmbientLight, BoxGeometry, Color, DirectionalLight, DomInputSurface, IcosahedronGeometry, Mesh, MeshNormalMaterial,
-    MeshPhongMaterial, OrbitControls, OrthographicCamera, PlaneGeometry, Scene, TextureFilter,
-    Uniform, Uniforms, Vector2, Wrapping,
+    AmbientLight, Color, DirectionalLight, Mesh, MeshNormalMaterial, MeshPhongMaterial, OrthographicCamera,
+    Scene, TextureFilter, Uniform, Uniforms, Vector2, Wrapping,
 } from 'threekt';
+import { BoxGeometry, IcosahedronGeometry, PlaneGeometry } from 'threekt/geometry';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import checkerUrl from './assets/checker.png?url';
 import { addSliders } from './addSliders';

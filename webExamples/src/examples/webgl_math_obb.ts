@@ -1,7 +1,9 @@
 import {
-    Color, DomInputSurface, Euler, HemisphereLight, BoxGeometry, Mesh, MeshBasicMaterial, MeshLambertMaterial, OBB, OrbitControls,
-    PerspectiveCamera, Raycaster, Scene, Vector2, Vector3,
+    Color, Euler, HemisphereLight, Mesh, MeshBasicMaterial, MeshLambertMaterial, OBB, PerspectiveCamera,
+    Raycaster, Scene, Vector2, Vector3,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { BoxGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { setPointer } from './raycastPointer';

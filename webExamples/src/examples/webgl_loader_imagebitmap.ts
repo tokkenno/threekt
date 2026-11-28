@@ -1,4 +1,8 @@
-import { BoxGeometry, Color, Euler, GridHelper, Group, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3 } from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
+import {
+    Color, Euler, Group, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3,
+} from 'threekt';
+import { GridHelper } from 'threekt/helpers';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import earthUrl from './assets/earth_atmos_2048.jpg?url';
 import { fitPerspective } from './fitPerspective';

@@ -1,4 +1,7 @@
-import { BlendEquation, BlendFactor, Blending, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry, Scene } from 'threekt';
+import {
+    BlendEquation, BlendFactor, Blending, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene,
+} from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import flareUrl from './assets/lensflare0_alpha.png?url';
 import { addBlendingBackground, generateLabelMaterial } from './blendingBackground';

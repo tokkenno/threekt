@@ -1,4 +1,5 @@
-import { Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Side, SphereGeometry, Vector3 } from 'threekt';
+import { Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Side, Vector3 } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import panoramaUrl from './assets/2294472375_24a3b8ef46_o.jpg?url';
 import { fitPerspective } from './fitPerspective';

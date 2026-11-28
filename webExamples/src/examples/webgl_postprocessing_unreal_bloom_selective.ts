@@ -1,7 +1,9 @@
 import {
-    AmbientLight, Color, DirectionalLight, DomInputSurface, IcosahedronGeometry, Mesh, MeshBasicMaterial,
-    MeshPhongMaterial, OrbitControls, PerspectiveCamera, Raycaster, Scene, Vector2
+    AmbientLight, Color, DirectionalLight, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera,
+    Raycaster, Scene, Vector2,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { IcosahedronGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { exampleBloom } from './exampleBloom';
 import { fitPerspective } from './fitPerspective';

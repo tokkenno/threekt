@@ -1,7 +1,9 @@
 import {
-    AmbientLight, Color, DirectionalLight, DomInputSurface, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial,
-    OrbitControls, PerspectiveCamera, Scene, Side, TeapotGeometry
+    AmbientLight, Color, DirectionalLight, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial,
+    PerspectiveCamera, Scene, Side,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { TeapotGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import texture from './assets/uv_grid_opengl.jpg?url';
 import { loadExampleCubeMap } from './exampleCubeMap';

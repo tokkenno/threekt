@@ -1,7 +1,7 @@
 import {
-    Color, DirectionalLight, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry, Scene,
-    Vector3,
+    Color, DirectionalLight, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { PLYLoader } from 'threekt/loaders';
 import dolphins from './assets/ply/dolphins.ply?url';

@@ -1,7 +1,7 @@
 import {
-    AmbientLight, BoxGeometry, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene,
-    Vector3,
+    AmbientLight, Color, DirectionalLight, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 

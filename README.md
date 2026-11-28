@@ -33,10 +33,17 @@ To build the examples for production, run `npm run build`.
 
 | Module | Gradle path | JavaScript entry point |
 |---|---|---|
-| Core scene, geometry, materials and math | `:engine:core` | `threekt` or `threekt/core` |
+| Core scene, buffer geometry, materials and math | `:engine:core` | `threekt` or `threekt/core` |
+| Camera controls and DOM input | `:engine:controls` | `threekt/controls` |
+| Scene and mesh exporters | `:engine:exporters` | `threekt/exporters` |
+| Procedural geometries, curves and shapes | `:engine:geometry` | `threekt/geometry` |
+| Scene and camera visualization helpers | `:engine:helpers` | `threekt/helpers` |
 | File format loaders and text geometry | `:engine:loaders` | `threekt/loaders` |
 | Audio and its browser adapter | `:engine:audio` | `threekt/audio` |
 | WebGL 2 and OpenGL ES 3.0 rendering | `:engine:render:gl` | `threekt/render-gl` |
+
+The four optional modules depend on the core. Loaders also use geometry for fonts and text extrusion.
+Kotlin package names remain the same, so Kotlin applications add Gradle dependencies for the modules they use.
 
 Renderers depend on the core and implement its `Renderer` interface. Applications can pass a renderer instance
 to code that takes this interface. Scene render callbacks also receive it. The GL module owns the concrete renderer,

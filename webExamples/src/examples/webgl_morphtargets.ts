@@ -1,7 +1,9 @@
 import {
-    AmbientLight, BoxGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Mesh, MeshPhongMaterial,
-    OrbitControls, PerspectiveCamera, Scene,
+    AmbientLight, Color, DirectionalLight, Float32BufferAttribute, Mesh, MeshPhongMaterial, PerspectiveCamera,
+    Scene,
 } from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addSliders } from './addSliders';
 import { fitPerspective } from './fitPerspective';

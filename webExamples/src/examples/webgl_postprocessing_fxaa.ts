@@ -1,7 +1,9 @@
 import {
-    Color, DirectionalLight, DomInputSurface, HemisphereLight, InstancedMesh, MeshPhongMaterial, Object3D,
-    OrbitControls, PerspectiveCamera, Scene, TetrahedronGeometry, Uniform, Uniforms, Vector2,
+    Color, DirectionalLight, HemisphereLight, InstancedMesh, MeshPhongMaterial, Object3D, PerspectiveCamera,
+    Scene, Uniform, Uniforms, Vector2,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { TetrahedronGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { encodeSrgb, fullscreenPass } from './fullscreenPass';

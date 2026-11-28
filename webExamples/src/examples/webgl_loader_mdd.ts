@@ -1,6 +1,5 @@
-import {
-    BoxGeometry, LinearInterpolant, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector3,
-} from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
+import { LinearInterpolant, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Vector3 } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { MDDLoader } from 'threekt/loaders';
 import mdd from './assets/mdd/cube.mdd?url';

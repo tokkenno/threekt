@@ -1,7 +1,9 @@
 import {
-    BufferGeometry, CameraHelper, Color, Euler, Float32BufferAttribute, Group, Mesh, MeshBasicMaterial,
-    OrthographicCamera, PerspectiveCamera, Points, PointsMaterial, Scene, SphereGeometry,
+    BufferGeometry, Color, Euler, Float32BufferAttribute, Group, Mesh, MeshBasicMaterial, OrthographicCamera,
+    PerspectiveCamera, Points, PointsMaterial, Scene,
 } from 'threekt';
+import { CameraHelper } from 'threekt/helpers';
+import { SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 export async function createExample(canvas: HTMLCanvasElement) {

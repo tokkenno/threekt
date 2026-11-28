@@ -1,5 +1,8 @@
-import { AmbientLight, Color, DirectionalLight, InstancedMesh, Mesh, MeshPhongMaterial, Object3D, PerspectiveCamera,
-    PlaneGeometry, Scene, Side, SphereGeometry, Vector3 } from 'threekt';
+import {
+    AmbientLight, Color, DirectionalLight, InstancedMesh, Mesh, MeshPhongMaterial, Object3D, PerspectiveCamera,
+    Scene, Side, Vector3,
+} from 'threekt';
+import { PlaneGeometry, SphereGeometry } from 'threekt/geometry';
 import suzanne from './assets/geometry-json/suzanne_buffergeometry.json?url';
 import { addSliders } from './addSliders';
 import { addToggle, examplePanel } from './exampleControls';

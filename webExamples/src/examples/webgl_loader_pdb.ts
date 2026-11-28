@@ -1,7 +1,6 @@
-import {
-    BoxGeometry, Color, DirectionalLight, DomInputSurface, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial,
-    PerspectiveCamera, Scene, TrackballControls, Vector3,
-} from 'threekt';
+import { BoxGeometry, IcosahedronGeometry } from 'threekt/geometry';
+import { Color, DirectionalLight, Group, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene, Vector3 } from 'threekt';
+import { DomInputSurface, TrackballControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { PDBLoader } from 'threekt/loaders';
 import { addSelect, examplePanel } from './exampleControls';

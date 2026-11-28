@@ -1,4 +1,5 @@
-import { Color, InstancedMesh, Object3D, PerspectiveCamera, Scene, SphereGeometry } from 'threekt';
+import { Color, InstancedMesh, Object3D, PerspectiveCamera, Scene } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 import { addSliders } from './addSliders';
 import { followPointer } from './exampleControls';
 import { loadExampleCubeMap } from './exampleCubeMap';

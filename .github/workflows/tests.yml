@@ -28,7 +28,17 @@ jobs:
       # Browser tests run in headless Chrome, which the Ubuntu runner provides, with SwiftShader WebGL2
       # configured in engine/render/gl/karma.config.d.
       - name: Run engine tests
-        run: ./gradlew :engine:core:jvmTest :engine:core:jsTest :engine:loaders:jvmTest :engine:loaders:jsTest :engine:audio:jvmTest :engine:audio:jsTest :engine:render:gl:jvmTest :engine:render:gl:jsTest --continue
+        run: >-
+          ./gradlew
+          :engine:core:jvmTest :engine:core:jsTest
+          :engine:controls:jvmTest :engine:controls:jsTest
+          :engine:exporters:jvmTest :engine:exporters:jsTest
+          :engine:geometry:jvmTest :engine:geometry:jsTest
+          :engine:helpers:jvmTest :engine:helpers:jsTest
+          :engine:loaders:jvmTest :engine:loaders:jsTest
+          :engine:audio:jvmTest :engine:audio:jsTest
+          :engine:render:gl:jvmTest :engine:render:gl:jsTest
+          --continue
 
       - name: Upload test reports
         if: always()

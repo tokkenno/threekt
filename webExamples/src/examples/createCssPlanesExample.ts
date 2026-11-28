@@ -1,7 +1,6 @@
-import {
-    Color, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, OrthographicCamera, PerspectiveCamera,
-    PlaneGeometry, Scene, Side,
-} from 'threekt';
+import { Color, Mesh, MeshBasicMaterial, OrthographicCamera, PerspectiveCamera, Scene, Side } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { PlaneGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addSliders } from './addSliders';
 import { addToggle, examplePanel } from './exampleControls';

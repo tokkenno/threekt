@@ -1,6 +1,7 @@
+import { BoxGeometry } from 'threekt/geometry';
 import {
-    BoxGeometry, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera,
-    Raycaster, Scene,
+    Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera, Raycaster,
+    Scene,
 } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { raycastPointer } from './raycastPointer';

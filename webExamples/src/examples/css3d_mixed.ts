@@ -1,8 +1,9 @@
+import { BoxGeometry, EdgesGeometry, ExtrudeGeometry, Path, Shape } from 'threekt/geometry';
 import {
-    BoxGeometry, Color, DomInputSurface, EdgesGeometry, ExtrudeGeometry, HemisphereLight, LineBasicMaterial,
-    LineSegments, Mesh, MeshLambertMaterial, OrbitControls, Path, PerspectiveCamera, Scene, Shape,
-    Vector2,
+    Color, HemisphereLight, LineBasicMaterial, LineSegments, Mesh, MeshLambertMaterial, PerspectiveCamera,
+    Scene, Vector2,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { cssPanel, exampleCss3d } from './exampleCss3d';
 import { fitPerspective } from './fitPerspective';

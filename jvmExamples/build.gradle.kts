@@ -19,6 +19,9 @@ val lwjglNatives = run {
 
 dependencies {
     implementation(project(":engine:render:gl"))
+    implementation(project(":engine:controls"))
+    implementation(project(":engine:geometry"))
+    implementation(project(":engine:helpers"))
     implementation(project(":engine:loaders"))
     implementation(libs.lwjgl)
     implementation(libs.lwjgl.egl)

@@ -1,8 +1,9 @@
 import {
-    Color, ColorSpace, Euler, ExtrudeGeometry, Group, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, Path,
-    PerspectiveCamera, PointLight, Points, PointsMaterial, BufferGeometry, Scene, Shape, ShapeGeometry, Side, Vector2,
-    Wrapping, type Object3D, type Texture,
+    Color, ColorSpace, Euler, Group, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PerspectiveCamera,
+    PointLight, Points, PointsMaterial, BufferGeometry, Scene, Side, Vector2, Wrapping, type Object3D,
+    type Texture,
 } from 'threekt';
+import { ExtrudeGeometry, Path, Shape, ShapeGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import uvGridUrl from './assets/uv_grid_opengl.jpg?url';
 import { examplePanel } from './exampleControls';

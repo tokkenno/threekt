@@ -1,8 +1,10 @@
 import {
-    AmbientLight, BoxGeometry, BufferGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface,
-    Euler, Float32BufferAttribute, Group, Mesh, MeshPhongMaterial, OBJExporter, OrbitControls,
-    PerspectiveCamera, Points, PointsMaterial, Scene,
+    AmbientLight, BufferGeometry, Color, DirectionalLight, Euler, Float32BufferAttribute, Group, Mesh,
+    MeshPhongMaterial, PerspectiveCamera, Points, PointsMaterial, Scene,
 } from 'threekt';
+import { BoxGeometry, CylinderGeometry } from 'threekt/geometry';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { OBJExporter } from 'threekt/exporters';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { downloadGeometry } from './downloadGeometry';
 import { fitPerspective } from './fitPerspective';

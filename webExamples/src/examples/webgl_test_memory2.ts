@@ -1,6 +1,5 @@
-import {
-    Color, Mesh, PerspectiveCamera, Scene, SphereGeometry,
-} from 'threekt';
+import { Color, Mesh, PerspectiveCamera, Scene } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

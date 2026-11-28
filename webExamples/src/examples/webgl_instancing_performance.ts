@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, BufferGeometryUtils, Color, DomInputSurface, Float32BufferAttribute, InstancedMesh, Matrix4, Mesh,
-    MeshNormalMaterial, OrbitControls, PerspectiveCamera, Quaternion, Scene, Vector3,
+    BufferGeometry, BufferGeometryUtils, Color, Float32BufferAttribute, InstancedMesh, Matrix4, Mesh,
+    MeshNormalMaterial, PerspectiveCamera, Quaternion, Scene, Vector3,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import modelUrl from './assets/suzanne_buffergeometry.json?url';
 import { examplePanel } from './exampleControls';

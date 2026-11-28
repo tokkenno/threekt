@@ -1,4 +1,5 @@
-import { Color, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry, Scene, Wrapping } from 'threekt';
+import { Color, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Wrapping } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 
 function backgroundTexture() {
     const canvas = document.createElement('canvas');

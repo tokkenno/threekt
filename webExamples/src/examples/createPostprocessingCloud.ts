@@ -1,7 +1,8 @@
 import {
     AmbientLight, Color, DirectionalLight, Fog, InstancedMesh, MeshPhongMaterial, Object3D, PerspectiveCamera,
-    Scene, SphereGeometry,
+    Scene,
 } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 
 export function createPostprocessingCloud(colored: boolean) {
     const scene = new Scene();

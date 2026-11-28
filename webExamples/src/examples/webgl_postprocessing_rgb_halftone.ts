@@ -1,7 +1,8 @@
+import { BoxGeometry } from 'threekt/geometry';
 import {
-    BoxGeometry, Color, DomInputSurface, Group, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera,
-    PointLight, Scene, Uniform, Uniforms,
+    Color, Group, Mesh, MeshPhongMaterial, PerspectiveCamera, PointLight, Scene, Uniform, Uniforms,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { ShaderMaterial, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { addSelect, addToggle, examplePanel } from './exampleControls';
 import { addSliders } from './addSliders';

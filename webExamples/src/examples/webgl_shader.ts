@@ -1,4 +1,5 @@
-import { Mesh, OrthographicCamera, PlaneGeometry, Scene, Uniform, Uniforms } from 'threekt';
+import { Mesh, OrthographicCamera, Scene, Uniform, Uniforms } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 // Monjori by Mic, as featured in the upstream Three.js shader example.

@@ -1,7 +1,6 @@
-import {
-    Color, DomInputSurface, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry,
-    PointLight, Scene, SphereGeometry, TrackballControls,
-} from 'threekt';
+import { Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, PointLight, Scene } from 'threekt';
+import { DomInputSurface, TrackballControls } from 'threekt/controls';
+import { PlaneGeometry, SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 

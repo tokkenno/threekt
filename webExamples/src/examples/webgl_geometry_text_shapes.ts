@@ -1,7 +1,9 @@
 import {
-    BufferGeometry, Color, DomInputSurface, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, OrbitControls,
-    PerspectiveCamera, Scene, ShapeGeometry, Side, type Path,
+    BufferGeometry, Color, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera,
+    Scene, Side,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { ShapeGeometry, type Path } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { FontLoader } from 'threekt/loaders';
 import fontUrl from './assets/fonts/helvetiker_regular.typeface.json?url';

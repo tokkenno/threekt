@@ -1,6 +1,7 @@
 import {
-    AmbientLight, BoxGeometry, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
+    AmbientLight, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
 } from 'threekt';
+import { BoxGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { dragMeshes } from './dragMeshes';
 import { examplePanel } from './exampleControls';

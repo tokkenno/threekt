@@ -1,4 +1,5 @@
-import { ColorSpace, Float32BufferAttribute, ImageTexture, Mesh, MeshBasicMaterial, PlaneGeometry } from 'threekt';
+import { ColorSpace, Float32BufferAttribute, ImageTexture, Mesh, MeshBasicMaterial } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { ImprovedNoise } from './ImprovedNoise';
 
 export function createTerrain() {

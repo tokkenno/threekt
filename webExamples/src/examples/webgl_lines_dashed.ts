@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, CatmullRomCurve3, Color, Euler, Float32BufferAttribute, Fog, Line,
-    LineDashedMaterial, LineSegments, PerspectiveCamera, Scene, Vector3,
+    BufferGeometry, Color, Euler, Float32BufferAttribute, Fog, Line, LineDashedMaterial, LineSegments,
+    PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { CatmullRomCurve3 } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { hilbert3D } from './hilbert3D';

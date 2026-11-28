@@ -1,6 +1,5 @@
-import {
-    DataTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry, Scene, TextureFilter,
-} from 'threekt';
+import { DataTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TextureFilter } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import checkerboard from './assets/FloorsCheckerboard_S_Diffuse.jpg';
 import { fitPerspective } from './fitPerspective';

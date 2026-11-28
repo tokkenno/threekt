@@ -1,8 +1,8 @@
 import {
-    Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, IcosahedronGeometry,
-    ImageTexture, Mesh, MeshBasicMaterial, MeshPhongMaterial, PlaneGeometry,
-    Scene,
+    Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, ImageTexture, Mesh, MeshBasicMaterial,
+    MeshPhongMaterial, Scene,
 } from 'threekt';
+import { IcosahedronGeometry, PlaneGeometry } from 'threekt/geometry';
 
 export function addColoredPolyhedra(scene: Scene, transparentShadows = false) {
     const light = new DirectionalLight(Color.fromHex(0xffffff), 3);

@@ -1,7 +1,8 @@
 import {
-    AmbientLight, BoxGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, FogExp2, Mesh,
-    MeshPhongMaterial, MouseAction, OrbitControls, PerspectiveCamera, Scene, TouchAction,
+    AmbientLight, Color, DirectionalLight, FogExp2, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
 } from 'threekt';
+import { BoxGeometry, CylinderGeometry } from 'threekt/geometry';
+import { DomInputSurface, MouseAction, OrbitControls, TouchAction } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

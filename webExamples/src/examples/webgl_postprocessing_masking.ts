@@ -1,7 +1,5 @@
-import {
-    BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, TorusGeometry,
-    Uniform, Uniforms
-} from 'threekt';
+import { BoxGeometry, TorusGeometry } from 'threekt/geometry';
+import { Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Uniform, Uniforms } from 'threekt';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import fruit from './assets/758px-Canestra_di_frutta_(Caravaggio).jpg?url';
 import photograph from './assets/2294472375_24a3b8ef46_o.jpg?url';

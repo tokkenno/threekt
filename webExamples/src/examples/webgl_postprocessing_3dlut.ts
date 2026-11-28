@@ -1,8 +1,8 @@
 import {
-    AmbientLight, Color, ColorSpace, DataTexture, DirectionalLight, DomInputSurface, Mesh,
-    MeshPhongMaterial, OrbitControls, PerspectiveCamera, Scene, TextureFilter, Uniform, Uniforms,
-    type Texture,
+    AmbientLight, Color, ColorSpace, DataTexture, DirectionalLight, Mesh, MeshPhongMaterial, PerspectiveCamera,
+    Scene, TextureFilter, Uniform, Uniforms, type Texture,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import model from './assets/damaged-helmet/DamagedHelmet.gltf?url';
 import binary from './assets/damaged-helmet/DamagedHelmet.bin?url';

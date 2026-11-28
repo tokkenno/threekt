@@ -1,7 +1,5 @@
-import {
-    Color, DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene, Uniform,
-    Uniforms
-} from 'threekt';
+import { Color, Mesh, PerspectiveCamera, Scene, Uniform, Uniforms } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import model from './assets/lee-perry-smith/LeePerrySmith.glb?url';
 import { loadExampleGlb } from './exampleGlb';

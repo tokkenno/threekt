@@ -1,7 +1,10 @@
+import { BoxGeometry, PlaneGeometry } from 'threekt/geometry';
 import {
-    BoxGeometry, Color, DirectionalLight, DomInputSurface, Euler, Fog, GridHelper, HemisphereLight, Mesh,
-    MeshPhongMaterial, OrbitControls, PerspectiveCamera, PlaneGeometry, Scene, Uint8BufferAttribute,
+    Color, DirectionalLight, Euler, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
+    Uint8BufferAttribute,
 } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { GridHelper } from 'threekt/helpers';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { downloadGeometry } from './downloadGeometry';
 import { fitPerspective } from './fitPerspective';

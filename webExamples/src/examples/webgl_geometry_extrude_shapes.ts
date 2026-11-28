@@ -1,7 +1,8 @@
 import {
-    AmbientLight, CatmullRomCurve3, Color, DomInputSurface, ExtrudeGeometry, Mesh, MeshLambertMaterial,
-    PerspectiveCamera, PointLight, Scene, Shape, TrackballControls, Vector2, Vector3,
+    AmbientLight, Color, Mesh, MeshLambertMaterial, PerspectiveCamera, PointLight, Scene, Vector2, Vector3,
 } from 'threekt';
+import { CatmullRomCurve3, ExtrudeGeometry, Shape } from 'threekt/geometry';
+import { DomInputSurface, TrackballControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 

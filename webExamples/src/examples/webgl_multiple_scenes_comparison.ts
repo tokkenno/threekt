@@ -1,7 +1,6 @@
-import {
-    Color, DomInputSurface, HemisphereLight, IcosahedronGeometry, Mesh, MeshPhongMaterial, OrbitControls,
-    PerspectiveCamera, Scene,
-} from 'threekt';
+import { Color, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { IcosahedronGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 

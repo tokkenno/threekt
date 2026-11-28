@@ -1,7 +1,8 @@
 import {
-    Color, DirectionalLight, FogExp2, GridHelper, Mesh, MeshPhongMaterial,
-    PerspectiveCamera, Scene, SphereGeometry, Vector3
+    Color, DirectionalLight, FogExp2, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { GridHelper } from 'threekt/helpers';
+import { SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { Audio, AudioAnalyser, AudioListener, PositionalAudio } from 'threekt/audio';
 import song from './assets/sounds/358232_j_s_song.ogg?url';

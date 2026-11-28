@@ -1,7 +1,8 @@
 import {
-    Color, DirectionalLight, Euler, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry,
-    Scene, Vector3,
+    Color, DirectionalLight, Euler, Fog, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, Scene,
+    Vector3,
 } from 'threekt';
+import { PlaneGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { STLLoader } from 'threekt/loaders';
 import diskUrl from './assets/stl/slotted_disk.stl?url';

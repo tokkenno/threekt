@@ -1,5 +1,8 @@
-import { BoxGeometry, Color, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhongMaterial,
-    Object3D, Plane, PlaneGeometry, Side, Vector3 } from 'threekt';
+import { BoxGeometry, PlaneGeometry } from 'threekt/geometry';
+import {
+    Color, Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhongMaterial, Object3D, Plane, Side,
+    Vector3,
+} from 'threekt';
 import { clippingScene } from './clippingScene';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

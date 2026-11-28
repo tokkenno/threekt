@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, PerspectiveCamera, Points, PointsMaterial,
-    Raycaster, Scene, SphereGeometry,
+    BufferGeometry, Color, Float32BufferAttribute, Mesh, MeshBasicMaterial, PerspectiveCamera, Points,
+    PointsMaterial, Raycaster, Scene,
 } from 'threekt';
+import { SphereGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { raycastPointer } from './raycastPointer';

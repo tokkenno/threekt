@@ -1,6 +1,7 @@
+import { BoxGeometry } from 'threekt/geometry';
 import {
-    BoxGeometry, Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, Mesh, MeshPhongMaterial, PerspectiveCamera,
-    Scene, VideoTexture,
+    Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, Mesh, MeshPhongMaterial,
+    PerspectiveCamera, Scene, VideoTexture,
 } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 // Sintel, Blender Foundation, from the Three.js example.

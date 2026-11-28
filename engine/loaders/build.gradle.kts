@@ -9,6 +9,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":engine:core"))
+            api(project(":engine:geometry"))
         }
     }
 }

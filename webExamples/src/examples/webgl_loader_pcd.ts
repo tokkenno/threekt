@@ -1,6 +1,5 @@
-import {
-    DomInputSurface, Euler, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Vector3,
-} from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
+import { Euler, PerspectiveCamera, Points, PointsMaterial, Scene, Vector3 } from 'threekt';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { PCDLoader } from 'threekt/loaders';
 import asciiUrl from './assets/pcd/simple.pcd?url';

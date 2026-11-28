@@ -1,6 +1,5 @@
-import {
-    Color, Fog, Group, IcosahedronGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene,
-} from 'threekt';
+import { Color, Fog, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene } from 'threekt';
+import { IcosahedronGeometry } from 'threekt/geometry';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { flyCamera } from './flyCamera';

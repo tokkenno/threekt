@@ -1,4 +1,5 @@
-import { Color, DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene } from 'threekt';
+import { Color, Mesh, PerspectiveCamera, Scene } from 'threekt';
+import { DomInputSurface, OrbitControls } from 'threekt/controls';
 import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import head from './assets/lee-perry-smith/LeePerrySmith.glb?url';
 import nefertiti from './assets/nefertiti/Nefertiti.glb?url';

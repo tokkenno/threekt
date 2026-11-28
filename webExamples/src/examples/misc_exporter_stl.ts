@@ -1,4 +1,4 @@
-import { STLExporter } from 'threekt';
+import { STLExporter } from 'threekt/exporters';
 import { createCubeExporterExample } from './createCubeExporterExample';
 
 export async function createExample(canvas: HTMLCanvasElement) {

@@ -1,4 +1,5 @@
-import { DomInputSurface, Matrix4, Object3D, PerspectiveCamera, Quaternion, TrackballControls, Vector3, type Camera } from 'threekt';
+import { DomInputSurface, TrackballControls } from 'threekt/controls';
+import { Matrix4, Object3D, PerspectiveCamera, Quaternion, Vector3, type Camera } from 'threekt';
 
 function matrixCss(matrix: Matrix4, camera: boolean) {
     const elements = Array.from(matrix.elements, (value, index) => {
