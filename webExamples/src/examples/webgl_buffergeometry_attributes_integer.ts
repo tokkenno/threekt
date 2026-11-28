@@ -1,8 +1,9 @@
 import {
-    BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, Fog, GLSLVersion, GpuType,
-    ImageTexture, Int16BufferAttribute, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Side,
-    Uniform, Uniforms, WebGL2Context, WebGLRenderer,
+    BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, Fog, GpuType,
+    ImageTexture, Int16BufferAttribute, Mesh, PerspectiveCamera, Scene, Side,
+    Uniform, Uniforms,
 } from 'threekt';
+import { GLSLVersion, ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import crateUrl from './assets/crate.gif?url';
 import checkerboardUrl from './assets/FloorsCheckerboard_S_Diffuse.jpg?url';
 import grassUrl from './assets/grasslight-big.jpg?url';

@@ -1,8 +1,8 @@
 import {
     Blending, BoxGeometry, BoxHelper, BufferGeometry, DomInputSurface, Euler, Float32BufferAttribute, Group, LineBasicMaterial,
-    LineSegments, Mesh, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Usage, Vector3, WebGL2Context,
-    WebGLRenderer,
+    LineSegments, Mesh, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Usage, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 type ParticleData = { velocity: Vector3; numConnections: number };

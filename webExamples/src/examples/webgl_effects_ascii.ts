@@ -1,7 +1,8 @@
 import {
     Color, DomInputSurface, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry,
-    PointLight, Scene, SphereGeometry, TrackballControls, WebGL2Context, WebGLRenderer,
+    PointLight, Scene, SphereGeometry, TrackballControls,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 const characters = ' .:-+*=%@#';

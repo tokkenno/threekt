@@ -1,4 +1,5 @@
-import { Color, FogExp2, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
+import { Color, FogExp2, PerspectiveCamera, Scene, Vector3 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { createTerrain } from './createTerrain';
 import { fitPerspective } from './fitPerspective';
 import { flyCamera } from './flyCamera';

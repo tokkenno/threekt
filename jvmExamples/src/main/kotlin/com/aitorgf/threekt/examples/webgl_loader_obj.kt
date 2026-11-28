@@ -7,8 +7,8 @@ import com.aitorgf.threekt.lights.AmbientLight
 import com.aitorgf.threekt.lights.DirectionalLight
 import com.aitorgf.threekt.loaders.MTLLoader
 import com.aitorgf.threekt.loaders.OBJLoader
-import com.aitorgf.threekt.renderers.WebGLRenderer
-import com.aitorgf.threekt.renderers.webgl.GLContext
+import com.aitorgf.threekt.render.gl.WebGLRenderer
+import com.aitorgf.threekt.render.gl.webgl.GLContext
 import com.aitorgf.threekt.scenes.Scene
 import com.aitorgf.threekt.textures.Texture
 import java.io.InputStream

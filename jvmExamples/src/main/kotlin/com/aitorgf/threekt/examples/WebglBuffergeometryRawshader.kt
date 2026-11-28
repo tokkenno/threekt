@@ -5,13 +5,13 @@ import com.aitorgf.threekt.core.BufferGeometry
 import com.aitorgf.threekt.core.Float32BufferAttribute
 import com.aitorgf.threekt.core.Uint8BufferAttribute
 import com.aitorgf.threekt.core.Uniform
-import com.aitorgf.threekt.materials.RawShaderMaterial
+import com.aitorgf.threekt.render.gl.materials.RawShaderMaterial
 import com.aitorgf.threekt.materials.Side
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Euler
 import com.aitorgf.threekt.objects.Mesh
-import com.aitorgf.threekt.renderers.WebGLRenderer
-import com.aitorgf.threekt.renderers.webgl.GLContext
+import com.aitorgf.threekt.render.gl.WebGLRenderer
+import com.aitorgf.threekt.render.gl.webgl.GLContext
 import com.aitorgf.threekt.scenes.Scene
 import kotlin.random.Random
 

@@ -1,7 +1,8 @@
 import {
     AmbientLight, BoxGeometry, Color, DirectionalLight, DomInputSurface, ImageTexture, Mesh, MeshPhongMaterial, OrbitControls,
-    PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { TGALoader } from 'threekt/loaders';
 import greyUrl from './assets/crate_grey8.tga?url';
 import colorUrl from './assets/crate_color8.tga?url';

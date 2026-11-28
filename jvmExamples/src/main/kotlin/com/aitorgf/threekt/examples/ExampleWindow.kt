@@ -1,6 +1,6 @@
 package com.aitorgf.threekt.examples
 
-import com.aitorgf.threekt.renderers.webgl.GLES30Context
+import com.aitorgf.threekt.render.gl.webgl.GLES30Context
 import java.io.File
 import javax.imageio.ImageIO
 import org.lwjgl.glfw.GLFW

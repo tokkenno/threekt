@@ -1,7 +1,8 @@
 import {
     BoxGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, Euler, HemisphereLight, Mesh,
-    MeshPhongMaterial, OrbitControls, PerspectiveCamera, PolyhedronGeometry, Scene, SphereGeometry, WebGL2Context, WebGLRenderer,
+    MeshPhongMaterial, OrbitControls, PerspectiveCamera, PolyhedronGeometry, Scene, SphereGeometry,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 function dodecahedron() {
     const t = (1 + Math.sqrt(5)) / 2;

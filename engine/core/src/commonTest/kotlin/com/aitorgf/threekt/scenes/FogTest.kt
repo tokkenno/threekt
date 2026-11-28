@@ -1,6 +1,5 @@
 package com.aitorgf.threekt.scenes
 
-import com.aitorgf.threekt.materials.GLSLVersion
 import com.aitorgf.threekt.math.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,11 +19,5 @@ class FogTest {
         assertEquals(2000.0, clone.near)
         assertEquals(3500.0, clone.far)
         assertNull(Scene().fog)
-    }
-
-    @Test
-    fun glslVersionsMatchThreeJsConstants() {
-        assertEquals("100", GLSLVersion.GLSL1.version)
-        assertEquals("300 es", GLSLVersion.GLSL3.version)
     }
 }

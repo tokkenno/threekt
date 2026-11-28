@@ -1,8 +1,9 @@
 import {
     AmbientLight, Color, ColorSpace, DataTexture, DirectionalLight, DomInputSurface, Mesh,
     MeshPhongMaterial, OrbitControls, PerspectiveCamera, Scene, TextureFilter, Uniform, Uniforms,
-    WebGL2Context, WebGLRenderer, WebGLRenderTarget, type Texture,
+    type Texture,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import model from './assets/damaged-helmet/DamagedHelmet.gltf?url';
 import binary from './assets/damaged-helmet/DamagedHelmet.bin?url';
 import albedo from './assets/damaged-helmet/Default_albedo.jpg?url';

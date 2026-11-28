@@ -1,7 +1,9 @@
-import { ColorSpace,
-    Color, Euler, Float32BufferAttribute, Mesh, PerspectiveCamera, Scene, ShaderMaterial, SphereGeometry,
-    Uniform, Usage, WebGL2Context, WebGLRenderer, Wrapping,
+import {
+    ColorSpace,
+    Color, Euler, Float32BufferAttribute, Mesh, PerspectiveCamera, Scene, SphereGeometry,
+    Uniform, Usage, Wrapping,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import waterUrl from './assets/water.jpg?url';
 import { loadImageTexture } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

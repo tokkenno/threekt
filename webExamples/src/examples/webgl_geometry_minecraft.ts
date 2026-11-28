@@ -1,7 +1,8 @@
 import {
     AmbientLight, BufferGeometry, BufferGeometryUtils, Color, DirectionalLight, Mesh, MeshLambertMaterial,
-    PerspectiveCamera, PlaneGeometry, Scene, Side, TextureFilter, Vector3, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, PlaneGeometry, Scene, Side, TextureFilter, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import atlas from './assets/minecraft-atlas.png';
 import { loadImageTexture } from './loadImageTexture';
 import { ImprovedNoise } from './ImprovedNoise';

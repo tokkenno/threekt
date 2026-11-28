@@ -1,8 +1,9 @@
 import {
     AmbientLight, Color, DirectionalLight, DomInputSurface, EdgesGeometry, LineBasicMaterial, LineSegments,
     Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera, PlaneGeometry, Scene,
-    Vector3, WebGL2Context, WebGLRenderer, type Plane,
+    Vector3, type Plane,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 export function clippingScene(canvas: HTMLCanvasElement, ground: boolean) {
     const scene = new Scene();

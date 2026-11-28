@@ -1,7 +1,8 @@
 import {
     BoxGeometry, Color, DirectionalLight, Euler, Mesh, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera,
-    Raycaster, Scene, WebGL2Context, WebGLRenderer,
+    Raycaster, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { raycastPointer } from './raycastPointer';
 
 export function createInteractiveCubes(canvas: HTMLCanvasElement, ortho: boolean) {

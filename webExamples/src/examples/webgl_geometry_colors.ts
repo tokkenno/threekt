@@ -1,4 +1,5 @@
-import { Color, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+import { Color, PerspectiveCamera, Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addColoredPolyhedra } from './coloredPolyhedra';
 import { fitPerspective } from './fitPerspective';
 import { followPointer } from './followPointer';

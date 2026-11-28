@@ -1,4 +1,5 @@
-import { DataTexture, Uniform, Uniforms, WebGL2Context, WebGLRenderer } from 'threekt';
+import { DataTexture, Uniform, Uniforms } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { Audio, AudioAnalyser, AudioListener, AudioLoader } from 'threekt/audio';
 import { badCatSound, exampleAudio } from './exampleAudio';
 import { fullscreenPass } from './fullscreenPass';

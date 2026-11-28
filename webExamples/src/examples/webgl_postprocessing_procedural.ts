@@ -1,4 +1,5 @@
-import { Uniform, Uniforms, WebGL2Context, WebGLRenderer } from 'threekt';
+import { Uniform, Uniforms } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addSelect, examplePanel } from './exampleControls';
 import { fullscreenPass } from './fullscreenPass';
 

@@ -1,7 +1,8 @@
 import {
     AmbientLight, CatmullRomCurve3, Color, DomInputSurface, ExtrudeGeometry, Mesh, MeshLambertMaterial,
-    PerspectiveCamera, PointLight, Scene, Shape, TrackballControls, Vector2, Vector3, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, PointLight, Scene, Shape, TrackballControls, Vector2, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 export function createExample(canvas: HTMLCanvasElement) {

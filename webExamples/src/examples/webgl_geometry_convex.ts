@@ -1,8 +1,9 @@
 import {
     AmbientLight, AxesHelper, BufferGeometry, Color, ConvexGeometry, DodecahedronGeometry, DomInputSurface,
     Float32BufferAttribute, Group, Mesh, MeshLambertMaterial, OrbitControls, PerspectiveCamera, PointLight,
-    Points, PointsMaterial, Scene, Side, Vector3, WebGL2Context, WebGLRenderer,
+    Points, PointsMaterial, Scene, Side, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import disc from './assets/disc.png';
 import { fitPerspective } from './fitPerspective';
 import { loadImageTexture } from './loadImageTexture';

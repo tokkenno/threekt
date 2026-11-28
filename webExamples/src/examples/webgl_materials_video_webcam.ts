@@ -1,7 +1,8 @@
 import {
     Color, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, PlaneGeometry,
-    Scene, VideoTexture, WebGL2Context, WebGLRenderer,
+    Scene, VideoTexture,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 export async function createExample(canvas: HTMLCanvasElement) {

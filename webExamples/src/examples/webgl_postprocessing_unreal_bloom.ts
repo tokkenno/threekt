@@ -1,5 +1,8 @@
-import { AmbientLight, Box3, Color, DirectionalLight, DomInputSurface, Group, Mesh, MeshPhongMaterial, OrbitControls,
-    PerspectiveCamera, Quaternion, Scene, Side, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
+import {
+    AmbientLight, Box3, Color, DirectionalLight, DomInputSurface, Group, Mesh, MeshPhongMaterial, OrbitControls,
+    PerspectiveCamera, Quaternion, Scene, Side, Vector3
+} from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import model from './assets/PrimaryIonDrive.glb?url';
 import { exampleBloom } from './exampleBloom';
 import { loadExampleGlb } from './exampleGlb';

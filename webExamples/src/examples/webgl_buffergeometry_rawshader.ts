@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, Color, Euler, Float32BufferAttribute, Mesh, PerspectiveCamera, RawShaderMaterial, Scene, Side,
-    Uint8BufferAttribute, Uniform, WebGL2Context, WebGLRenderer,
+    BufferGeometry, Color, Euler, Float32BufferAttribute, Mesh, PerspectiveCamera, Scene, Side,
+    Uint8BufferAttribute, Uniform,
 } from 'threekt';
+import { RawShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 const vertexShader = `

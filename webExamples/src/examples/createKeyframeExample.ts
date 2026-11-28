@@ -1,7 +1,8 @@
 import {
     AxesHelper, BoxGeometry, DiscreteInterpolant, LinearInterpolant, Mesh, MeshBasicMaterial, PerspectiveCamera,
-    Quaternion, QuaternionLinearInterpolant, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    Quaternion, QuaternionLinearInterpolant, Scene, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 export function createKeyframeExample(canvas: HTMLCanvasElement, grouped: boolean) {

@@ -1,7 +1,7 @@
 import {
-    AmbientLight, Color, DirectionalLight, DomInputSurface, OrbitControls, PerspectiveCamera, Scene, WebGL2Context,
-    WebGLRenderer,
+    AmbientLight, Color, DirectionalLight, DomInputSurface, OrbitControls, PerspectiveCamera, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { MTLLoader, OBJLoader } from 'threekt/loaders';
 import materialsUrl from './assets/male02/male02.mtl?url';
 import texture01Url from './assets/male02/01_-_Default1noCulling.JPG?url';

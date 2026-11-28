@@ -1,8 +1,8 @@
 import {
     Color, DirectionalLight, Mesh, MeshBasicMaterial, MeshPhongMaterial, OrthographicCamera, PerspectiveCamera,
-    RenderTargetType, Scene, SphereGeometry, TorusGeometry, Uniform, Uniforms, WebGL2Context, WebGLRenderer,
-    WebGLRenderTarget,
+    Scene, SphereGeometry, TorusGeometry, Uniform, Uniforms,
 } from 'threekt';
+import { RenderTargetType, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 import { followPointer } from './followPointer';

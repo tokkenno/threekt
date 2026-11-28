@@ -1,4 +1,5 @@
-import { BoxGeometry, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BoxGeometry, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import crateUrl from './assets/crate.gif?url';
 import { fitPerspective } from './fitPerspective';
 

@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, ImageTexture, OrbitControls, PerspectiveCamera,
-    Points, PointsMaterial, Scene, Usage, WebGL2Context, WebGLRenderer,
+    Points, PointsMaterial, Scene, Usage,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 const waveNames = ['Plane wave', 'Cylindrical wave', 'Spherical wave'];
 const waveDescriptions = [

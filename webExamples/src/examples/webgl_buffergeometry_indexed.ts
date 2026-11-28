@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, HemisphereLight, Mesh,
-    MeshPhongMaterial, PerspectiveCamera, Scene, Side, WebGL2Context, WebGLRenderer,
+    MeshPhongMaterial, PerspectiveCamera, Scene, Side,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 

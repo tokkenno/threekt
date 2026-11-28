@@ -1,7 +1,8 @@
 import {
     Color, DomInputSurface, Euler, Group, Object3D, OrbitControls, PerspectiveCamera, Raycaster, Scene, Sprite,
-    SpriteMaterial, Vector2, Vector3, WebGL2Context, WebGLRenderer,
+    SpriteMaterial, Vector2, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { setPointer } from './raycastPointer';
 

@@ -1,8 +1,9 @@
 import {
     AmbientLight, Color, DirectionalLight, DomInputSurface, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
     OrbitControls, PerspectiveCamera, PlaneGeometry, Raycaster, Scene, SphereGeometry, TorusGeometry, Uniform, Uniforms,
-    Vector2, WebGL2Context, WebGLRenderer, WebGLRenderTarget,
+    Vector2,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { OBJLoader } from 'threekt/loaders';
 import treeUrl from './assets/tree.obj?url';
 import { addSliders } from './addSliders';

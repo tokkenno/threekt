@@ -1,5 +1,5 @@
-import { RenderTargetType, Uniform, Uniforms, Vector2, WebGLRenderTarget, type Camera, type Scene,
-    type WebGLRenderer } from 'threekt';
+import { Uniform, Uniforms, Vector2, type Camera, type Scene } from 'threekt';
+import { RenderTargetType, WebGLRenderTarget, type WebGLRenderer } from 'threekt/render-gl';
 import { addSliders } from './addSliders';
 import { examplePanel } from './exampleControls';
 import { encodeSrgb, fullscreenPass } from './fullscreenPass';

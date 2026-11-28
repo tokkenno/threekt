@@ -1,7 +1,8 @@
 import {
     Color, CylinderGeometry, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera,
-    Raycaster, Scene, Vector2, Vector3, WebGL2Context, WebGLRenderer,
+    Raycaster, Scene, Vector2, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { createTerrain } from './createTerrain';
 import { fitPerspective } from './fitPerspective';
 import { raycastPointer } from './raycastPointer';

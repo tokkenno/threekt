@@ -1,7 +1,7 @@
 import {
     BoxGeometry, Color, Fog, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, Uniform, Uniforms,
-    WebGL2Context, WebGLRenderer, WebGLRenderTarget,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 import { fullscreenPass, texturePass } from './fullscreenPass';

@@ -1,7 +1,8 @@
 import {
     AmbientLight, BufferGeometry, Color, DirectionalLight, Euler, Float32BufferAttribute, Fog, Int16BufferAttribute, Mesh,
-    MeshPhongMaterial, PerspectiveCamera, Scene, Side, Uint8BufferAttribute, Vector3, WebGL2Context, WebGLRenderer,
+    MeshPhongMaterial, PerspectiveCamera, Scene, Side, Uint8BufferAttribute, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 /**

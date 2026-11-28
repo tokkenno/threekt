@@ -1,7 +1,8 @@
 import {
     Blending, BufferGeometry, ColorSpace, Float32BufferAttribute, PerspectiveCamera, Points,
-    Scene, ShaderMaterial, TextureFilter, Uniform, Uniforms, Vector3, VideoTexture, WebGL2Context, WebGLRenderer,
+    Scene, TextureFilter, Uniform, Uniforms, Vector3, VideoTexture,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import webmUrl from './assets/kinect.webm?url';
 import mp4Url from './assets/kinect.mp4?url';
 import { fitPerspective } from './fitPerspective';

@@ -1,5 +1,8 @@
-import { RenderTargetType, PerspectiveCamera, Uniform, Uniforms, WebGLRenderTarget,
-    type Camera, type Scene, type WebGLRenderer } from 'threekt';
+import {
+    PerspectiveCamera, Uniform, Uniforms,
+    type Camera, type Scene
+} from 'threekt';
+import { RenderTargetType, WebGLRenderTarget, type WebGLRenderer } from 'threekt/render-gl';
 import { fullscreenPass, texturePass } from './fullscreenPass';
 
 // The 32-sample jitter sequence from Three.js SSAARenderPass, in sixteenths of a pixel.

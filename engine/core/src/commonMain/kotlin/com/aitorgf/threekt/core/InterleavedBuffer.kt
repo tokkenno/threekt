@@ -1,5 +1,8 @@
+@file:OptIn(ThreektRendererApi::class)
+
 package com.aitorgf.threekt.core
 
+import com.aitorgf.threekt.ThreektRendererApi
 import com.aitorgf.threekt.math.MathUtils
 import kotlin.js.JsExport
 import kotlin.js.JsName
@@ -36,8 +39,12 @@ open class InterleavedBuffer internal constructor(storage: BufferAttribute, stri
     @JsName("fromInt32Array")
     constructor(array: IntArray, stride: Int) : this(Int32BufferAttribute(array, 1), stride)
 
-    /** The typed array, viewed as a one-component attribute. */
-    internal var storage: BufferAttribute = storage
+    /**
+     * The typed array, viewed as a one-component attribute. Renderers upload and track this attribute in
+     * place of the buffer.
+     */
+    @ThreektRendererApi
+    var storage: BufferAttribute = storage
         private set
 
     /** Number of array elements from the start of one vertex to the start of the next. */

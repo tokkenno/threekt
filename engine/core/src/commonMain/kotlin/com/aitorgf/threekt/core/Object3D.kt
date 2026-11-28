@@ -9,7 +9,7 @@ import com.aitorgf.threekt.math.Matrix3
 import com.aitorgf.threekt.math.Matrix4
 import com.aitorgf.threekt.math.Quaternion
 import com.aitorgf.threekt.math.Vector3
-import com.aitorgf.threekt.renderers.WebGLRenderer
+import com.aitorgf.threekt.renderers.Renderer
 import com.aitorgf.threekt.scenes.Scene
 import kotlin.js.JsExport
 
@@ -147,7 +147,7 @@ open class Object3D : EventDispatcher() {
      * object. Does nothing by default; override it to update uniforms or other state per draw.
      */
     open fun onBeforeRender(
-        renderer: WebGLRenderer,
+        renderer: Renderer,
         scene: Scene,
         camera: Camera,
         geometry: BufferGeometry,
@@ -157,7 +157,7 @@ open class Object3D : EventDispatcher() {
 
     /** Called by the renderer just after this object is drawn. Does nothing by default. */
     open fun onAfterRender(
-        renderer: WebGLRenderer,
+        renderer: Renderer,
         scene: Scene,
         camera: Camera,
         geometry: BufferGeometry,

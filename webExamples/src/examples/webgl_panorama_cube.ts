@@ -1,7 +1,8 @@
 import {
     BoxGeometry, BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, Group, ImageTexture,
-    Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, Side, WebGL2Context, WebGLRenderer,
+    Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, Side,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import atlasUrl from './assets/sun_temple_stripe.jpg?url';
 import { fitPerspective } from './fitPerspective';
 

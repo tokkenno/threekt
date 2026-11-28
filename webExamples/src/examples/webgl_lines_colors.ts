@@ -1,7 +1,8 @@
 import {
     BufferGeometry, CatmullRomCurve3, Color, ColorSpace, Euler, Float32BufferAttribute, Line,
-    LineBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    LineBasicMaterial, PerspectiveCamera, Scene, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { followPointer } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 import { hilbert3D } from './hilbert3D';

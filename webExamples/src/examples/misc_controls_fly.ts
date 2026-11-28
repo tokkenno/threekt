@@ -1,7 +1,8 @@
 import {
     AmbientLight, BufferGeometry, Color, DirectionalLight, Float32BufferAttribute, Mesh, MeshLambertMaterial,
-    PerspectiveCamera, Points, PointsMaterial, Scene, SphereGeometry, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, Points, PointsMaterial, Scene, SphereGeometry,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import earthUrl from './assets/planets/earth_atmos_2048.jpg?url';
 import cloudUrl from './assets/planets/earth_clouds_1024.png?url';
 import moonUrl from './assets/planets/moon_1024.jpg?url';

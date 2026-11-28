@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, Mesh, MeshBasicMaterial,
-    OrbitControls, PerspectiveCamera, Scene, ShaderMaterial, Side, Uniform, WebGL2Context, WebGLRenderer,
+    OrbitControls, PerspectiveCamera, Scene, Side, Uniform,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import modelUrl from './assets/WaltHeadLo_buffergeometry.json?url';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

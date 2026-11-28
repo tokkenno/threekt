@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, DomInputSurface, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, Object3D, OrbitControls,
-    PerspectiveCamera, Scene, ShapeGeometry, Side, WebGL2Context, WebGLRenderer, type Path,
+    PerspectiveCamera, Scene, ShapeGeometry, Side, type Path,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { FontLoader } from 'threekt/loaders';
 import fontUrl from './assets/fonts/helvetiker_regular.typeface.json?url';
 import { fitPerspective } from './fitPerspective';

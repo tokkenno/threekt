@@ -1,5 +1,8 @@
+@file:OptIn(ThreektRendererApi::class)
+
 package com.aitorgf.threekt.core
 
+import com.aitorgf.threekt.ThreektRendererApi
 import kotlin.js.JsExport
 import kotlin.js.JsName
 

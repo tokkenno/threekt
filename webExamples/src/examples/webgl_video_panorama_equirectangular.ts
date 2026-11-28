@@ -1,7 +1,8 @@
 import {
     Color, DomInputSurface, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, Side,
-    SphereGeometry, VideoTexture, WebGL2Context, WebGLRenderer,
+    SphereGeometry, VideoTexture,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import webmUrl from './assets/pano.webm?url';
 import mp4Url from './assets/pano.mp4?url';
 import { fitPerspective } from './fitPerspective';

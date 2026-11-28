@@ -50,7 +50,6 @@ class BoxHelperTest {
         assertEquals(Usage.StaticDraw, attribute.usage)
         assertSame(attribute, attribute.setUsage(Usage.DynamicDraw))
         assertEquals(Usage.DynamicDraw, attribute.usage)
-        assertEquals(0x88E8, Usage.DynamicDraw.glValue)
     }
 
     private fun sqrt14() = kotlin.math.sqrt(14.0)

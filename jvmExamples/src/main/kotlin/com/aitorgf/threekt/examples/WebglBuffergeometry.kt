@@ -11,8 +11,8 @@ import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.math.Euler
 import com.aitorgf.threekt.math.Vector3
 import com.aitorgf.threekt.objects.Mesh
-import com.aitorgf.threekt.renderers.WebGLRenderer
-import com.aitorgf.threekt.renderers.webgl.GLContext
+import com.aitorgf.threekt.render.gl.WebGLRenderer
+import com.aitorgf.threekt.render.gl.webgl.GLContext
 import com.aitorgf.threekt.scenes.Fog
 import com.aitorgf.threekt.scenes.Scene
 import kotlin.random.Random

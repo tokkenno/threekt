@@ -1,7 +1,8 @@
 import {
     AmbientLight, Color, InstancedMesh, Matrix4, Mesh, MeshLambertMaterial, MeshSurfaceSampler, Object3D,
-    PerspectiveCamera, PointLight, Scene, Sphere, TorusKnotGeometry, Usage, Vector3, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, PointLight, Scene, Sphere, TorusKnotGeometry, Usage, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import flowerUrl from './assets/flower/Flower.glb?url';
 import { addSelect, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

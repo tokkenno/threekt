@@ -1,7 +1,7 @@
 import {
-    Color, DomInputSurface, Mesh, OrbitControls, OrthographicCamera, PerspectiveCamera, Scene, Side, WebGL2Context,
-    WebGLRenderer,
+    Color, DomInputSurface, Mesh, OrbitControls, OrthographicCamera, PerspectiveCamera, Scene, Side,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { OBJLoader } from 'threekt/loaders';
 import objectUrl from './assets/ninja/ninjaHead_Low.obj?url';
 import normalUrl from './assets/ninja/normal.png?url';

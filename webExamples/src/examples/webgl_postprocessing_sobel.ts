@@ -1,7 +1,8 @@
 import {
     AmbientLight, Color, DomInputSurface, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera, PointLight,
-    Scene, TorusKnotGeometry, Uniform, Uniforms, Vector2, WebGL2Context, WebGLRenderer, WebGLRenderTarget,
+    Scene, TorusKnotGeometry, Uniform, Uniforms, Vector2,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 import { fullscreenPass } from './fullscreenPass';

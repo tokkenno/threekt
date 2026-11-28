@@ -1,4 +1,5 @@
-import { Uniform, Uniforms, Vector2, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt';
+import { Uniform, Uniforms, Vector2 } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { createPostprocessingCloud } from './createPostprocessingCloud';
 import { fitPerspective } from './fitPerspective';
 import { fullscreenPass } from './fullscreenPass';

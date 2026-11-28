@@ -1,7 +1,8 @@
 import {
-    InstancedMesh, Mesh, Object3D, PerspectiveCamera, Scene, ShaderMaterial, Side, SphereGeometry,
-    Uniform, Uniforms, Vector3, WebGL2Context, WebGLRenderer, WebGLRenderTarget,
+    InstancedMesh, Mesh, Object3D, PerspectiveCamera, Scene, Side, SphereGeometry,
+    Uniform, Uniforms, Vector3,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { cubeLookup, loadExampleCubeMap } from './exampleCubeMap';
 import { followPointer } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

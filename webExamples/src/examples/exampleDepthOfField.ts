@@ -1,4 +1,5 @@
-import { Uniform, Uniforms, Vector2, WebGL2Context, WebGLRenderer, WebGLRenderTarget, type PerspectiveCamera, type Scene } from 'threekt';
+import { Uniform, Uniforms, Vector2, type PerspectiveCamera, type Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { encodeSrgb, fullscreenPass } from './fullscreenPass';
 
 export function exampleDepthOfField(canvas: HTMLCanvasElement, camera: PerspectiveCamera, autofocus: boolean) {

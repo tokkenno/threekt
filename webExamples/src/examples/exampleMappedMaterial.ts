@@ -1,4 +1,5 @@
-import { Color, ColorSpace, Matrix4, ShaderMaterial, Side, Uniform, Uniforms, Vector2, type Texture } from 'threekt';
+import { Color, ColorSpace, Matrix4, Side, Uniform, Uniforms, Vector2, type Texture } from 'threekt';
+import { ShaderMaterial } from 'threekt/render-gl';
 import { encodeSrgb } from './fullscreenPass';
 
 type Maps = { normal?: Texture; bump?: Texture; diffuse?: Texture; specular?: Texture;

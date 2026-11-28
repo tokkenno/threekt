@@ -1,7 +1,9 @@
-import { ColorSpace,
-    BoxGeometry, Color, Euler, Matrix4, PerspectiveCamera, Points, Scene, ShaderMaterial, SphereGeometry,
-    Uint32BufferAttribute, Uniform, Vector3, WebGL2Context, WebGLRenderer, Wrapping,
+import {
+    ColorSpace,
+    BoxGeometry, Color, Euler, Matrix4, PerspectiveCamera, Points, Scene, SphereGeometry,
+    Uint32BufferAttribute, Uniform, Vector3, Wrapping,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import discUrl from './assets/disc.png?url';
 import { customPointGeometry, uniquePositions } from './customPointGeometry';
 import { loadImageTexture } from './exampleControls';

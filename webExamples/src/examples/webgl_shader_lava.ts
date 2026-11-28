@@ -1,5 +1,8 @@
-import { ColorSpace, Mesh, PerspectiveCamera, Scene, ShaderMaterial, TorusGeometry, Uniform, Uniforms, Vector2, Vector3,
-    WebGL2Context, WebGLRenderer, WebGLRenderTarget, Wrapping } from 'threekt';
+import {
+    ColorSpace, Mesh, PerspectiveCamera, Scene, TorusGeometry, Uniform, Uniforms, Vector2, Vector3,
+    Wrapping
+} from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import cloud from './assets/lava/cloud.png?url';
 import lava from './assets/lava/lavatile.jpg?url';
 import { fitPerspective } from './fitPerspective';

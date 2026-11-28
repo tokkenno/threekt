@@ -1,7 +1,8 @@
 import {
     BoxGeometry, Color, DirectionalLight, DomInputSurface, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial,
-    PerspectiveCamera, Scene, TrackballControls, Vector3, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, Scene, TrackballControls, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { PDBLoader } from 'threekt/loaders';
 import { addSelect, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

@@ -1,4 +1,5 @@
-import type { PerspectiveCamera, Scene, WebGLRenderer } from 'threekt';
+import { type PerspectiveCamera,type Scene } from 'threekt';
+import { type WebGLRenderer } from 'threekt/render-gl';
 
 /** Draws two scenes with the same full-canvas projection and a gap between the scissor rectangles. */
 export function renderTextureComparison(canvas: HTMLCanvasElement, renderer: WebGLRenderer, camera: PerspectiveCamera, scenes: [Scene, Scene]) {

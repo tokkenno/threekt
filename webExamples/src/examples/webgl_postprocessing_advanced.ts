@@ -1,5 +1,8 @@
-import { Color, DirectionalLight, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, Scene,
-    Uniform, Uniforms, Vector2, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt';
+import {
+    Color, DirectionalLight, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera, Scene,
+    Uniform, Uniforms, Vector2
+} from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import head from './assets/lee-perry-smith/LeePerrySmith.glb?url';
 import castle from './assets/cube/SwedishRoyalCastle/pz.jpg?url';
 import { fitPerspective } from './fitPerspective';

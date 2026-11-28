@@ -1,7 +1,8 @@
 import {
     Blending, BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, FogExp2, PerspectiveCamera,
-    Points, PointsMaterial, Scene, WebGL2Context, WebGLRenderer,
+    Points, PointsMaterial, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import snowflake1 from './assets/snowflake1.png?url';
 import snowflake2 from './assets/snowflake2.png?url';
 import snowflake3 from './assets/snowflake3.png?url';

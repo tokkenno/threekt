@@ -1,4 +1,5 @@
-import { ColorSpace, DataTexture, Uniform, Uniforms, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt';
+import { ColorSpace, DataTexture, Uniform, Uniforms } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { createPostprocessingCloud } from './createPostprocessingCloud';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

@@ -1,7 +1,7 @@
 import {
-    BufferGeometry, Euler, Float32BufferAttribute, Line, LineBasicMaterial, PerspectiveCamera, Scene, WebGL2Context,
-    WebGLRenderer,
+    BufferGeometry, Euler, Float32BufferAttribute, Line, LineBasicMaterial, PerspectiveCamera, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 const segments = 10000;

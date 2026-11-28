@@ -31,5 +31,6 @@ dependencyResolutionManagement {
 include(":engine:core")
 include(":engine:loaders")
 include(":engine:audio")
+include(":engine:render:gl")
 include(":engine:dist:npm")
 include(":jvmExamples")

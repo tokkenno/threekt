@@ -1,8 +1,9 @@
 import {
     BoxGeometry, Color, Euler, Float32BufferAttribute, Fog, HemisphereLight, Mesh, MeshBasicMaterial, MeshPhongMaterial,
-    PerspectiveCamera, PlaneGeometry, Raycaster, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, PlaneGeometry, Raycaster, Scene, Vector3,
     type BufferGeometry,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 

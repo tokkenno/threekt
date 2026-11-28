@@ -1,7 +1,8 @@
 import {
     Color, ColorSpace, Euler, InstancedBufferGeometry, InstancedMesh, InterleavedBuffer, InterleavedBufferAttribute, Matrix4,
-    MeshBasicMaterial, PerspectiveCamera, Quaternion, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    MeshBasicMaterial, PerspectiveCamera, Quaternion, Scene, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import crateUrl from './assets/crate.gif?url';
 import { fitPerspective } from './fitPerspective';
 import { loadImageTexture } from './loadImageTexture';

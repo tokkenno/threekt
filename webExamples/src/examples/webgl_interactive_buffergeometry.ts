@@ -1,7 +1,8 @@
 import {
     AmbientLight, BufferGeometry, Color, DirectionalLight, Euler, Float32BufferAttribute, Fog, Line,
-    LineBasicMaterial, Mesh, MeshPhongMaterial, PerspectiveCamera, Raycaster, Scene, Side, Usage, Vector3, WebGL2Context, WebGLRenderer,
+    LineBasicMaterial, Mesh, MeshPhongMaterial, PerspectiveCamera, Raycaster, Scene, Side, Usage, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { raycastPointer } from './raycastPointer';
 

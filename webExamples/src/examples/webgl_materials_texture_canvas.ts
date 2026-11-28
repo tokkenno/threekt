@@ -1,4 +1,5 @@
-import { BoxGeometry, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BoxGeometry, Color, Euler, ImageTexture, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 /** Port of Three.js examples/webgl_materials_texture_canvas.html. */

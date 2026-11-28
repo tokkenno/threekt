@@ -1,6 +1,7 @@
 import {
-    DomInputSurface, Group, LineSegments, OrbitControls, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
+    DomInputSurface, Group, LineSegments, OrbitControls, PerspectiveCamera, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { GCodeLoader } from 'threekt/loaders';
 import benchy from './assets/gcode/benchy.gcode?url';
 import m82 from './assets/gcode/test_m82.gcode?url';

@@ -1,5 +1,8 @@
+@file:OptIn(ThreektRendererApi::class)
+
 package com.aitorgf.threekt.core
 
+import com.aitorgf.threekt.ThreektRendererApi
 import com.aitorgf.threekt.math.Color
 import com.aitorgf.threekt.extras.DataUtils
 import kotlin.test.assertIs

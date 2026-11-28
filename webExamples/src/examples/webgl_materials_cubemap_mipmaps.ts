@@ -1,5 +1,8 @@
-import { DomInputSurface, ImageTexture, Mesh, OrbitControls, PerspectiveCamera, Scene,
-    SphereGeometry, Uniform, Uniforms, WebGL2Context, WebGLRenderer } from 'threekt';
+import {
+    DomInputSurface, ImageTexture, Mesh, OrbitControls, PerspectiveCamera, Scene,
+    SphereGeometry, Uniform, Uniforms
+} from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { cubeFaces } from './exampleCubeMap';
 import { addSliders } from './addSliders';
 import { examplePanel } from './exampleControls';

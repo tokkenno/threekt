@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, ColorSpace, Float32BufferAttribute, FogExp2, PerspectiveCamera, Points,
-    PointsMaterial, Scene, WebGL2Context, WebGLRenderer,
+    PointsMaterial, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import discUrl from './assets/disc.png?url';
 import { addToggle, examplePanel, followPointer, loadImageTexture } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

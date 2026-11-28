@@ -3,7 +3,7 @@ package com.aitorgf.threekt.examples
 import com.aitorgf.threekt.controls.Cursor
 import com.aitorgf.threekt.controls.InputListener
 import com.aitorgf.threekt.controls.InputSurface
-import com.aitorgf.threekt.renderers.EglHeadlessContext
+import com.aitorgf.threekt.render.gl.EglHeadlessContext
 import java.io.File
 import java.nio.file.Path
 import javax.imageio.ImageIO

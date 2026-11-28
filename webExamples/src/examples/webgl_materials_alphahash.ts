@@ -1,5 +1,8 @@
-import { Color, DomInputSurface, IcosahedronGeometry, InstancedMesh, Object3D, OrbitControls,
-    PerspectiveCamera, Scene, ShaderMaterial, Uniform, Uniforms, WebGL2Context, WebGLRenderer } from 'threekt';
+import {
+    Color, DomInputSurface, IcosahedronGeometry, InstancedMesh, Object3D, OrbitControls,
+    PerspectiveCamera, Scene, Uniform, Uniforms
+} from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addSliders } from './addSliders';
 import { addToggle, examplePanel } from './exampleControls';
 import { exampleSupersampling } from './exampleSupersampling';

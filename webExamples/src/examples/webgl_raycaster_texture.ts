@@ -1,7 +1,8 @@
 import {
     BoxGeometry, BufferGeometry, CircleGeometry, Color, Float32BufferAttribute, ImageTexture, Mesh, MeshBasicMaterial,
-    PerspectiveCamera, PlaneGeometry, Raycaster, Scene, WebGL2Context, WebGLRenderer, Wrapping,
+    PerspectiveCamera, PlaneGeometry, Raycaster, Scene, Wrapping,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import gridUrl from './assets/uv_grid_opengl.jpg?url';
 import { addSliders } from './addSliders';
 import { fitPerspective } from './fitPerspective';

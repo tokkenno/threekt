@@ -1,7 +1,8 @@
 import {
     BoxGeometry, Color, ColorSpace, DirectionalLight, Euler, Float32BufferAttribute, Mesh, MeshPhongMaterial, PerspectiveCamera,
-    Scene, VideoTexture, WebGL2Context, WebGLRenderer,
+    Scene, VideoTexture,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 // Sintel, Blender Foundation, from the Three.js example.
 import videoUrl from './assets/sintel.webm?url';
 import { followPointer } from './exampleControls';

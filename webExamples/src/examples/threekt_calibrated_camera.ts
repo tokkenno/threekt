@@ -1,7 +1,8 @@
 import {
     BoxGeometry, CalibratedPerspectiveCamera, CameraHelper, Color, CylinderGeometry, Euler, GridHelper, Mesh,
-    MeshBasicMaterial, PerspectiveCamera, Scene, SphereGeometry, Vector2, Vector3, WebGL2Context, WebGLRenderer,
+    MeshBasicMaterial, PerspectiveCamera, Scene, SphereGeometry, Vector2, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 type Setting = { name: string; value: number; min: number; max: number; step: number };
 

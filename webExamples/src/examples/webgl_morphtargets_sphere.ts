@@ -1,7 +1,8 @@
 import {
     AmbientLight, Color, DomInputSurface, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera,
-    PointLight, Points, PointsMaterial, Scene, WebGL2Context, WebGLRenderer,
+    PointLight, Points, PointsMaterial, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import modelUrl from './assets/morph-sphere/AnimatedMorphSphere.gltf?url';
 import bufferUrl from './assets/morph-sphere/AnimatedMorphSphere.bin?url';
 import discUrl from './assets/disc.png';

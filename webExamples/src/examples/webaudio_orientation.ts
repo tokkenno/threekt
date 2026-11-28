@@ -1,6 +1,9 @@
-import { BoxGeometry, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Fog, GridHelper,
+import {
+    BoxGeometry, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, Fog, GridHelper,
     HemisphereLight, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, MeshPhongMaterial,
-    OrbitControls, PerspectiveCamera, PlaneGeometry, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+    OrbitControls, PerspectiveCamera, PlaneGeometry, Scene
+} from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import model from './assets/BoomBox.glb?url';
 import { AudioListener, PositionalAudio } from 'threekt/audio';
 import { badCatSound, exampleAudio, loopingMediaElement } from './exampleAudio';

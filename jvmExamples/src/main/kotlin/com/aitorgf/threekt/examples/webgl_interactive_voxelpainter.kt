@@ -20,8 +20,8 @@ import com.aitorgf.threekt.math.Euler
 import com.aitorgf.threekt.math.Vector2
 import com.aitorgf.threekt.math.Vector3
 import com.aitorgf.threekt.objects.Mesh
-import com.aitorgf.threekt.renderers.WebGLRenderer
-import com.aitorgf.threekt.renderers.webgl.GLContext
+import com.aitorgf.threekt.render.gl.WebGLRenderer
+import com.aitorgf.threekt.render.gl.webgl.GLContext
 import com.aitorgf.threekt.scenes.Scene
 import com.aitorgf.threekt.textures.Texture
 import javax.imageio.ImageIO

@@ -1,8 +1,9 @@
 import {
     Color, ColorSpace, Euler, ExtrudeGeometry, Group, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, Path,
     PerspectiveCamera, PointLight, Points, PointsMaterial, BufferGeometry, Scene, Shape, ShapeGeometry, Side, Vector2,
-    WebGL2Context, WebGLRenderer, Wrapping, type Object3D, type Texture,
+    Wrapping, type Object3D, type Texture,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import uvGridUrl from './assets/uv_grid_opengl.jpg?url';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

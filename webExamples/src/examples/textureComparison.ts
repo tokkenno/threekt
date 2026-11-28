@@ -1,7 +1,8 @@
 import {
     Color, Euler, Fog, ImageTexture, TextureFilter, Mesh, MeshBasicMaterial,
-    PerspectiveCamera, PlaneGeometry, Scene, WebGL2Context, WebGLRenderer, Wrapping,
+    PerspectiveCamera, PlaneGeometry, Scene, Wrapping,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import paintingUrl from './assets/758px-Canestra_di_frutta_(Caravaggio).jpg?url';
 import { followPointer } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

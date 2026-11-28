@@ -1,7 +1,8 @@
 import {
     BoxGeometry, Color, DirectionalLight, HemisphereLight, InstancedMesh, MeshLambertMaterial, Object3D,
-    PerspectiveCamera, Scene, Usage, Vector3, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, Scene, Usage, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import edge from './assets/edge3.jpg?url';
 import { fitPerspective } from './fitPerspective';
 import { loadImageTexture } from './loadImageTexture';

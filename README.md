@@ -31,17 +31,31 @@ To build the examples for production, run `npm run build`.
 
 ### Modules and the npm package
 
-The engine is split into Gradle modules under `engine/`: `engine/core` (`:engine:core`) and `engine/loaders`
-(`:engine:loaders`, the file format loaders and `TextGeometry`, which needs their `Font`) and `engine/audio`
-(`:engine:audio`, `Audio`, `PositionalAudio`, `AudioListener`, `AudioAnalyser` and `AudioLoader`). Renderer modules
-will follow under `engine/render/`. On the JVM, and later on Kotlin/Native, each module is published as
-its own jar or klib.
+| Module | Gradle path | JavaScript entry point |
+|---|---|---|
+| Core scene, geometry, materials and math | `:engine:core` | `threekt` or `threekt/core` |
+| File format loaders and text geometry | `:engine:loaders` | `threekt/loaders` |
+| Audio and its browser adapter | `:engine:audio` | `threekt/audio` |
+| WebGL 2 and OpenGL ES 3.0 rendering | `:engine:render:gl` | `threekt/render-gl` |
+
+Renderers depend on the core and implement its `Renderer` interface. Applications can pass a renderer instance
+to code that takes this interface. Scene render callbacks also receive it. The GL module owns the concrete renderer,
+platform contexts, render targets and GLSL shader materials. Future backends such as DirectX and Vulkan can live
+under `engine/render/` and implement the same contract.
+
+```ts
+import { PerspectiveCamera, Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
+
+const renderer = new WebGLRenderer(new WebGL2Context(canvas));
+renderer.render(new Scene(), new PerspectiveCamera());
+```
 
 For JavaScript, `engine/dist/npm` (`:engine:dist:npm`) links every engine module in a single Kotlin/JS compilation with
 per-module granularity. That way the modules share one copy of the Kotlin runtime instead of each bundling
 their own. The `threekt` npm package contains one ES module per Kotlin runtime library
 (`kotlin-kotlin-stdlib.mjs`, …) and one per engine module (`threekt-core.mjs`, …), each with its own `.d.mts`
-TypeScript declarations. Applications import `threekt` (the core) or a module subpath such as `threekt/core`, `threekt/loaders` or `threekt/audio`.
+TypeScript declarations.
 
 - `./gradlew :engine:dist:npm:npmDevelopmentPackage` writes the package to `engine/dist/npm/build/packages/development`
   (this is what `npm run build:engine` runs and what the workspace links).

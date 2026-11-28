@@ -1,7 +1,10 @@
-import { AmbientLight, CircleGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, Group,
+import {
+    AmbientLight, CircleGeometry, Color, CylinderGeometry, DirectionalLight, DomInputSurface, Group,
     IcosahedronGeometry, Matrix4, Mesh, MeshBasicMaterial, MeshPhongMaterial, OrbitControls, PerspectiveCamera,
-    Plane, PlaneGeometry, Scene, ShaderMaterial, SphereGeometry, Uniform, Uniforms, Vector3, WebGL2Context,
-    WebGLRenderer, WebGLRenderTarget, type BufferGeometry } from 'threekt';
+    Plane, PlaneGeometry, Scene, SphereGeometry, Uniform, Uniforms, Vector3,
+    type BufferGeometry
+} from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 import { encodeSrgb } from './fullscreenPass';

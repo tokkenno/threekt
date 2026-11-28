@@ -1,7 +1,8 @@
 import {
     Blending, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, PlaneGeometry,
-    Scene, WebGL2Context, WebGLRenderer,
+    Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import gridUrl from './assets/uv_grid_opengl.jpg?url';
 import spriteJpegUrl from './assets/sprite0.jpg?url';
 import spritePngUrl from './assets/sprite0.png?url';

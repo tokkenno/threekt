@@ -1,7 +1,8 @@
 import {
     Color, CylinderGeometry, Euler, Group, Matrix4, Mesh, MeshBasicMaterial, PerspectiveCamera, Quaternion,
-    Scene, ShaderMaterial, SphereGeometry, WebGL2Context, WebGLRenderer,
+    Scene, SphereGeometry,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addToggle } from './addToggle';
 import { fitPerspective } from './fitPerspective';
 

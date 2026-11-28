@@ -3,8 +3,9 @@ import {
     DecoratedTorusKnot5a, DecoratedTorusKnot5c, DirectionalLight, DomInputSurface, FigureEightPolynomialKnot, GrannyKnot,
     HeartCurve, HelixCurve, KnotCurve, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, OrbitControls,
     PerspectiveCamera, Scene, SphereGeometry, TorusKnot, TrefoilKnot, TrefoilPolynomialKnot, TubeGeometry, Vector3,
-    VivianiCurve, WebGL2Context, WebGLRenderer, type Curve,
+    VivianiCurve, type Curve,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { examplePanel } from './exampleControls';
 
 const v = (x: number, y: number, z: number) => new Vector3(x, y, z);

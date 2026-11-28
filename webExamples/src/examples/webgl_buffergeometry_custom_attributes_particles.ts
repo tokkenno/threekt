@@ -1,7 +1,8 @@
 import {
     Blending, BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, ImageTexture,
-    PerspectiveCamera, Points, Scene, ShaderMaterial, Uniform, Uniforms, Usage, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, Points, Scene, Uniform, Uniforms, Usage,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import sparkUrl from './assets/spark1.png?url';
 import { fitPerspective } from './fitPerspective';
 

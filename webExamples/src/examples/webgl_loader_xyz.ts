@@ -1,6 +1,7 @@
 import {
-    Euler, PerspectiveCamera, Points, PointsMaterial, Scene, Vector3, WebGL2Context, WebGLRenderer,
+    Euler, PerspectiveCamera, Points, PointsMaterial, Scene, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { XYZLoader } from 'threekt/loaders';
 import helixUrl from './assets/helix_201.xyz?url';
 import { fitPerspective } from './fitPerspective';

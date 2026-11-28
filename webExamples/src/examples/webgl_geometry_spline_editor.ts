@@ -1,8 +1,8 @@
 import {
     AmbientLight, BoxGeometry, BufferGeometry, Color, DirectionalLight, DomInputSurface, Float32BufferAttribute, GridHelper,
     Line, LineBasicMaterial, Mesh, MeshPhongMaterial, OrbitControls, PerspectiveCamera, Scene, Usage, Vector3,
-    WebGL2Context, WebGLRenderer,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { dragMeshes } from './dragMeshes';
 import { addToggle, examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

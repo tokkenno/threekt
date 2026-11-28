@@ -1,4 +1,5 @@
-import { BufferGeometry, Color, Float32BufferAttribute, PerspectiveCamera, Points, Scene, ShaderMaterial, Uniform, Uniforms, Usage, WebGL2Context, WebGLRenderer } from 'threekt';
+import { BufferGeometry, Color, Float32BufferAttribute, PerspectiveCamera, Points, Scene, Uniform, Uniforms, Usage } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { followPointer } from './followPointer';
 

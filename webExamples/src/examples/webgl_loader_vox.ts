@@ -1,7 +1,8 @@
 import {
     Color, DirectionalLight, DomInputSurface, HemisphereLight, Mesh, MeshLambertMaterial, OrbitControls,
-    PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
+    PerspectiveCamera, Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { VOXLoader } from 'threekt/loaders';
 import model from './assets/vox/monu10.vox?url';
 import { fitPerspective } from './fitPerspective';

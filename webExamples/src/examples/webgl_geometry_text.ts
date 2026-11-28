@@ -1,7 +1,8 @@
 import {
     Color, DirectionalLight, Euler, Fog, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, PerspectiveCamera,
-    PlaneGeometry, PointLight, Scene, Vector3, WebGL2Context, WebGLRenderer, type Material,
+    PlaneGeometry, PointLight, Scene, Vector3, type Material,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { FontLoader, TextGeometry, type Font } from 'threekt/loaders';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';

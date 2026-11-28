@@ -1,5 +1,5 @@
-import { Color, DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene,
-    WebGL2Context, WebGLRenderer } from 'threekt';
+import { Color, DomInputSurface, Mesh, OrbitControls, PerspectiveCamera, Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import head from './assets/lee-perry-smith/LeePerrySmith.glb?url';
 import nefertiti from './assets/nefertiti/Nefertiti.glb?url';
 import bumpUrl from './assets/lee-perry-smith/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg?url';

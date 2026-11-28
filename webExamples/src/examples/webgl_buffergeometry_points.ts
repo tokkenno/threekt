@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, ColorSpace, Euler, Float32BufferAttribute, Fog, PerspectiveCamera, Points, PointsMaterial,
-    Scene, WebGL2Context, WebGLRenderer,
+    Scene,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 /** Port of Three.js examples/webgl_buffergeometry_points.html, without the Stats panel. */

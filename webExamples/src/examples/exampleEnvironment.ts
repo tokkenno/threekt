@@ -1,4 +1,5 @@
-import { Color, Mesh, ShaderMaterial, Side, SphereGeometry, Uniform, type Scene, type Uniforms } from 'threekt';
+import { Color, Mesh, Side, SphereGeometry, Uniform, type Scene, type Uniforms } from 'threekt';
+import { ShaderMaterial } from 'threekt/render-gl';
 import { cubeLookup } from './exampleCubeMap';
 import { encodeSrgb } from './fullscreenPass';
 

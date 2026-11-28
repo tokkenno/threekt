@@ -1,7 +1,8 @@
 import {
     BoxGeometry, BufferGeometry, Color, Euler, Float32BufferAttribute, PerspectiveCamera, Points, Raycaster, Scene,
-    ShaderMaterial, Uniform, Uniforms, Usage, WebGL2Context, WebGLRenderer,
+    Uniform, Uniforms, Usage,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import discUrl from './assets/disc.png?url';
 import { fitPerspective } from './fitPerspective';
 import { loadImageTexture } from './loadImageTexture';

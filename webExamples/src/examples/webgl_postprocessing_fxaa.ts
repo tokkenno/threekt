@@ -1,8 +1,8 @@
 import {
     Color, DirectionalLight, DomInputSurface, HemisphereLight, InstancedMesh, MeshPhongMaterial, Object3D,
     OrbitControls, PerspectiveCamera, Scene, TetrahedronGeometry, Uniform, Uniforms, Vector2,
-    WebGL2Context, WebGLRenderer, WebGLRenderTarget,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer, WebGLRenderTarget } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { encodeSrgb, fullscreenPass } from './fullscreenPass';
 import fxaa from './shaders/FXAAShader.glsl?raw';

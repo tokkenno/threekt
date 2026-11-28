@@ -1,7 +1,8 @@
 import {
-    BoxGeometry, Color, DomInputSurface, ImageTexture, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene, WebGL2Context, WebGLRenderer,
+    BoxGeometry, Color, DomInputSurface, ImageTexture, Mesh, MeshBasicMaterial, OrbitControls, PerspectiveCamera, Scene,
     Wrapping,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import uvGridUrl from './assets/uv_grid_opengl.jpg?url';
 import { fitPerspective } from './fitPerspective';
 

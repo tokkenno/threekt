@@ -1,8 +1,9 @@
 import {
     BufferGeometry, CapsuleGeometry, Color, Float32BufferAttribute, LineBasicMaterial, LineSegments,
     Mesh, MeshNormalMaterial, PerspectiveCamera, Points, PointsMaterial, Raycaster, Scene, Side,
-    Vector3, WebGL2Context, WebGLRenderer,
+    Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 
 export function createExample(canvas: HTMLCanvasElement) {

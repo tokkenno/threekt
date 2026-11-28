@@ -1,4 +1,5 @@
-import { AmbientLight, ArrayCamera, Color, CylinderGeometry, DirectionalLight, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry, Scene, WebGL2Context, WebGLRenderer } from 'threekt';
+import { AmbientLight, ArrayCamera, Color, CylinderGeometry, DirectionalLight, Euler, Mesh, MeshPhongMaterial, PerspectiveCamera, PlaneGeometry, Scene } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 
 export async function createExample(canvas: HTMLCanvasElement) {
     const amount = 6;

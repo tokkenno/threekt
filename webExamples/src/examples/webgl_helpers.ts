@@ -1,8 +1,9 @@
 import {
     BoxHelper, BufferGeometry, Color, EdgesGeometry, Float32BufferAttribute, GridHelper, Group,
     LineBasicMaterial, LineSegments, Mesh, MeshPhongMaterial, OctahedronGeometry, PerspectiveCamera,
-    PointLight, Scene, Vector3, WebGL2Context, WebGLRenderer, WireframeGeometry,
+    PointLight, Scene, Vector3, WireframeGeometry,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import model from './assets/lee-perry-smith/LeePerrySmith.glb?url';
 import { fitPerspective } from './fitPerspective';
 import { readExampleGltfGeometry, type ExampleGltf } from './readExampleGltf';

@@ -1,4 +1,5 @@
-import { Mesh, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial, Uniform, Uniforms, type Texture } from 'threekt';
+import { Mesh, OrthographicCamera, PlaneGeometry, Scene, Uniform, Uniforms, type Texture } from 'threekt';
+import { ShaderMaterial } from 'threekt/render-gl';
 
 const vertex = `
     varying vec2 vUv;

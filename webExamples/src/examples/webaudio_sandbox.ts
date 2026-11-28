@@ -1,5 +1,8 @@
-import { Color, DirectionalLight, FogExp2, GridHelper, Mesh, MeshPhongMaterial,
-    PerspectiveCamera, Scene, SphereGeometry, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
+import {
+    Color, DirectionalLight, FogExp2, GridHelper, Mesh, MeshPhongMaterial,
+    PerspectiveCamera, Scene, SphereGeometry, Vector3
+} from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { Audio, AudioAnalyser, AudioListener, PositionalAudio } from 'threekt/audio';
 import song from './assets/sounds/358232_j_s_song.ogg?url';
 import utopia from './assets/sounds/Project_Utopia.ogg?url';

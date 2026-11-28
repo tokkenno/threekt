@@ -1,7 +1,8 @@
 import {
-    BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, FramebufferTexture, Line, LineBasicMaterial,
-    OrbitControls, PerspectiveCamera, Scene, Usage, WebGL2Context, WebGLRenderer,
+    BufferGeometry, Color, DomInputSurface, Float32BufferAttribute, Line, LineBasicMaterial,
+    OrbitControls, PerspectiveCamera, Scene, Usage,
 } from 'threekt';
+import { FramebufferTexture, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { fitPerspective } from './fitPerspective';
 import { texturePass } from './fullscreenPass';
 

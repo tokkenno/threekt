@@ -1,7 +1,7 @@
 import {
     Color, ColorSpace, Euler, Fog, Group, OrthographicCamera, PerspectiveCamera, Scene, Sprite, SpriteMaterial,
-    WebGL2Context, WebGLRenderer,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import sprite0Url from './assets/sprite0.png?url';
 import sprite1Url from './assets/sprite1.png?url';
 import sprite2Url from './assets/sprite2.png?url';

@@ -1,8 +1,8 @@
 import {
     AmbientLight, type Camera, Color, ConeGeometry, DirectionalLight, DomInputSurface, FogExp2, InstancedMesh,
-    MeshPhongMaterial, Object3D, OrthographicCamera, PerspectiveCamera, Scene, TrackballControls, WebGL2Context,
-    WebGLRenderer,
+    MeshPhongMaterial, Object3D, OrthographicCamera, PerspectiveCamera, Scene, TrackballControls,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addToggle, examplePanel } from './exampleControls';
 
 /**

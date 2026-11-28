@@ -1,7 +1,8 @@
 import {
     BufferGeometry, Color, Euler, Float32BufferAttribute, LineSegments, PerspectiveCamera, Scene,
-    ShaderMaterial, Usage, WebGL2Context, WebGLRenderer,
+    Usage,
 } from 'threekt';
+import { ShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { examplePanel } from './exampleControls';
 import { fitPerspective } from './fitPerspective';
 

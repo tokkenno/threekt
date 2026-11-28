@@ -1,5 +1,8 @@
+@file:OptIn(ThreektRendererApi::class)
+
 package com.aitorgf.threekt.core
 
+import com.aitorgf.threekt.ThreektRendererApi
 import com.aitorgf.threekt.math.Box3
 import com.aitorgf.threekt.math.MathUtils
 import com.aitorgf.threekt.math.Matrix3

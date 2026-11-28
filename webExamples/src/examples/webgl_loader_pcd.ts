@@ -1,7 +1,7 @@
 import {
-    DomInputSurface, Euler, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Vector3, WebGL2Context,
-    WebGLRenderer,
+    DomInputSurface, Euler, OrbitControls, PerspectiveCamera, Points, PointsMaterial, Scene, Vector3,
 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { PCDLoader } from 'threekt/loaders';
 import asciiUrl from './assets/pcd/simple.pcd?url';
 import binaryUrl from './assets/pcd/Zaghetto.pcd?url';

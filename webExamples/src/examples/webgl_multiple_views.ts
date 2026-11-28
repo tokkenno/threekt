@@ -1,4 +1,5 @@
-import { Color, ColorSpace, PerspectiveCamera, Scene, Vector3, WebGL2Context, WebGLRenderer } from 'threekt';
+import { Color, ColorSpace, PerspectiveCamera, Scene, Vector3 } from 'threekt';
+import { WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addColoredPolyhedra } from './coloredPolyhedra';
 
 export async function createExample(canvas: HTMLCanvasElement) {

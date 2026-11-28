@@ -1,7 +1,8 @@
 import {
     Euler, Float32BufferAttribute, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, PerspectiveCamera,
-    RawShaderMaterial, Scene, Side, Uniform, WebGL2Context, WebGLRenderer,
+    Scene, Side, Uniform,
 } from 'threekt';
+import { RawShaderMaterial, WebGL2Context, WebGLRenderer } from 'threekt/render-gl';
 import { addSliders } from './addSliders';
 import { fitPerspective } from './fitPerspective';
 

@@ -18,7 +18,7 @@ val lwjglNatives = run {
 }
 
 dependencies {
-    implementation(project(":engine:core"))
+    implementation(project(":engine:render:gl"))
     implementation(project(":engine:loaders"))
     implementation(libs.lwjgl)
     implementation(libs.lwjgl.egl)
@@ -37,10 +37,10 @@ application {
 
 // Use the same upstream assets as the browser example and package them in the application.
 tasks.processResources {
-    from(rootProject.layout.projectDirectory.dir("webApp/src/examples/assets/male02")) {
+    from(rootProject.layout.projectDirectory.dir("webExamples/src/examples/assets/male02")) {
         into("models/male02")
     }
-    from(rootProject.layout.projectDirectory.file("webApp/src/examples/assets/square-outline-textured.png")) {
+    from(rootProject.layout.projectDirectory.file("webExamples/src/examples/assets/square-outline-textured.png")) {
         into("textures")
     }
 }
